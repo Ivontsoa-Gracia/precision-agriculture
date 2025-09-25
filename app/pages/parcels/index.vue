@@ -1,0 +1,353 @@
+<template>
+  <div class="p-6">
+    <div class="mb-6">
+      <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+        <i class='bx bx-map text-3xl text-[#10b481]'></i>
+        Parcels List
+      </h2>
+
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div class="flex items-center space-x-2">
+          <label for="rows" class="text-sm">Rows per page:</label>
+          <select
+            id="rows"
+            v-model.number="rowsPerPage"
+            class="p-1 border rounded"
+          >
+            <option :value="4">4</option>
+            <option :value="8">8</option>
+            <option :value="12">12</option>
+            <option :value="16">16</option>
+          </select>
+        </div>
+
+        <div class="flex space-x-4 items-center flex-wrap">
+          <input
+            v-model="filters.owner"
+            type="text"
+            placeholder="Filter by Owner"
+            class="p-2 border border-gray-300 rounded w-60"
+          />
+          <input
+            v-model="filters.parcel_name"
+            type="text"
+            placeholder="Filter by parcel_name"
+            class="p-2 border border-gray-300 rounded w-60"
+          />
+          <button
+            @click="resetFilters"
+            class="p-2 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center"
+          >
+            <i class='bx bx-reset text-lg'></i>
+          </button>
+        </div>
+
+        <div class="flex space-x-3 flex-wrap">
+          <div class="relative inline-block group">
+            <button
+              class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
+            >
+              <i class='bx bx-export mr-2 text-xl'></i> Export
+              <i class='bx bx-chevron-down ml-2'></i>
+            </button>
+            <!-- Dropdown Export -->
+            <div class="absolute -mt-1 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50">
+              <button @click="exportData('pdf')" class="block px-4 py-2 w-full text-left hover:bg-gray-100">PDF</button>
+              <button @click="exportData('csv')" class="block px-4 py-2 w-full text-left hover:bg-gray-100">CSV</button>
+            </div>
+          </div>
+
+
+          <NuxtLink
+            to="/parcels/create"
+            class="flex items-center bg-[#10b481] text-white px-12 py-2 rounded-xl shadow hover:bg-[#0da06a]"
+          >
+            <i class='bx bx-plus mr-2 text-xl'></i> Add Parcel
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-red rounded-lg shadow pb-2">
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left border-collapse">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-2 border-b">Owner 
+                <!-- <i class="bx bx-sort ml-2 text-gray-400"></i> -->
+              </th>
+              <th class="px-6 py-2 border-b">Field ID</th>
+              <th class="px-6 py-2 border-b">Parcel Name</th>
+              <th class="px-6 py-2 border-b">Latitude</th>
+              <th class="px-6 py-2 border-b">Longitude</th>
+              <th class="px-6 py-2 border-b text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="field in paginatedFields" :key="field.id" class="hover:bg-gray-50">
+              <td class="px-6 py-2 border-b">{{ field.owner }}</td>
+              <td class="px-6 py-2 border-b">
+                <NuxtLink :to="`/parcels/show/${field.fieldId}`">
+                  {{ field.fieldId }}
+                </NuxtLink>
+
+                </td>
+              <td class="px-6 py-2 border-b">{{ field.parcel_name }}</td>
+              <td class="px-6 py-2 border-b">{{ field.latitude }}</td>
+              <td class="px-6 py-2 border-b">{{ field.longitude }}</td>
+              <td class="p-3 border-b text-center">
+                <button 
+                  @click="toggleMenu(field.id, $event)" 
+                  class="p-2 rounded-full hover:bg-gray-200"
+                >
+                  <i class='bx bx-dots-vertical-rounded text-xl'></i>
+                </button>
+              </td>
+
+              <!-- Menu en dehors du td -->
+              <div
+                v-if="activeMenu !== null"
+                class="absolute w-40 bg-white rounded z-50 border border-gray-100 shadow-sm"
+                :style="{ top: menuPosition.top + 'px', right: '80px' }"
+              >
+                <!-- Redirection vers field-detail avec query id -->
+                <NuxtLink
+                  :to="`/parcels/show/${field.fieldId}`"
+                  class="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                >
+                  View Details
+                </NuxtLink>
+
+                <NuxtLink
+                  :to="`/parcels/edit/${field.fieldId}`"
+                  class="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                >
+                  Edit
+                </NuxtLink>
+              
+                <button class="block px-4 py-2 text-left w-full text-red-500 hover:bg-gray-100">Delete</button>
+              </div>
+            </tr>
+            <tr v-if="paginatedFields.length === 0">
+              <td colspan="6" class="p-6 text-center text-gray-500">No fields found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-between items-center mt-4 mb-2">
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          <i class="bx bx-chevron-left"></i> Prev
+        </button>
+
+        <div class="flex items-center space-x-2">
+          <button
+            v-for="page in visiblePages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1 rounded',
+              currentPage === page ? 'bg-[#10b481] text-white' : 'bg-gray-100 hover:bg-gray-200',
+            ]"
+            v-if="page !== '...'"
+          >
+            {{ page }}
+          </button>
+          <span v-else class="px-2">...</span>
+        </div>
+
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          Next <i class="bx bx-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, computed, onMounted } from 'vue'
+
+definePageMeta({
+  layout: 'dashboard'
+})
+
+async function exportData(type: 'pdf' | 'csv') {
+  const data = filteredFields.value.map(f => ({
+    Owner: f.owner,
+    FieldID: f.fieldId,
+    ParcelName: f.parcel_name,
+    Latitude: f.latitude,
+    Longitude: f.longitude
+  }))
+
+  if (type === 'pdf') {
+    if (process.client) {
+      // Import dynamique côté client
+      const { jsPDF } = await import('jspdf');
+      const autoTableModule = await import('jspdf-autotable');
+
+      const doc = new jsPDF();
+      // @ts-ignore
+      autoTableModule.default(doc, {
+        head: [['Owner', 'FieldID', 'ParcelName', 'Latitude', 'Longitude']],
+        body: data.map(Object.values),
+        startY: 20
+      });
+
+      doc.save('parcels.pdf');
+    }
+  } else {
+    // Générer CSV côté navigateur
+    if (!data.length) return
+    const headers = Object.keys(data[0])
+    const csvRows = [
+      headers.join(','), // ligne d'en-tête
+      ...data.map(row => headers.map(h => `"${row[h]}"`).join(',')) // lignes de données
+    ]
+    const csvString = csvRows.join('\n')
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', 'parcels.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+}
+
+
+const filters = reactive({
+  owner: '',
+  parcel_name: ''
+})
+
+const fields = ref<any[]>([])
+const rowsPerPage = ref(4)
+const currentPage = ref(1)
+const activeMenu = ref<string | null>(null)
+const menuPosition = reactive({ top: 0, right: 0 })
+
+onMounted(async () => {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    alert("Vous devez être connecté");
+    return;
+  }
+
+  try {
+    // 1️⃣ Récupérer toutes les parcelles
+    const response = await fetch("https://mvp-dvws.onrender.com/api/parcels/", {
+      headers: { "Authorization": `Token ${token}` }
+    });
+    const parcels = await response.json();
+    if (!response.ok) {
+      console.error("Erreur API:", parcels);
+      return;
+    }
+
+    // 2️⃣ Récupérer tous les UUID uniques
+    const ownerUUIDs = [...new Set(parcels.map((p: any) => p.owner))];
+
+    // 3️⃣ Créer un mapping UUID -> nom complet
+    const ownersMap: Record<string, string> = {};
+
+    await Promise.all(ownerUUIDs.map(async (uuid: string) => {
+      try {
+        const ownerRes = await fetch(`https://mvp-dvws.onrender.com/api/users/${uuid}/`, {
+          headers: { "Authorization": `Token ${token}` }
+        });
+        if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
+
+        const ownerData = await ownerRes.json();
+        console.log("user data", ownerData);
+        ownersMap[uuid] = `${ownerData.first_name} ${ownerData.last_name}`.trim() || "Unknown";
+      } catch (err) {
+        console.error("Erreur récupération user:", err);
+        ownersMap[uuid] = "Unknown";
+      }
+    }));
+
+    // 4️⃣ Construire fields avec nom complet
+    fields.value = parcels.map((parcel: any, idx: number) => ({
+      id: idx + 1,
+      fieldId: parcel.uuid,
+      owner: ownersMap[parcel.owner] || "Unknown Owner",
+      parcel_name: parcel.parcel_name,
+      latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
+      longitude: parcel.parcel_points?.[0]?.longitude ?? "-"
+    }));
+
+  } catch (err) {
+    console.error("Erreur réseau:", err);
+  }
+});
+
+
+// Filtrage
+const filteredFields = computed(() =>
+  fields.value.filter(f =>
+    f.owner.toLowerCase().includes(filters.owner.toLowerCase()) &&
+    f.parcel_name.toLowerCase().includes(filters.parcel_name.toLowerCase())
+  )
+)
+
+// Pagination
+const totalPages = computed(() => Math.ceil(filteredFields.value.length / rowsPerPage.value))
+const paginatedFields = computed(() => {
+  const start = (currentPage.value - 1) * rowsPerPage.value
+  return filteredFields.value.slice(start, start + rowsPerPage.value)
+})
+
+// Pagination visible avec "..."
+const visiblePages = computed(() => {
+  const pages: (number | string)[] = []
+  if (totalPages.value <= 15) {
+    for (let i = 1; i <= totalPages.value; i++) pages.push(i)
+  } else {
+    if (currentPage.value <= 7) {
+      pages.push(...Array.from({ length: 8 }, (_, i) => i + 1), "...", totalPages.value)
+    } else if (currentPage.value >= totalPages.value - 6) {
+      pages.push(1, "...", ...Array.from({ length: 8 }, (_, i) => totalPages.value - 7 + i))
+    } else {
+      pages.push(
+        1, "...",
+        currentPage.value - 2, currentPage.value - 1, currentPage.value, currentPage.value + 1, currentPage.value + 2,
+        "...", totalPages.value
+      )
+    }
+  }
+  return pages
+})
+
+// Fonctions auxiliaires
+function resetFilters() {
+  filters.owner = ''
+  filters.parcel_name = ''
+  currentPage.value = 1
+}
+
+function toggleMenu(id: string, event: MouseEvent) {
+  if (activeMenu.value === id) {
+    activeMenu.value = null
+  } else {
+    activeMenu.value = id
+    const button = event.currentTarget as HTMLElement
+    const rect = button.getBoundingClientRect()
+    menuPosition.top = rect.bottom + window.scrollY
+    menuPosition.right = rect.right + window.scrollX
+  }
+}
+
+function prevPage() { if (currentPage.value > 1) currentPage.value-- }
+function nextPage() { if (currentPage.value < totalPages.value) currentPage.value++ }
+function goToPage(page: number | string) { if (page !== '...') currentPage.value = page as number }
+</script>
+
