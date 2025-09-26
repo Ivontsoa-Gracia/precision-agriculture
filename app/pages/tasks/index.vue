@@ -20,22 +20,20 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">ID</th>
               <th class="px-6 py-2 border-b">Name</th>
               <th class="px-6 py-2 border-b">Due Date</th>
               <th class="px-6 py-2 border-b">Parcel Crop</th>
-              <th class="px-6 py-2 border-b">Priority</th>
-              <th class="px-6 py-2 border-b">Status</th>
+              <th class="px-6 py-2 border-b text-center">Priority</th>
+              <th class="px-6 py-2 border-b text-center">Status</th>
               <th class="px-6 py-2 border-b text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="task in paginatedTasks" :key="task.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b">{{ task.id }}</td>
               <td class="px-6 py-2 border-b">{{ task.name }}</td>
               <td class="px-6 py-2 border-b">{{ new Date(task.due_date).toLocaleDateString() }}</td>
-              <td class="px-6 py-2 border-b">{{ task.parcelCrop || '-' }}</td>
-              <td class="px-6 py-2 border-b">
+              <td class="px-6 py-2 border-b">{{ task.parcelCropFull || '-' }}</td>
+              <td class="px-6 py-2 border-b text-center">
                 <span
                   v-if="priorities[task.priority]"
                   :class="[
@@ -50,7 +48,7 @@
                 <span v-else>-</span>
               </td>
 
-              <td class="px-6 py-2 border-b">
+              <td class="px-6 py-2 border-b text-center">
                 <span
                   v-if="statuses[task.status]"
                   :class="[
@@ -164,6 +162,7 @@
     }
   }
 
+  
   const totalPages = computed(() => Math.ceil(tasks.value.length / itemsPerPage))
   const visiblePages = computed(() => {
     const pages = []
@@ -180,21 +179,54 @@
   
   // Fetch tasks
   onMounted(async () => {
-    const token = sessionStorage.getItem('token')
-    if (!token) { router.push('/login'); return }
-  
-    try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
-        headers: { Authorization: `Token ${token}` }
-      })
-      if (!res.ok) throw new Error(`API error: ${res.status}`)
-      tasks.value = await res.json()
-      await loadLookups()
-    } catch (err) {
-      console.error("Failed to load tasks:", err)
-    }
-  })
-  
+  const token = sessionStorage.getItem('token')
+  if (!token) { router.push('/login'); return }
+
+  try {
+    // 1️⃣ Récupérer les tasks
+    const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
+      headers: { Authorization: `Token ${token}` }
+    })
+    if (!res.ok) throw new Error(`API error: ${res.status}`)
+    tasks.value = await res.json()
+
+    // 2️⃣ Charger les lookups
+    await loadLookups()
+
+    // 3️⃣ Pour chaque task, récupérer parcelCrop complet + parcel
+    await Promise.all(tasks.value.map(async (task: any) => {
+      if (task.parcelCrop) {
+        try {
+          const resParcelCrop = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${task.parcelCrop}/`, {
+            headers: { Authorization: `Token ${token}` }
+          });
+          if (!resParcelCrop.ok) throw new Error('ParcelCrop fetch error');
+          const parcelCropData = await resParcelCrop.json();
+
+          const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.parcel}/`, {
+            headers: { Authorization: `Token ${token}` }
+          });
+          if (!resParcel.ok) throw new Error('Parcel fetch error');
+          const parcelData = await resParcel.json();
+
+          task.parcelCropFull = `${parcelData.parcel_name} - ${parcelCropData.crop.name}`;
+        } catch (err) {
+          console.error(err);
+          task.parcelCropFull = '-';
+        }
+      } else {
+        task.parcelCropFull = '-';
+      }
+    }));
+
+    // 4️⃣ Mettre à jour la pagination après enrichissement
+    updatePaginated();
+
+  } catch (err) {
+    console.error("Failed to load tasks:", err)
+  }
+})
+
   // Actions
   const deleteTask = async (id: number) => {
     const token = sessionStorage.getItem('token')

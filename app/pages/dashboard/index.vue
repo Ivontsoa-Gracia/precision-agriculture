@@ -150,7 +150,7 @@
 
     </div>
 
-    <div class="grid grid-cols-3 gap-6">
+    <div class="grid grid-cols-3 gap-6 hidden">
       <div class="col-span-2 bg-white rounded-2xl shadow-md p-4 z-40">
         <h3 class="font-bold text-lg mb-4 text-gray-900 mb-12">Yield per parcel (kg)</h3>
         <client-only>
@@ -185,11 +185,77 @@
       </div>
     </div>
 
+    <div class=" space-y-6">
+      <!-- Grand titre Analytics -->
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Analytics</h2>
+
+      <div class="grid grid-cols-3 gap-6">
+        <!-- Graphique linéaire Yield Evolution -->
+        <div class="col-span-2 bg-white rounded-2xl shadow-md p-6">
+          <h3 class="font-bold text-lg mb-4 text-gray-900">Yield Evolution</h3>
+          <canvas id="parcelYieldChart" class="h-96 w-full rounded-xl"></canvas>
+        </div>
+
+        <!-- Accordéon des parcelles -->
+        <div class="col-span-1 bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition flex-1 min-w-[200px]">
+          <h3 class="font-bold text-lg mb-4 text-gray-900">Parcels</h3>
+
+          <div v-for="(parcel, key) in analyticsData" :key="key" class="bg-white rounded-md shadow-md mb-4 overflow-hidden transition hover:shadow-xl">
+            <!-- Bouton Accordéon -->
+            <button 
+              @click="parcel.open = !parcel.open" 
+              class="w-full p-4 flex justify-between items-center border border-gray-200 bg-[#fafafa] hover:bg-[#f9f9f9] transition-colors font-medium text-gray-800"
+            >
+              <span class="text-lg">{{ parcel.parcel_name }}</span>
+              <i :class="parcel.open ? 'bx bx-chevron-up text-gray-600' : 'bx bx-chevron-down text-gray-600'" class="text-xl"></i>
+            </button>
+            
+            <!-- Contenu Accordéon -->
+            <div v-if="parcel.open" class="p-4 border-t border-gray-200 bg-gray-50 space-y-3">
+              <!-- Yield Summary -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
+                  <span class="text-gray-500 text-sm">Mean Yield</span>
+                  <span class="text-lg font-bold text-[#10b481]">{{ parcel.mean_yield.toFixed(2) }} kg</span>
+                </div>
+                <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
+                  <span class="text-gray-500 text-sm">Mean Yield per Area</span>
+                  <span class="text-lg font-bold text-[#c99383]">{{ parcel.mean_yield_per_area.toFixed(2) }} kg/ha</span>
+                </div>
+              </div>
+
+              <!-- Yields by Date (mini-cards) -->
+              <div class="space-y-2 mt-3">
+                <div v-for="(date, i) in parcel.dates" :key="i" class="bg-white p-3 rounded-md shadow-sm flex justify-between items-center hover:shadow-md transition">
+                  <div class="flex flex-col">
+                    <span class="text-gray-500 text-sm">{{ date }} ({{ parcel.years[i] }})</span>
+                    <span class="text-gray-800 font-medium">{{ parcel.yield_amount[i].toFixed(2) }} kg</span>
+                  </div>
+                  <div class="flex flex-col text-right">
+                    <span class="text-gray-400 text-xs mb-1">Yield per Area</span>
+                    <span class="text-[#10b481] font-medium text-lg">
+                      {{ parcel.yield_per_area[i].toFixed(2) }} kg/ha
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphique en barres pour Total Yield per Year -->
+      <!-- <div class="bg-white rounded-2xl shadow-md p-6">
+        <h3 class="font-bold text-lg mb-4 text-gray-900">Total Yield per Year</h3>
+        <canvas id="totalYieldChart" class="h-96 w-full rounded-xl"></canvas>
+      </div> -->
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, reactive } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import Chart from "chart.js/auto";
@@ -202,6 +268,7 @@ const showSortMenu = ref(false)
 
 const router = useRouter();
 const dashboard = ref<any>({ parcels: [], task_summary: [], yield_summary: [], soil_summary: [] });
+  const analyticsData = ref<any>();
 
 let cropChart: Chart | null = null;
 let yieldChart: Chart | null = null;
@@ -262,39 +329,118 @@ function getParcelYield(parcel: any) {
 
 
 // --- Fetch dashboard ---
-async function fetchDashboard(){
-  const token=sessionStorage.getItem("token");
-  if(!token) return router.push("/login");
-  try{ const res=await axios.get("https://mvp-dvws.onrender.com/api/dashboard/full_dashboard/",{headers:{Authorization:`Token ${token}`}}); dashboard.value=res.data;}catch(err){console.error(err);}
+async function fetchDashboard() {
+  const token = sessionStorage.getItem("token");
+  if (!token) return router.push("/login");
+
+  try {
+    // Dashboard
+    const res = await axios.get(
+      "https://mvp-dvws.onrender.com/api/dashboard/full_dashboard/",
+      { headers: { Authorization: `Token ${token}` } }
+    );
+    dashboard.value = res.data;
+
+    // Analytics
+    const resanalytics = await fetch(
+      `https://mvp-dvws.onrender.com/analytics/yields/`,
+      { headers: { Authorization: `Token ${token}` } }
+    );
+
+    if (!resanalytics.ok) throw new Error("Failed to load forecast");
+    analyticsData.value = await resanalytics.json();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 // --- Map ---
-async function initMap(){
-  const L=(await import("leaflet")).default;
+async function initMap() {
+  const L = (await import("leaflet")).default;
   await import("leaflet/dist/leaflet.css");
-  map=L.map("map").setView([-18.8792,47.5079],6);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(map);
-  parcelLayer=L.layerGroup().addTo(map); updateMap(L);
+
+  map = L.map("map").setView([-18.8792, 47.5079], 6);
+
+  parcelLayer = L.layerGroup().addTo(map);
+
+  L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye'
+    }
+  ).addTo(map);
+
+  updateMap(L);
 }
-function updateMap(L:any){
-  if(!parcelLayer) return; parcelLayer.clearLayers();
-  dashboard.value.parcels?.forEach((p:any)=>{
-    if(!p.points?.length) return;
-    if(p.points.length===1){ const pt=p.points[0]; L.marker([pt.lat,pt.lng]).bindPopup(`<strong>${p.name}</strong>`).addTo(parcelLayer);}
-    else{ const latlngs=p.points.map((pt:any)=>[pt.lat,pt.lng]); L.polygon(latlngs,{color:"blue",fillColor:"#10b481",fillOpacity:0.3}).bindPopup(`<strong>${p.name}</strong>`).addTo(parcelLayer);}
+
+function updateMap(L: any) {
+  if (!parcelLayer) return;
+  parcelLayer.clearLayers();
+
+  dashboard.value.parcels?.forEach((p: any) => {
+  if (!p.points?.length) return;
+
+  if (p.points.length === 1) {
+    const pt = p.points[0];
+    // Cercle rouge plus gros pour le point unique
+    L.circleMarker([pt.lat, pt.lng], {
+      radius: 8,       // taille du point
+      color: "#10b481",    // bordure
+      fillColor: "#10b481", // couleur intérieure
+      fillOpacity: 0.9
+    })
+    .bindPopup(`<strong>${p.name}</strong>`)
+    .addTo(parcelLayer);
+  } else {
+    const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
+    L.polygon(latlngs, {
+      color: "#10b481",
+      fillColor: "#10b481",
+      fillOpacity: 0.3
+    })
+    .bindPopup(`<strong>${p.name}</strong>`)
+    .addTo(parcelLayer);
+
+    // Pour rendre les sommets visibles
+    p.points.forEach((pt: any) => {
+      L.circleMarker([pt.lat, pt.lng], {
+        radius: 5,
+        color: "#10b481",
+        fillColor: "#10b481",
+        fillOpacity: 0.7
+      }).addTo(parcelLayer);
+    });
+  }
+});
+
+
+  const allLayers: any[] = [];
+  parcelLayer.eachLayer((layer: any) => allLayers.push(layer));
+
+  if (allLayers.length)
+    map.fitBounds(L.featureGroup(allLayers).getBounds().pad(0.2));
+}
+
+function zoomParcel(parcel: any) {
+  if (!map || !parcelLayer) return;
+
+  parcelLayer.eachLayer((layer: any) => {
+    if (layer.getLatLng) {
+      const latlng = layer.getLatLng();
+      if (parcel.points.some((p: any) => p.lat === latlng.lat && p.lng === latlng.lng)) {
+        map.setView([latlng.lat, latlng.lng], 15);
+        layer.openPopup();
+      }
+    } else if (layer.getBounds) {
+      const bounds = layer.getBounds();
+      if (parcel.points.every((pt: any) => bounds.contains([pt.lat, pt.lng]))) {
+        map.fitBounds(bounds.pad(0.3));
+        layer.openPopup();
+      }
+    }
   });
-  const allLayers:any[]=[]; parcelLayer.eachLayer((layer:any)=>allLayers.push(layer));
-  if(allLayers.length) map.fitBounds(L.featureGroup(allLayers).getBounds().pad(0.2));
 }
-function zoomParcel(parcel:any){
-  if(!map||!parcelLayer) return;
-  parcelLayer.eachLayer((layer:any)=>{
-    if(layer.getLatLng){ const latlng=layer.getLatLng();
-      if(parcel.points.some((p:any)=>p.lat===latlng.lat&&p.lng===latlng.lng)){ map.setView([latlng.lat,latlng.lng],15); layer.openPopup(); }}
-    else if(layer.getBounds){ const bounds=layer.getBounds();
-      if(parcel.points.every((pt:any)=>bounds.contains([pt.lat,pt.lng]))){ map.fitBounds(bounds.pad(0.3)); layer.openPopup(); }}
-  });
-}
+
 
 // --- Watch dashboard changes ---
 // watch(dashboard, ()=>{
@@ -366,8 +512,57 @@ watch(dashboard, async () => {
   });
 });
 
+watch(analyticsData, async () => {
+  await nextTick();
+  const ctx = document.getElementById("parcelYieldChart") as HTMLCanvasElement | null;
+  if (!ctx) return;
+
+  if (yieldChart) yieldChart.destroy();
+  yieldChart = new Chart(ctx, {
+    type: "line",
+    data: chartData.value,
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom" }, tooltip: { enabled: true } },
+      scales: {
+        x: { ticks: { color: "#4b5563" }, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { color: "#4b5563" }, grid: { color: "#e5e7eb" } }
+      }
+    }
+  });
+});
+
+
+const chartData = computed(() => {
+  if (!analyticsData.value) return { labels: [], datasets: [] };
+
+  // Récupérer toutes les dates uniques
+  const allDates = new Set<string>();
+  Object.values(analyticsData.value).forEach((p: any) => p.dates.forEach((d: string) => allDates.add(d)));
+  const labels = Array.from(allDates).sort();
+
+  // Créer 1 dataset par parcelle
+  const datasets = Object.values(analyticsData.value).map((p: any, idx) => {
+    const colorPalette = ["#10b481", "#c99383", "#222831", "#6d4c41", "#f4a261", "#219ebc"];
+    return {
+      label: p.parcel_name,
+      data: labels.map(d => {
+        const i = p.dates.indexOf(d);
+        return i !== -1 ? p.yield_amount[i] : null;
+      }),
+      borderColor: colorPalette[idx % colorPalette.length],
+      backgroundColor: colorPalette[idx % colorPalette.length],
+      tension: 0.3,
+      fill: false,
+      spanGaps: true,
+    };
+  });
+
+  return { labels, datasets };
+});
 
 onMounted(()=>{ initMap(); fetchDashboard(); });
+
 </script>
 
 <style>

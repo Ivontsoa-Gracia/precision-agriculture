@@ -73,10 +73,8 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">Owner 
-                <!-- <i class="bx bx-sort ml-2 text-gray-400"></i> -->
+              <th class="px-6 py-2 border-b hidden">Owner 
               </th>
-              <th class="px-6 py-2 border-b">Field ID</th>
               <th class="px-6 py-2 border-b">Parcel Name</th>
               <th class="px-6 py-2 border-b">Latitude</th>
               <th class="px-6 py-2 border-b">Longitude</th>
@@ -85,48 +83,37 @@
           </thead>
           <tbody>
             <tr v-for="field in paginatedFields" :key="field.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b">{{ field.owner }}</td>
-              <td class="px-6 py-2 border-b">
-                <NuxtLink :to="`/parcels/show/${field.fieldId}`">
-                  {{ field.fieldId }}
-                </NuxtLink>
+              <td class="px-6 py-2 border-b hidden">{{ field.owner }}</td>
 
-                </td>
-              <td class="px-6 py-2 border-b">{{ field.parcel_name }}</td>
-              <td class="px-6 py-2 border-b">{{ field.latitude }}</td>
-              <td class="px-6 py-2 border-b">{{ field.longitude }}</td>
-              <td class="p-3 border-b text-center">
-                <button 
-                  @click="toggleMenu(field.id, $event)" 
-                  class="p-2 rounded-full hover:bg-gray-200"
+              <td class="px-6 py-2 border-b">
+                <NuxtLink 
+                  :to="`/parcels/show/${field.fieldId}`"
+                  class="hover:text-[#10b481] transition-colors"
                 >
-                  <i class='bx bx-dots-vertical-rounded text-xl'></i>
-                </button>
+                  {{ field.parcel_name }}
+                </NuxtLink>
               </td>
 
-              <!-- Menu en dehors du td -->
-              <div
-                v-if="activeMenu !== null"
-                class="absolute w-40 bg-white rounded z-50 border border-gray-100 shadow-sm"
-                :style="{ top: menuPosition.top + 'px', right: '80px' }"
-              >
-                <!-- Redirection vers field-detail avec query id -->
+              <td class="px-6 py-2 border-b">{{ field.latitude.toFixed(6) }}</td>
+              <td class="px-6 py-2 border-b">{{ field.longitude.toFixed(6) }}</td>
+              <td class="p-3 border-b text-center flex justify-center gap-2">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
-                  class="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                  class="p-2 rounded-full hover:bg-[#10b481]/20"
                 >
-                  View Details
+                  <i class="bx bx-show text-[#10b481] text-xl"></i>
                 </NuxtLink>
 
                 <NuxtLink
                   :to="`/parcels/edit/${field.fieldId}`"
-                  class="block px-4 py-2 text-left w-full hover:bg-gray-100"
+                  class="p-2 rounded-full hover:bg-[#f4a261]/10"
                 >
-                  Edit
+                <i class="bx bx-edit text-[#f4a261] text-xl"></i>
                 </NuxtLink>
-              
-                <button class="block px-4 py-2 text-left w-full text-red-500 hover:bg-gray-100">Delete</button>
-              </div>
+                <button @click="" class="p-2 rounded-full hover:bg-[#e63946]/10">
+                  <i class="bx bx-trash text-[#e63946] text-xl"></i>
+                </button>
+              </td>
             </tr>
             <tr v-if="paginatedFields.length === 0">
               <td colspan="6" class="p-6 text-center text-gray-500">No fields found.</td>
@@ -268,7 +255,7 @@ onMounted(async () => {
 
         const ownerData = await ownerRes.json();
         console.log("user data", ownerData);
-        ownersMap[uuid] = `${ownerData.first_name} ${ownerData.last_name}`.trim() || "Unknown";
+        ownersMap[uuid] = `${ownerData.first_name}`.trim() || "Unknown";
       } catch (err) {
         console.error("Erreur récupération user:", err);
         ownersMap[uuid] = "Unknown";

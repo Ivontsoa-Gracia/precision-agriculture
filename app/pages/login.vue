@@ -48,7 +48,7 @@ const handleLogin = async (formData: { username: string; password: string }) => 
     }
 
     // Login réussi
-    console.log('Login réussi:', data)
+    // console.log('Login réussi:', data)
     sessionStorage.setItem('token', data.token)
     sessionStorage.setItem('uuid', data.user.uuid)
     alert('Connexion réussie !')

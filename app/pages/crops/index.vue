@@ -20,7 +20,6 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">ID</th>
               <th class="px-6 py-2 border-b">Crop Name</th>
               <th class="px-6 py-2 border-b">Variety</th>
               <th class="px-6 py-2 border-b">Created At</th>
@@ -29,7 +28,6 @@
           </thead>
           <tbody>
             <tr v-for="crop in paginatedCrops" :key="crop.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b">{{ crop.id }}</td>
               <td class="px-6 py-2 border-b">{{ crop.name }}</td>
               <td class="px-6 py-2 border-b">{{ crop.variety?.name || "-" }}</td>
               <td class="px-6 py-2 border-b">{{ new Date(crop.created_at).toLocaleDateString() }}</td>

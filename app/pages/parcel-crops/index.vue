@@ -20,7 +20,6 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b hidden">ID</th>
               <th class="px-6 py-2 border-b">Parcel</th>
               <th class="px-6 py-2 border-b">Crop</th>
               <th class="px-6 py-2 border-b">Planting Date</th>
@@ -32,7 +31,6 @@
           </thead>
           <tbody>
             <tr v-for="pc in paginatedParcelCrops" :key="pc.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b hidden">{{ pc.id }}</td>
               <td class="px-6 py-2 border-b">{{ pc.parcel_name || pc.parcel }}</td>
               <td class="px-6 py-2 border-b">{{ pc.crop?.name || '-' }}</td>
               <td class="px-6 py-2 border-b">{{ pc.planting_date }}</td>
@@ -98,6 +96,29 @@
   
   const router = useRouter()
   const parcelCrops = ref<any[]>([])
+  const parcelCache: Record<string, string> = {} // pour éviter de re-appeler plusieurs fois le même parcel
+
+  async function parcelName(id: string): Promise<string> {
+    // Retourne directement si déjà en cache
+    if (parcelCache[id]) return parcelCache[id]
+
+    const token = sessionStorage.getItem('token')
+    if (!token) return id // fallback à l'ID si pas de token
+
+    try {
+      const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, {
+        headers: { Authorization: `Token ${token}` }
+      })
+      if (!res.ok) throw new Error('Parcel API error')
+      const data = await res.json()
+      parcelCache[id] = data.parcel_name
+      return data.parcel_name
+    } catch (err) {
+      console.error('Erreur récupération parcel:', err)
+      return id // fallback à l'ID en cas d'erreur
+    }
+  }
+
 
   const statusClasses = (statusName: string) => {
   switch (statusName) {
@@ -153,6 +174,11 @@
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       parcelCrops.value = await res.json()
+      for (const crop of parcelCrops.value) {
+      if (crop.parcel) {
+        crop.parcel_name = await parcelName(crop.parcel)
+      }
+    }
     } catch (err) {
       console.error(err)
     }

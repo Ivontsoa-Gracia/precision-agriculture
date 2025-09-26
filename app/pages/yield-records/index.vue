@@ -17,22 +17,26 @@
         <thead class="bg-gray-100">
           <tr>
             <th class="px-6 py-2 border-b">Date</th>
-            <th class="px-6 py-2 border-b">Yield Amount</th>
+            <th class="px-6 py-2 border-b">Parcels</th>
             <th class="px-6 py-2 border-b">Area (ha)</th>
-            <th class="px-6 py-2 border-b">Parcel Crop</th>
-            <th class="px-6 py-2 border-b">Notes</th>
+            <th class="px-6 py-2 border-b">Crop</th>
+            <th class="px-6 py-2 border-b">Yield (kg)</th>
             <th class="px-6 py-2 border-b text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
             <td class="px-6 py-2 border-b">{{ y.date }}</td>
-            <td class="px-6 py-2 border-b">{{ y.yield_amount }}</td>
+            <td class="px-6 py-2 border-b">
+              {{ y.parcel_name || '-' }}
+              <!-- <pre>{{ JSON.stringify(y.parcelCrop, null, 2) }}</pre> -->
+
+            </td>
             <td class="px-6 py-2 border-b">{{ y.area }}</td>
             <td class="px-6 py-2 border-b">
               {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : '-' }}
             </td>
-            <td class="px-6 py-2 border-b">{{ y.notes || '-' }}</td>
+            <td class="px-6 py-2 border-b">{{ y.yield_amount }}</td>
             <td class="px-6 py-2 border-b text-center flex justify-center gap-2">
               <button @click="goToShow(y.id)" class="p-2 rounded-full hover:bg-[#10b481]/20">
                 <i class="bx bx-show text-[#10b481] text-xl"></i>
@@ -85,6 +89,29 @@ const currentPage = ref(1);
 const perPage = 4; // nombre d'enregistrements par page
 const router = useRouter();
 
+const parcelCache = {} 
+
+async function parcelName(id){
+  // Retourne directement si déjà en cache
+  if (parcelCache[id]) return parcelCache[id]
+
+  const token = sessionStorage.getItem('token')
+  if (!token) return id // fallback à l'ID si pas de token
+
+  try {
+    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, {
+      headers: { Authorization: `Token ${token}` }
+    })
+    if (!res.ok) throw new Error('Parcel API error')
+    const data = await res.json()
+    parcelCache[id] = data.parcel_name
+    return data.parcel_name
+  } catch (err) {
+    console.error('Erreur récupération parcel:', err)
+    return id // fallback à l'ID en cas d'erreur
+  }
+}
+
 async function fetchParcelCrop(id, token) {
   try {
     const res = await axios.get(`https://mvp-dvws.onrender.com/api/parcel-crops/${id}/`, {
@@ -114,6 +141,7 @@ async function fetchYields() {
       res.data.map(async y => {
         if (y.parcelCrop) {
           y.parcelCrop = await fetchParcelCrop(y.parcelCrop, token);
+          y.parcel_name = await parcelName(y.parcelCrop.parcel, token)
         }
         return y;
       })

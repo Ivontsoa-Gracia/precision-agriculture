@@ -14,9 +14,15 @@
       <!-- Yield Info Grid -->
       <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DetailItem label="Date" :value="yieldRecord.date" />
-        <DetailItem label="Yield Amount" :value="yieldRecord.yield_amount" />
-        <DetailItem label="Area" :value="yieldRecord.area" />
-        <DetailItem label="Parcel Crop" :value="yieldRecord.parcel_crop_name || '-'" />
+        <DetailItem label="Yield (kg)" :value="yieldRecord.yield_amount" />
+        <DetailItem label="Area (ha)" :value="yieldRecord.area" />
+        <DetailItem 
+          label="Parcel Crop" 
+          :value="parcelCropData && parcelData 
+                  ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}` 
+                  : '-'" 
+        />
+
         <div class="col-span-1 md:col-span-2 flex flex-col gap-1">
           <span class="font-semibold text-[#10b481]">Notes</span>
           <p class="mt-1 text-gray-700 bg-gray-50 p-4 rounded-md border">{{ yieldRecord.notes }}</p>
@@ -50,6 +56,9 @@ const route = useRoute();
 const router = useRouter();
 const yieldRecord = ref(null);
 
+const parcelCropData = ref(null);
+const parcelData = ref(null); // pour stocker le parcel complet
+
 async function fetchYield() {
   const token = sessionStorage.getItem('token');
   if (!token) {
@@ -58,15 +67,41 @@ async function fetchYield() {
   }
 
   try {
+    // 1️⃣ Récupérer le YieldRecord
     const res = await axios.get(
       `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     yieldRecord.value = res.data;
+
+    // 2️⃣ Récupérer le parcelCrop complet
+    if (yieldRecord.value.parcelCrop) {
+      const resParcelCrop = await axios.get(
+        `https://mvp-dvws.onrender.com/api/parcel-crops/${yieldRecord.value.parcelCrop}/`,
+        { headers: { Authorization: `Token ${token}` } }
+      );
+      parcelCropData.value = resParcelCrop.data;
+
+      // 3️⃣ Récupérer le parcel complet pour avoir le parcel_name
+      if (parcelCropData.value.parcel) {
+        const resParcel = await axios.get(
+          `https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.value.parcel}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        );
+        parcelData.value = resParcel.data; // { parcel_name, points, ... }
+      }
+    }
+
+    console.log("YieldRecord:", yieldRecord.value);
+    console.log("ParcelCropData:", parcelCropData.value);
+    console.log("ParcelData:", parcelData.value);
+
   } catch (err) {
     console.error(err);
   }
 }
+
+
 
 function goToEdit() {
   router.push(`/yield-records/edit/${route.params.id}`);

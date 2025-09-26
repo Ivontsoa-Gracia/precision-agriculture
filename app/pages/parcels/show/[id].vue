@@ -32,10 +32,6 @@
               {{ ownerData.first_name || "N/A" }} {{ ownerData.last_name || "N/A" }}
             </p>
             <p>
-              <span class="font-medium">Field ID:</span>
-              {{ parcelData.uuid || "N/A" }}
-            </p>
-            <p>
               <span class="font-medium">Parcel name:</span>
               {{ parcelData.parcel_name || "N/A" }}
             </p>
@@ -354,6 +350,8 @@ const parcelFullData = reactive({});
 const parcelData = reactive({});
 const ownerData = reactive({});
 
+console.log("parcel data", parcelData)
+
 const tasks = ref([]);
 const cropsInfo = ref([]); 
 
@@ -496,14 +494,7 @@ function updateYieldEvolutionChart() {
 
 watch(() => parcelFullData.yield_records, updateYieldEvolutionChart, { immediate: true });
 
-const harvestHistory = ref([
-  { id: 1, date: "2025-01-12", quantity: 120, observation: "Bonne saison", trend: "up" },
-  { id: 2, date: "2025-02-20", quantity: 95, observation: "Sécheresse", trend: "down" },
-  { id: 3, date: "2025-03-15", quantity: 110, observation: "Moyen", trend: "neutral" },
-  { id: 4, date: "2025-04-10", quantity: 130, observation: "Excellente récolte", trend: "up" },
-  { id: 5, date: "2025-05-08", quantity: 100, observation: "Correct", trend: "neutral" },
-  { id: 6, date: "2025-06-01", quantity: 85, observation: "Faible rendement", trend: "down" },
-])
+const harvestHistory = ref([])
 
 
 const climateData = reactive({

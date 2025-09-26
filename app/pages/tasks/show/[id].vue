@@ -15,7 +15,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DetailItem label="Task Name" :value="task.name"/>
         <DetailItem label="Due Date" :value="task.due_date"/>
-        <DetailItem label="Parcel Crop" :value="task.parcelCrop || '-'"/>
+        <DetailItem label="Parcel Crop" :value="task.parcelCropFull || '-'"/>
         <DetailItem label="Created At" :value="task.created_at"/>
         <DetailItem label="Updated At" :value="task.updated_at"/>
         <DetailItem label="Completed At" :value="task.completed_at || '-'"/>
@@ -95,6 +95,33 @@ onMounted(async () => {
     // Get task details
     const resTask = await fetch(`https://mvp-dvws.onrender.com/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
     task.value = await resTask.json()
+
+    // 2️⃣ Récupérer le parcelCrop complet + parcel si existe
+    if (task.value.parcelCrop) {
+      try {
+        // ParcelCrop
+        const resParcelCrop = await fetch(
+          `https://mvp-dvws.onrender.com/api/parcel-crops/${task.value.parcelCrop}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        )
+        const parcelCropData = await resParcelCrop.json()
+
+        // Parcel
+        const resParcel = await fetch(
+          `https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.parcel}/`,
+          { headers: { Authorization: `Token ${token}` } }
+        )
+        const parcelData = await resParcel.json()
+
+        // Stocker la combinaison parcel name - crop name
+        task.value.parcelCropFull = `${parcelData.parcel_name} - ${parcelCropData.crop.name}`
+      } catch (err) {
+        console.error("Parcel/ParcelCrop fetch error:", err)
+        task.value.parcelCropFull = '-'
+      }
+    } else {
+      task.value.parcelCropFull = '-'
+    }
 
     // Get priority name
     if (task.value.priority) {

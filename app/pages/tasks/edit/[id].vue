@@ -36,9 +36,10 @@
             <select v-model="form.parcelCrop"
               class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]">
               <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
-                {{ crop.name }}
+                {{ crop.label }}
               </option>
             </select>
+
           </div>
   
           <!-- Priority -->
@@ -96,7 +97,7 @@
   onMounted(async () => {
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
-  
+
     try {
       // Load task
       const res = await fetch(`https://mvp-dvws.onrender.com/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
@@ -109,21 +110,36 @@
         priority: data.priority,
         status: data.status
       }
-  
+
       // Load dynamic options
       const [priRes, staRes, cropRes] = await Promise.all([
         fetch('https://mvp-dvws.onrender.com/api/task-priority/', { headers: { Authorization: `Token ${token}` } }),
         fetch('https://mvp-dvws.onrender.com/api/task-status/', { headers: { Authorization: `Token ${token}` } }),
         fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', { headers: { Authorization: `Token ${token}` } })
       ])
+
       priorities.value = await priRes.json()
       statuses.value = await staRes.json()
-      parcelCrops.value = await cropRes.json()
+
+      const parcelCropsRaw = await cropRes.json()
+      // Pour chaque parcelCrop, récupérer le parcel name et construire un label
+      parcelCrops.value = await Promise.all(parcelCropsRaw.map(async (pc: any) => {
+        try {
+          const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${pc.parcel}/`, { headers: { Authorization: `Token ${token}` } })
+          const parcelData = await resParcel.json()
+          return { ...pc, label: `${parcelData.parcel_name} - ${pc.crop.name}` }
+        } catch (err) {
+          console.error("Parcel fetch error:", err)
+          return { ...pc, label: pc.crop.name } // fallback
+        }
+      }))
+
     } catch (err) {
       console.error(err)
       alert("Failed to load data")
     }
   })
+
   
   const submitTask = async () => {
     const token = sessionStorage.getItem('token')

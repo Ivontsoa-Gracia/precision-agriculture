@@ -24,7 +24,7 @@
           class="flex items-center gap-3 text-gray-800 hover:text-[#10b481] transition-colors duration-300 font-medium text-sm tracking-wide"
         >
           <i class='bx bx-brain bx-sm text-gray-700'></i>
-          <span class="hidden sm:inline">Assistant IA</span>
+          <span class="hidden sm:inline">Agronomist IA</span>
         </NuxtLink>
 
         <NuxtLink 

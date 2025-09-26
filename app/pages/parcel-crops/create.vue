@@ -55,9 +55,19 @@
         <div class="flex gap-4">
           <div class="flex-1 flex flex-col">
             <label class="block font-medium">Area (ha) *</label>
-            <input v-model="form.area" type="number" step="0.01" required placeholder="Enter area" class="w-full border p-2 rounded focus:ring-[#212121]" />
+            <input 
+              v-model.number="form.area" 
+              type="number" 
+              step="0.01" 
+              :max="calculatedArea" 
+              required 
+              placeholder="Enter area" 
+              class="w-full border p-2 rounded focus:ring-[#212121]" 
+              @input="onAreaInput"
+            />
+            <small class="text-gray-500 text-sm">Max: {{ calculatedArea }} ha</small>
           </div>
-  
+          
           <div class="flex-1 flex flex-col">
             <label class="block font-medium">Status *</label>
             <select v-model="form.status_id" required class="w-full border p-2 rounded focus:ring-[#212121]">
@@ -80,7 +90,10 @@
   definePageMeta({ layout: 'dashboard' })
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
-  
+  import { watch } from 'vue'
+  import * as turf from '@turf/turf'
+
+
   const router = useRouter()
   const form = ref({
     parcel: '',
@@ -95,6 +108,39 @@
   const crops = ref<any[]>([])
   const statuses = ref<any[]>([])
   
+  const calculatedArea = ref<number>(0) // <-- ici le ref global
+
+  function calculateParcelArea(points: { lat: number; lng: number }[]) {
+    if (points.length < 3) return 0
+    const coords = points.map(p => [p.lng, p.lat])
+    coords.push([points[0].lng, points[0].lat]) // fermer le polygone
+    const polygon = turf.polygon([coords])
+    const areaM2 = turf.area(polygon)
+    return areaM2 / 10000 // hectares
+  }
+
+  // watch sur le parcel choisi
+  watch(() => form.value.parcel, (parcelId) => {
+    const selectedParcel = parcels.value.find(p => p.uuid === parcelId)
+    if (selectedParcel?.points?.length) {
+      const area = calculateParcelArea(selectedParcel.points)
+      calculatedArea.value = Number(area.toFixed(2))
+      form.value.area = calculatedArea.value
+    } else {
+      calculatedArea.value = 0
+      form.value.area = null
+    }
+  })
+
+  // empêcher la saisie supérieure à l'aire calculée
+  const onAreaInput = () => {
+    if (form.value.area > calculatedArea.value) {
+      form.value.area = calculatedArea.value
+    } else if (form.value.area < 0) {
+      form.value.area = 0
+    }
+  }
+
   onMounted(async () => {
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
@@ -111,7 +157,7 @@
       // Load status-crops
       const resStatus = await fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } })
       statuses.value = await resStatus.json()
-      console.log("status", statuses)
+      // console.log("status", statuses)
   
     } catch (err) {
       console.error(err)
@@ -131,11 +177,11 @@
       })
   
       if (!res.ok) throw new Error(`API error: ${res.status}`)
-      alert("✅ Parcel Crop created successfully!")
+      // alert("✅ Parcel Crop created successfully!")
       router.push('/parcel-crops')
     } catch (err) {
       console.error(err)
-      alert("❌ Failed to create parcel crop")
+      // alert("❌ Failed to create parcel crop")
     }
   }
   </script>
