@@ -30,10 +30,10 @@
           <span class="font-semibold text-[#212121]">Priority</span>
           <span
             :class="[
-              'px-4 py-1 rounded-full font-semibold text-white w-max text-center animate-pulse',
-              priorityName === 'Low' ? 'bg-green-500' :
-              priorityName === 'Medium' ? 'bg-[#f4a261]' :
-              priorityName === 'High' ? 'bg-red-500' : 'bg-gray-400'
+              'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+              priorityName === 'Low' ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50' :
+              priorityName === 'Medium' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
+              priorityName === 'High' ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50' : 'bg-gray-400'
             ]"
           >
             {{ priorityName || '-' }}
@@ -45,11 +45,11 @@
           <span class="font-semibold text-[#212121]">Status</span>
           <span
             :class="[
-              'px-4 py-1 rounded-full font-semibold text-transparent bg-clip-text w-max text-center animate-gradient',
-              statusName === 'Pending' ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-              statusName === 'In Progress' ? 'bg-[#f4a261]' :
-              statusName === 'Done' ? 'bg-gradient-to-r from-green-400 to-green-600' :
-              statusName === 'Cancelled' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gray-400'
+              'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+              statusName === 'Pending' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
+              statusName === 'In Progress' ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50' :
+              statusName === 'Done' ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50' :
+              statusName === 'Cancelled' ? 'bg-gary-10 text-gary border-gary-500' : 'bg-gray-100'
             ]"
           >
             {{ statusName || '-' }}

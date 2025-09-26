@@ -35,8 +35,38 @@
               <td class="px-6 py-2 border-b">{{ task.name }}</td>
               <td class="px-6 py-2 border-b">{{ new Date(task.due_date).toLocaleDateString() }}</td>
               <td class="px-6 py-2 border-b">{{ task.parcelCrop || '-' }}</td>
-              <td class="px-6 py-2 border-b">{{ task.priority || '-' }}</td>
-              <td class="px-6 py-2 border-b">{{ task.status || '-' }}</td>
+              <td class="px-6 py-2 border-b">
+                <span
+                  v-if="priorities[task.priority]"
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-medium border',
+                    priorities[task.priority] === 'High' ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50' :
+                    priorities[task.priority] === 'Medium' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
+                    'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+                  ]"
+                >
+                  {{ priorities[task.priority] }}
+                </span>
+                <span v-else>-</span>
+              </td>
+
+              <td class="px-6 py-2 border-b">
+                <span
+                  v-if="statuses[task.status]"
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-medium border',
+                    statuses[task.status] === 'Pending' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
+                    statuses[task.status] === 'In Progress' ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50' :
+                    statuses[task.status] === 'Done' ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50' :
+                    statuses[task.status] === 'Canceled' ? 'bg-gray-100 text-gray-600 border-gray-500' :
+                    'bg-gray-200 text-gray-700'
+                  ]"
+                >
+                  {{ statuses[task.status] }}
+                </span>
+                <span v-else>-</span>
+              </td>
+
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <button @click="showTask(task.id)" class="p-2 rounded-full hover:bg-[#10b481]/20">
                   <i class="bx bx-show text-[#10b481] text-xl"></i>
@@ -103,7 +133,37 @@
   const itemsPerPage = 8
   const currentPage = ref(1)
   const paginatedTasks = ref<any[]>([])
-  
+
+  const priorities = ref<Record<number, string>>({})
+  const statuses = ref<Record<number, string>>({})
+
+  const loadLookups = async () => {
+    const token = sessionStorage.getItem('token')
+    if (!token) return
+
+    try {
+      const [priorityRes, statusRes] = await Promise.all([
+        fetch('https://mvp-dvws.onrender.com/api/task-priority/', {
+          headers: { Authorization: `Token ${token}` }
+        }),
+        fetch('https://mvp-dvws.onrender.com/api/task-status/', {
+          headers: { Authorization: `Token ${token}` }
+        })
+      ])
+
+      if (!priorityRes.ok || !statusRes.ok) throw new Error("Failed to load lookups")
+
+      const priorityData = await priorityRes.json()
+      const statusData = await statusRes.json()
+
+      // Transformer en dictionnaire {id: name}
+      priorities.value = Object.fromEntries(priorityData.map((p: any) => [p.id, p.name]))
+      statuses.value = Object.fromEntries(statusData.map((s: any) => [s.id, s.name]))
+    } catch (err) {
+      console.error("Lookup load error:", err)
+    }
+  }
+
   const totalPages = computed(() => Math.ceil(tasks.value.length / itemsPerPage))
   const visiblePages = computed(() => {
     const pages = []
@@ -129,6 +189,7 @@
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       tasks.value = await res.json()
+      await loadLookups()
     } catch (err) {
       console.error("Failed to load tasks:", err)
     }

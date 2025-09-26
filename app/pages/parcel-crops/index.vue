@@ -20,7 +20,7 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">ID</th>
+              <th class="px-6 py-2 border-b hidden">ID</th>
               <th class="px-6 py-2 border-b">Parcel</th>
               <th class="px-6 py-2 border-b">Crop</th>
               <th class="px-6 py-2 border-b">Planting Date</th>
@@ -32,13 +32,25 @@
           </thead>
           <tbody>
             <tr v-for="pc in paginatedParcelCrops" :key="pc.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b">{{ pc.id }}</td>
+              <td class="px-6 py-2 border-b hidden">{{ pc.id }}</td>
               <td class="px-6 py-2 border-b">{{ pc.parcel_name || pc.parcel }}</td>
               <td class="px-6 py-2 border-b">{{ pc.crop?.name || '-' }}</td>
               <td class="px-6 py-2 border-b">{{ pc.planting_date }}</td>
               <td class="px-6 py-2 border-b">{{ pc.harvest_date || '-' }}</td>
               <td class="px-6 py-2 border-b">{{ pc.area }}</td>
-              <td class="px-6 py-2 border-b">{{ pc.status?.name || '-' }}</td>
+              <td class="px-6 py-2 border-b">
+                <span
+                  v-if="pc.status?.name"
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-semibold',
+                    statusClasses(pc.status.name)
+                  ]"
+                >
+                  {{ pc.status.name }}
+                </span>
+                <span v-else>-</span>
+              </td>
+
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <button @click="showParcelCrop(pc.id)" class="p-2 rounded-full hover:bg-[#10b481]/20">
                   <i class="bx bx-show text-[#10b481] text-xl"></i>
@@ -86,6 +98,34 @@
   
   const router = useRouter()
   const parcelCrops = ref<any[]>([])
+
+  const statusClasses = (statusName: string) => {
+  switch (statusName) {
+    case 'Planned':
+      return 'bg-[#219ebc]/10 text-[#219ebc] border border-[#219ebc]/50' // bleu (info)
+    case 'Planted':
+      return 'bg-[#10b481]/10 text-[#10b481] border border-[#10b481]/50' // vert succès
+    case 'Germinated':
+      return 'bg-[#5fd4a2]/10 text-[#0c9069] border border-[#0c9069]/40' // vert clair
+    case 'Growing':
+      return 'bg-[#c99383]/10 text-[#c99383] border border-[#c99383]/50' // saumon
+    case 'Flowering':
+      return 'bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]/50' // orange
+    case 'Fruiting':
+      return 'bg-[#6d4c41]/10 text-[#6d4c41] border border-[#6d4c41]/40' // brun
+    case 'Mature':
+      return 'bg-[#10b481]/10 text-[#0c9069] border border-[#10b481]/40' // vert foncé
+    case 'Harvested':
+      return 'bg-[#222831]/10 text-[#222831] border border-[#222831]/40' // neutre foncé
+    case 'Post-Harvest':
+      return 'bg-[#7a7a7a]/10 text-[#7a7a7a] border border-[#7a7a7a]/40' // gris neutre
+    case 'Failed':
+      return 'bg-[#e63946]/10 text-[#e63946] border border-[#e63946]/50' // rouge
+    default:
+      return 'bg-gray-100 text-gray-600 border border-gray-300'
+  }
+}
+
   
   // Pagination
   const itemsPerPage = 4

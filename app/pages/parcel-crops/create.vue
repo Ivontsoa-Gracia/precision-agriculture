@@ -111,6 +111,7 @@
       // Load status-crops
       const resStatus = await fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } })
       statuses.value = await resStatus.json()
+      console.log("status", statuses)
   
     } catch (err) {
       console.error(err)

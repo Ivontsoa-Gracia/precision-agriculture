@@ -6,15 +6,14 @@
         <h2 class="font-bold text-lg">Parcel Full Data</h2>
         <pre>{{ JSON.stringify(parcelFullData, null, 2) }}</pre>
       </div> -->
-      <!-- Back button -->
 
       <div class="fixed bottom-6 right-6 z-50">
         <NuxtLink
           :to="`/assistant/p/${parcelData.uuid}`"
           class="px-6 py-3 bg-[#212121] rounded-full shadow hover:bg-[#000000] flex items-center gap-2"
         >
-          <i class="bx bx-brain text-xl bg-gradient-to-r from-[#10b481] to-[#6ef1d3] bg-clip-text text-transparent"></i>
-          <span class="bg-gradient-to-r from-[#10b481] to-[#6ef1d3] bg-clip-text text-transparent font-bold">
+          <i class="bx bx-brain text-xl bg-gradient-to-r from-[#10b481] to-[#219ebc] bg-clip-text text-transparent"></i>
+          <span class="bg-gradient-to-r from-[#10b481] to-[#219ebc] bg-clip-text text-transparent font-bold">
             Agronomist IA
           </span>
         </NuxtLink>
@@ -131,80 +130,95 @@
     <div class="flex flex-col space-y-6">
       <!-- Top: Tasks + Performance Diagram -->
       <div class="flex gap-6">
-        <!-- Tasks -->
-        <div class="bg-white rounded-2xl shadow p-6 w-2/3 space-y-4">
-          <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold text-gray-800">Tasks to Perform</h3>
-            <NuxtLink 
-              to="/tasks/create" 
-              class="flex items-center px-3 py-2 bg-[#10b481] text-white rounded-lg shadow hover:bg-[#0da06a] transition"
-            >
-              <i class="bx bx-plus mr-2"></i> Add Task
-            </NuxtLink>
-          </div>
-
-          <div class="space-y-3">
-            <div
-              v-for="task in tasks"
-              :key="task.id"
-              class="flex justify-between items-center p-4 rounded-xl border transition-all duration-200 shadow-sm hover:shadow-md hover:bg-gray-50 cursor-pointer"
-              :class="{
-                'border-l-4 border-[#219ebc]': task.priority === 'Low',
-                'border-l-4 border-[#10b481]': task.priority === 'Medium',
-                'border-l-4 border-[#f4a261]': task.priority === 'High',
-              }"
-            >
-              <!-- Task info -->
-              <div class="flex flex-col">
-                <p class="font-semibold text-gray-800 text-lg">{{ task.name }}</p>
-                <p class="text-gray-500 text-sm capitalize">{{ task.priority }}</p>
+        <div class="bg-white rounded-2xl shadow-lg p-6 w-2/3 space-y-4">
+            <!-- Header -->
+            <div class="flex justify-between items-start">
+              <!-- Titre + See All -->
+              <div>
+                <h3 class="text-xl font-bold text-gray-800">Tasks to Perform</h3>
+                <NuxtLink 
+                  to="/tasks"
+                  class="text-sm font-medium text-gray-600 hover:text-black hover:underline mt-4"
+                >
+                  See All
+                </NuxtLink>
               </div>
 
-              <!-- Status badge -->
-              <span
-                :class="[
-                  'text-sm font-semibold px-3 py-1 rounded-full',
-                  task.status === 'Pending' ? 'bg-[#f4c430]/70 text-[#212121]' :   
-                  task.status === 'In Progress' ? 'bg-[#219ebc]/70 text-white' :  
-                  task.status === 'Done' ? 'bg-[#10b481]/70 text-white' :      
-                  task.status === 'Cancelled' ? 'bg-[#c99383]/70 text-white' :      
-                  'bg-gray-400 text-white'
-                ]"
-              >
-                {{ task.status }}
-              </span>
-
-              <!-- Menu actions -->
-              <div class="relative">
-                <i
-                  class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-500 hover:text-gray-700"
-                  @click="task.showMenu = !task.showMenu"
-                ></i>
-
-                <div
-                  v-if="task.showMenu"
-                  class="absolute right-0 top-full mt-2 w-36 bg-white rounded-xl shadow-lg z-50 overflow-hidden"
+              <!-- Bouton Add Task -->
+              <div>
+                <NuxtLink 
+                  to="/tasks/create" 
+                  class="flex items-center px-4 py-2 bg-[#10b481] text-white rounded-lg shadow hover:bg-[#0da06a] transition"
                 >
-                  <NuxtLink
-                    :to="`/tasks/edit/${task.id}`"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                  >
-                    Edit
-                  </NuxtLink>
+                  <i class="bx bx-plus mr-2"></i> Add Task
+                </NuxtLink>
+              </div>
+            </div>
 
-                  <NuxtLink
-                    :to="`/tasks/show/${task.id}`"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+
+            <!-- Task list -->
+            <div class="space-y-3">
+              <div
+                v-for="task in nearestTasks"
+                :key="task.id"
+                class="flex justify-between items-center p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
+                :class="{
+                  'border-l-4 bg-gradient-to-r from-[#10b4811a] to-white border-[#10b481]': task.priority === 'Low',
+                  'border-l-4 bg-gradient-to-r from-[#f4a2611a] to-white border-[#f4a261]': task.priority === 'Medium',
+                  'border-l-4 bg-gradient-to-r from-[#e639461a] to-white border-[#e63946]': task.priority === 'High',
+                }"
+              >
+                <!-- Task info -->
+                <div class="flex flex-col">
+                  <p class="font-semibold text-gray-800 text-lg">{{ task.name }}</p>
+                  <p class="text-gray-500 text-sm">Priority: <span class="capitalize">{{ task.priority }}</span></p>
+                  <p class="text-gray-500 text-sm">Due: {{ formatDate(task.due_date) }}</p>
+                </div>
+
+                <!-- Status badge -->
+                <span
+                  :class="[ 
+                    'px-3 py-1 rounded-full text-xs font-medium border',
+                    task.status === 'Pending' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :   
+                    task.status === 'In Progress' ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50' :  
+                    task.status === 'Done' ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50' :      
+                    task.status === 'Cancelled' ? 'bg-gray-50 text-gray-700 border-gray-300' :      
+                    'bg-gray-100 text-gray-600 border-gray-300'
+                  ]"
+                >
+                  {{ task.status }}
+                </span>
+
+                <!-- Menu actions -->
+                <div class="relative">
+                  <i
+                    class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-500 hover:text-gray-700"
+                    @click="task.showMenu = !task.showMenu"
+                  ></i>
+
+                  <div
+                    v-if="task.showMenu"
+                    class="absolute right-0 top-full mt-2 w-36 bg-white rounded-xl shadow-lg z-50 overflow-hidden"
                   >
-                    Show
-                  </NuxtLink>
+                    <NuxtLink
+                      :to="`/tasks/edit/${task.id}`"
+                      class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                    >
+                      Edit
+                    </NuxtLink>
+
+                    <NuxtLink
+                      :to="`/tasks/show/${task.id}`"
+                      class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                    >
+                      Show
+                    </NuxtLink>
+                  </div>
                 </div>
               </div>
-
             </div>
           </div>
 
-        </div>
 
         <!-- Performance Graph -->
         <div class="bg-white rounded-2xl shadow p-6 w-1/3 flex flex-col">
@@ -221,7 +235,7 @@
 
           <!-- Boutons -->
           <div class="flex space-x-3">
-            <button class="flex items-center px-3 py-2 bg-[#e63946] text-white rounded hover:bg-[#e63946]/80">
+            <button class="flex items-center px-3 py-2 bg-[#e63946] text-white rounded hover:bg-[#e63946]/80 hidden">
               <i class="bx bx-trash mr-2"></i> Effacer
             </button>
             <button 
@@ -361,6 +375,24 @@ function updateTasks() {
     });
   }
 }
+
+// Formater joliment la date
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  })
+}
+
+// Garder seulement les 3 plus proches, exclure canceled et done
+const nearestTasks = computed(() => {
+  return [...tasks.value]
+    .filter(task => task.status !== "Cancelled" && task.status !== "Done")
+    .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
+    .slice(0, 3)
+})
+
 
 let taskChart = null;
 
