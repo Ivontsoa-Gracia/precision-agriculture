@@ -35,7 +35,7 @@
         class="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
         <h1 class="text-4xl md:text-5xl font-extrabold text-[#222831] text-center animate-fade-in">
-          👩‍🌾 I'm <span class="text-[#10b481]">Sesile</span>, your Agronomist Assistant. <br/>Ask me your farming questions!
+         I'm <span class="text-[#10b481]">Sesile</span>, your Agronomist Assistant. <br/>Ask me your farming questions!
         </h1>
       </div>
   
@@ -88,7 +88,7 @@
     if (showWelcome.value) {
       messages.value.push({
         sender: 'ai',
-        text: "👩‍🌾 I’m **Sesile**, your Agronomist Assistant. Ask me your farming questions!"
+        text: "I’m **Sesile**, your Agronomist Assistant. Ask me your farming questions!"
       })
       showWelcome.value = false
     }

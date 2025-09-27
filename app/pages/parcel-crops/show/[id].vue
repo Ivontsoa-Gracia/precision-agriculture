@@ -22,7 +22,7 @@
             {{ forecastData.predicted_yield.toFixed(2) }} kg
       </p>
     </div>
-    <div v-else class="text-gray-400 italic">Loading forecast...</div>
+    <!-- <div v-else class="text-gray-400 italic">Loading forecast...</div> -->
 
     <!-- Parcel Crop Details Card -->
     <div class="w-full max-w-3xl bg-white backdrop-blur-md rounded-3xl shadow-2xl p-8">
@@ -105,7 +105,7 @@ onMounted(async () => {
 
   } catch (err) {
     console.error(err)
-    alert("❌ Failed to load data")
+    // alert("❌ Failed to load data")
   }
 })
 </script>

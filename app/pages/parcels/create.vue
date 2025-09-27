@@ -103,12 +103,40 @@
       <div id="map" class="h-full w-full rounded-lg"></div>
     </div>
   </div>
+
+  <div v-if="isLoading" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl">
+      <div class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"></div>
+  </div>
+  <transition name="fade">
+    <div 
+      v-if="notification.visible" 
+      :class="['fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold', 
+                notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500']">
+      {{ notification.message }}
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 
 definePageMeta({ layout: 'dashboard' })
+
+const isLoading = ref(false)
+
+// Notification state
+const notification = ref({
+  visible: false,
+  message: '',
+  type: 'success' // 'success' | 'error'
+})
+
+const showNotification = (message: string, type: 'success' | 'error' = 'success', duration = 3000) => {
+  notification.value.message = message
+  notification.value.type = type
+  notification.value.visible = true
+  setTimeout(() => notification.value.visible = false, duration)
+}
 
 const mode = ref<'polygon' | 'point'>('polygon')
 const activeBtn = 'bg-[#10b481] text-white px-4 py-2 rounded shadow'
@@ -230,6 +258,7 @@ async function searchLocation() {
 
 
 async function submitForm() {
+  isLoading.value = true 
   try {
     const token = sessionStorage.getItem("token")
     if (!token) {
@@ -274,9 +303,12 @@ async function submitForm() {
 
     console.log("Parcel créé:", data)
     // alert("Parcelle enregistrée avec succès !")
+    showNotification('Parcel saved successfully!', 'success')
   } catch (err) {
     console.error("Erreur réseau:", err)
-    // alert("Erreur réseau")
+    showNotification('Network error, please check your server', 'error')
+  } finally {
+    isLoading.value = false 
   }
 }
 

@@ -33,7 +33,7 @@
             <label class="block font-medium">Parcel Crop</label>
             <select v-model="form.parcelCrop" class="w-full border p-2 rounded focus:ring-[#212121]">
               <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
-                {{ crop.crop?.name }} ({{ crop.crop?.variety?.name }})
+                {{ crop.fullName }}
               </option>
             </select>
           </div>
@@ -65,10 +65,21 @@
         >
           Create Task
         </button>
-
-  
       </form>
     </div>
+
+    <div v-if="isLoading" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl">
+        <div class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"></div>
+    </div>
+      <!-- Notification -->
+    <transition name="fade">
+      <div 
+        v-if="notification.visible" 
+        :class="['fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold', 
+                 notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500']">
+        {{ notification.message }}
+      </div>
+    </transition>
   </template>
 
 <script setup lang="ts">
@@ -81,6 +92,22 @@ import { useRouter } from 'vue-router'
 
 // Router
 const router = useRouter()
+
+const isLoading = ref(false)
+
+// Notification state
+const notification = ref({
+  visible: false,
+  message: '',
+  type: 'success' // 'success' | 'error'
+})
+
+const showNotification = (message: string, type: 'success' | 'error' = 'success', duration = 3000) => {
+  notification.value.message = message
+  notification.value.type = type
+  notification.value.visible = true
+  setTimeout(() => notification.value.visible = false, duration)
+}
 
 // Champs du formulaire
 const form = ref({
@@ -120,11 +147,29 @@ onMounted(async () => {
     })
     statuses.value = await staRes.json()
 
-    // Charger les parcelCrops
     const cropRes = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
       headers: { Authorization: `Token ${token}` }
     })
-    parcelCrops.value = await cropRes.json()
+    const cropsData = await cropRes.json() // array de parcelCrops
+
+    // Pour chaque parcelCrop, récupérer le parcel correspondant
+    const enrichedCrops = await Promise.all(cropsData.map(async (pc: any) => {
+      try {
+        const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${pc.parcel}/`, {
+          headers: { Authorization: `Token ${token}` }
+        })
+        const parcelData = await resParcel.json()
+        return {
+          ...pc,
+          fullName: `${parcelData.parcel_name} - ${pc.crop.name}` // nouveau champ
+        }
+      } catch (err) {
+        console.error("Erreur fetch parcel:", err)
+        return { ...pc, fullName: `${pc.crop.name}` } // fallback si erreur
+      }
+    }))
+
+    parcelCrops.value = enrichedCrops
   } catch (err) {
     console.error("Erreur lors du chargement des options:", err)
   }
@@ -137,7 +182,7 @@ const submitTask = async () => {
     router.push('/login')
     return
   }
-
+  isLoading.value = true 
   try {
     const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
       method: 'POST',
@@ -154,11 +199,13 @@ const submitTask = async () => {
 
     const data = await res.json()
     console.log("Tâche créée avec succès:", data)
-    alert("✅ Tâche créée avec succès !")
+    showNotification('Task saved successfully!', 'success')
     router.push('/tasks') // redirection après création
   } catch (err) {
     console.error("Erreur création tâche:", err)
-    alert("❌ Impossible de créer la tâche")
+    showNotification('Network error, please check your server', 'error')
+  } finally {
+    isLoading.value = false 
   }
 }
 </script>

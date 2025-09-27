@@ -59,9 +59,11 @@
 
           <div class="flex items-center justify-between mb-5">
             <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
-              <i class='bx bx-map text-[#10b481] text-xl'></i>
-              Parcels
+              <i class='bx bx-fullscreen text-[#10b481] text-xl'></i>
+              Zoom on Parcel
             </h3>
+
+
             <span class="text-sm text-gray-500">{{ totalParcels }} parcel(s)</span>
           </div>
 
@@ -198,7 +200,10 @@
 
         <!-- Accordéon des parcelles -->
         <div class="col-span-1 bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition flex-1 min-w-[200px]">
-          <h3 class="font-bold text-lg mb-4 text-gray-900">Parcels</h3>
+          <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2 mb-4">
+            <i class='bx bx-bar-chart text-[#10b481] text-xl'></i>
+            Parcels Analytics
+          </h3>
 
           <div v-for="(parcel, key) in analyticsData" :key="key" class="bg-white rounded-md shadow-md mb-4 overflow-hidden transition hover:shadow-xl">
             <!-- Bouton Accordéon -->
@@ -260,7 +265,6 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import Chart from "chart.js/auto";
 import { nextTick } from "vue";
-
 
 definePageMeta({ layout: "dashboard" });
 
@@ -354,24 +358,128 @@ async function fetchDashboard() {
   }
 }
 
+function addLegend(L: any) {
+  const legendControl = L.control({ position: "topright" });
+
+  legendControl.onAdd = function () {
+    const container = L.DomUtil.create("div", "leaflet-bar legend-toggle");
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.alignItems = "flex-end"; // align all to the right
+    container.style.gap = "4px";
+
+    // Button with Boxicons icon
+    const button = L.DomUtil.create("a", "", container);
+    button.href = "#";
+    button.style.textAlign = "center";
+    button.style.width = "45px";
+    button.style.height = "45px";
+    button.style.cursor = "pointer";
+    button.style.display = "flex";
+    button.style.alignItems = "center";
+    button.style.justifyContent = "center";
+    button.style.background = "white";
+    button.style.borderRadius = "3px";
+    button.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+
+    button.innerHTML = '<i class="bx bx-info-circle text-gray-400 text-2xl"></i>';
+
+    // Legend div (hidden by default)
+    const legendDiv = L.DomUtil.create("div", "legend-content", container);
+    legendDiv.style.display = "none";
+    legendDiv.style.background = "white";
+    legendDiv.style.padding = "10px 14px";
+    legendDiv.style.borderRadius = "4px";
+    legendDiv.style.boxShadow = "0 2px 12px rgba(0,0,0,0.3)";
+    legendDiv.style.fontSize = "13px";
+    legendDiv.style.flexDirection = "column"; // vertical stack
+    legendDiv.style.display = "flex"; 
+    legendDiv.style.gap = "6px";
+    legendDiv.style.minWidth = "140px";
+    legendDiv.style.alignItems = "flex-start"; // text left inside legend
+
+    legendDiv.innerHTML = `
+      <span style="display:flex; align-items:center;">
+        <i style="background:#10b481; width:12px; height:12px; display:inline-block; margin-right:6px; border-radius:100%;"></i> Parcel
+      </span>
+      <span style="display:flex; align-items:center;">
+        <i style="background:#e63946; width:12px; height:12px; display:inline-block; margin-right:6px; border-radius:100%;"></i> Fire
+      </span>
+    `;
+
+    // Toggle legend on button click
+    L.DomEvent.on(button, "click", function (e) {
+      L.DomEvent.stopPropagation(e);
+      L.DomEvent.preventDefault(e);
+      legendDiv.style.display = legendDiv.style.display === "flex" ? "none" : "flex";
+    });
+
+    return container;
+  };
+
+  legendControl.addTo(map);
+}
+
+
 // --- Map ---
 async function initMap() {
   const L = (await import("leaflet")).default;
   await import("leaflet/dist/leaflet.css");
 
-  map = L.map("map").setView([-18.8792, 47.5079], 6);
+  // --- Définir les différents fonds de carte ---
+  const satellite = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Tiles &copy; Esri' }
+  );
+
+  const streets = L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: '&copy; OpenStreetMap contributors' }
+  );
+
+  const topo = L.tileLayer(
+    'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    { attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap' }
+  );
+
+  const soil = L.tileLayer(
+    'https://tiles.wmflabs.org/hillshading/{z}/{x}/{y}.png',
+    { attribution: 'Soil & Terrain: Wikimedia' }
+  );
+
+  const agriculture = L.tileLayer(
+    'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Agriculture / Land cover: Esri' } // à adapter si tu trouves un vrai layer agriculture
+  );
+
+  // --- Initialiser la carte avec couche par défaut ---
+  map = L.map("map", {
+    center: [-18.8792, 47.5079],
+    zoom: 6,
+    layers: [satellite]
+  });
 
   parcelLayer = L.layerGroup().addTo(map);
 
-  L.tileLayer(
-    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    {
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye'
-    }
-  ).addTo(map);
+  // --- Contrôle pour changer les fonds de carte ---
+  const baseMaps = {
+  "Satellite": satellite,
+  "Street Map": streets,
+  "Topographic Map": topo,
+  // "Soil / Terrain": soil,
+  "Agricultural View": agriculture
+};
 
+  L.control.layers(baseMaps).addTo(map);
+
+  // --- Ajouter les données ---
   updateMap(L);
+  await loadFireCSV(L);
+
+  // --- Légende ---
+  addLegend(L);
 }
+
 
 function updateMap(L: any) {
   if (!parcelLayer) return;
@@ -384,7 +492,7 @@ function updateMap(L: any) {
     const pt = p.points[0];
     // Cercle rouge plus gros pour le point unique
     L.circleMarker([pt.lat, pt.lng], {
-      radius: 8,       // taille du point
+      radius: 1,       // taille du point
       color: "#10b481",    // bordure
       fillColor: "#10b481", // couleur intérieure
       fillOpacity: 0.9
@@ -404,7 +512,7 @@ function updateMap(L: any) {
     // Pour rendre les sommets visibles
     p.points.forEach((pt: any) => {
       L.circleMarker([pt.lat, pt.lng], {
-        radius: 5,
+        radius: 2,
         color: "#10b481",
         fillColor: "#10b481",
         fillOpacity: 0.7
@@ -561,7 +669,41 @@ const chartData = computed(() => {
   return { labels, datasets };
 });
 
-onMounted(()=>{ initMap(); fetchDashboard(); });
+async function loadFireCSV(L: any) {
+  const res = await fetch("/fires_24h.csv")
+  const text = await res.text()
+  const lines = text.split("\n")
+  const headers = lines[0].split(",")
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i].split(",")
+    if (row.length < headers.length) continue
+
+    const fire: any = {}
+    headers.forEach((h, j) => (fire[h] = row[j]))
+
+    if (fire.latitude && fire.longitude) {
+      L.circleMarker([parseFloat(fire.latitude), parseFloat(fire.longitude)], {
+        radius: 2,
+        color: "#e63946",
+        fillColor: "#e63946",
+        fillOpacity: 0.9,
+      })
+        .bindPopup(
+          `<b>🔥 Fire detected</b><br>
+           Brightness: ${fire.brightness}<br>
+           Date: ${fire.acq_date}`
+        )
+        .addTo(map)
+    }
+  }
+}
+
+
+onMounted(async () => {
+  await initMap()
+  await fetchDashboard()
+})
 
 </script>
 

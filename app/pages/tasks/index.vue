@@ -5,16 +5,34 @@
         Tasks List
       </h2>
   
-      <!-- Add Task Button -->
-      <div class="flex justify-end mb-4">
-        <NuxtLink
-          to="/tasks/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
-        >
-          <i class='bx bx-plus text-lg'></i> Add Task
-        </NuxtLink>
+      <div class="border-b border-gray-200 flex items-center justify-between mb-6">
+        <!-- Tabs -->
+        <nav class="flex space-x-8">
+          <a href="#"
+            @click.prevent="activeTab = 'historique'"
+            :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'historique' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
+            History
+          </a>
+
+          <a href="#"
+            @click.prevent="activeTab = 'upcoming'"
+            :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'upcoming' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
+            Upcoming
+          </a>
+
+        </nav>
+
+        <!-- Button -->
+        <div class="flex justify-end">
+          <NuxtLink
+            to="/tasks/create"
+            class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+          >
+            <i class='bx bx-plus text-lg'></i> Add Task
+          </NuxtLink>
+        </div>
       </div>
-  
+
       <!-- Table -->
       <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
         <table class="min-w-full text-left border-collapse">
@@ -126,9 +144,12 @@
   
   const router = useRouter()
   const tasks = ref<any[]>([])
+
+  const activeTab = ref<'historique' | 'upcoming'>('historique')
+
   
   // Pagination
-  const itemsPerPage = 8
+  const itemsPerPage = 4
   const currentPage = ref(1)
   const paginatedTasks = ref<any[]>([])
 
@@ -163,7 +184,7 @@
   }
 
   
-  const totalPages = computed(() => Math.ceil(tasks.value.length / itemsPerPage))
+  const totalPages = computed(() => Math.ceil(filteredTasks.value.length / itemsPerPage))
   const visiblePages = computed(() => {
     const pages = []
     for (let i = 1; i <= totalPages.value; i++) pages.push(i)
@@ -172,28 +193,29 @@
   
   const updatePaginated = () => {
     const start = (currentPage.value - 1) * itemsPerPage
-    paginatedTasks.value = tasks.value.slice(start, start + itemsPerPage)
+    paginatedTasks.value = filteredTasks.value.slice(start, start + itemsPerPage)
   }
+
   
-  watch([tasks, currentPage], updatePaginated, { immediate: true })
+  watch(activeTab, () => {
+    currentPage.value = 1
+    updatePaginated()
+  })
+
   
-  // Fetch tasks
   onMounted(async () => {
   const token = sessionStorage.getItem('token')
   if (!token) { router.push('/login'); return }
 
   try {
-    // 1️⃣ Récupérer les tasks
     const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
     tasks.value = await res.json()
 
-    // 2️⃣ Charger les lookups
     await loadLookups()
 
-    // 3️⃣ Pour chaque task, récupérer parcelCrop complet + parcel
     await Promise.all(tasks.value.map(async (task: any) => {
       if (task.parcelCrop) {
         try {
@@ -219,7 +241,6 @@
       }
     }));
 
-    // 4️⃣ Mettre à jour la pagination après enrichissement
     updatePaginated();
 
   } catch (err) {
@@ -227,7 +248,23 @@
   }
 })
 
-  // Actions
+const filteredTasks = computed(() => {
+  if (activeTab.value === 'historique') {
+    return tasks.value
+  } else if (activeTab.value === 'upcoming') {
+    const now = new Date()
+    const threeMonthsLater = new Date()
+    threeMonthsLater.setMonth(now.getMonth() + 3)
+
+    return tasks.value.filter(task => {
+      const dueDate = new Date(task.due_date)
+      const statusName = statuses.value[task.status] || ''
+      return statusName !== 'Done' && dueDate >= now && dueDate <= threeMonthsLater
+    })
+  }
+  return tasks.value
+})
+
   const deleteTask = async (id: number) => {
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
@@ -249,6 +286,10 @@
     }
   }
   
+  watch(currentPage, () => {
+  updatePaginated()
+})
+
   const editTask = (id: number) => router.push(`/tasks/edit/${id}`)
   const showTask = (id: number) => router.push(`/tasks/show/${id}`)
   const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }

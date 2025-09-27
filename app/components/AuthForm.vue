@@ -20,19 +20,21 @@
             v-model="formData[field]"
             :type="field === 'password' ? 'password' : 'text'"
             placeholder=" "
-            class="peer w-full p-3 pl-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#10b481]"
-            @focus="fieldHasFocus[field] = true"
-            @blur="fieldHasFocus[field] = false"
+            class="peer w-full p-3 pl-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481]"
           />
 
           <!-- Label -->
-          <label 
-            :class="[
-              'absolute left-10 transition-all px-3 rounded',
-              (formData[field] || fieldHasFocus[field])
-                ? '-top-3 text-[#10b481] text-sm bg-[#101010]'
-                : 'top-3 text-gray-400 text-base'
-            ]"
+          <label
+            :for="field"
+            class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200
+                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
+                  peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#10b481] peer-focus:bg-[#101010] px-2 rounded"
+                  :class="[
+                'absolute left-10 px-2 rounded transition-all duration-200 pointer-events-none',
+                (formData[field] || fieldHasFocus[field])
+                  ? '-top-3 text-sm text-[#10b481] bg-[#101010]'
+                  : 'top-3 text-base text-[#10b481]'
+              ]"
           >
             {{ labels[field] || passwordLabel }}
           </label>
@@ -87,9 +89,9 @@ const icons: Record<string,string> = {
 }
 
 const labels: Record<string,string> = {
-  username: "Nom d'utilisateur",
-  first_name: "Prénom",
-  last_name: "Nom",
+  username: "Username",
+  first_name: "First name",
+  last_name: "Last name",
   email: "Email"
 }
 
