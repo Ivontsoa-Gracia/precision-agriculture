@@ -143,7 +143,6 @@
           <h3 class="font-semibold text-gray-800 mb-2">Yield Evolution per Year</h3>
           <canvas id="analyticsChart"></canvas>
         </div>
-
       </div>
     </div>
 
