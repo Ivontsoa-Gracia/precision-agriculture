@@ -162,10 +162,10 @@
 
     try {
       const [priorityRes, statusRes] = await Promise.all([
-        fetch('https://previson-agriculture.onrender.com/api/task-priority/', {
+        fetch('https://mvp-dvws.onrender.com/api/task-priority/', {
           headers: { Authorization: `Token ${token}` }
         }),
-        fetch('https://previson-agriculture.onrender.com/api/task-status/', {
+        fetch('https://mvp-dvws.onrender.com/api/task-status/', {
           headers: { Authorization: `Token ${token}` }
         })
       ])
@@ -208,7 +208,7 @@
   if (!token) { router.push('/login'); return }
 
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/api/tasks/', {
+    const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -219,13 +219,13 @@
     await Promise.all(tasks.value.map(async (task: any) => {
       if (task.parcelCrop) {
         try {
-          const resParcelCrop = await fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${task.parcelCrop}/`, {
+          const resParcelCrop = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${task.parcelCrop}/`, {
             headers: { Authorization: `Token ${token}` }
           });
           if (!resParcelCrop.ok) throw new Error('ParcelCrop fetch error');
           const parcelCropData = await resParcelCrop.json();
 
-          const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${parcelCropData.parcel}/`, {
+          const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.parcel}/`, {
             headers: { Authorization: `Token ${token}` }
           });
           if (!resParcel.ok) throw new Error('Parcel fetch error');
@@ -272,7 +272,7 @@ const filteredTasks = computed(() => {
     if (!confirm("Are you sure you want to delete this task?")) return
   
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/tasks/${id}/`, {
+      const res = await fetch(`https://mvp-dvws.onrender.com/api/tasks/${id}/`, {
         method: 'DELETE',
         headers: { Authorization: `Token ${token}` }
       })

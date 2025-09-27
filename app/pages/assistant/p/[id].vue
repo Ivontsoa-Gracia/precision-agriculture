@@ -143,7 +143,7 @@
       const token = sessionStorage.getItem("token")
   
       const res = await axios.post(
-        "https://previson-agriculture.onrender.com/api/assistant-agronome/",
+        "https://mvp-dvws.onrender.com/api/assistant-agronome/",
         {
           question: userMessage,
           question_type: "general",

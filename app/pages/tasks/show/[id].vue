@@ -93,7 +93,7 @@ onMounted(async () => {
 
   try {
     // Get task details
-    const resTask = await fetch(`https://previson-agriculture.onrender.com/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
+    const resTask = await fetch(`https://mvp-dvws.onrender.com/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
     task.value = await resTask.json()
 
     // 2️⃣ Récupérer le parcelCrop complet + parcel si existe
@@ -101,14 +101,14 @@ onMounted(async () => {
       try {
         // ParcelCrop
         const resParcelCrop = await fetch(
-          `https://previson-agriculture.onrender.com/api/parcel-crops/${task.value.parcelCrop}/`,
+          `https://mvp-dvws.onrender.com/api/parcel-crops/${task.value.parcelCrop}/`,
           { headers: { Authorization: `Token ${token}` } }
         )
         const parcelCropData = await resParcelCrop.json()
 
         // Parcel
         const resParcel = await fetch(
-          `https://previson-agriculture.onrender.com/api/parcels/${parcelCropData.parcel}/`,
+          `https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.parcel}/`,
           { headers: { Authorization: `Token ${token}` } }
         )
         const parcelData = await resParcel.json()
@@ -125,14 +125,14 @@ onMounted(async () => {
 
     // Get priority name
     if (task.value.priority) {
-      const resPriority = await fetch(`https://previson-agriculture.onrender.com/api/task-priority/${task.value.priority}/`, { headers: { Authorization: `Token ${token}` } })
+      const resPriority = await fetch(`https://mvp-dvws.onrender.com/api/task-priority/${task.value.priority}/`, { headers: { Authorization: `Token ${token}` } })
       const dataPriority = await resPriority.json()
       priorityName.value = dataPriority.name
     }
 
     // Get status name
     if (task.value.status) {
-      const resStatus = await fetch(`https://previson-agriculture.onrender.com/api/task-status/${task.value.status}/`, { headers: { Authorization: `Token ${token}` } })
+      const resStatus = await fetch(`https://mvp-dvws.onrender.com/api/task-status/${task.value.status}/`, { headers: { Authorization: `Token ${token}` } })
       const dataStatus = await resStatus.json()
       statusName.value = dataStatus.name
     }

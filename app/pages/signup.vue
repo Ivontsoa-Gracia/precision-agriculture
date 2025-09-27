@@ -58,7 +58,7 @@ const handleSignup = async (formData: {
 
   isLoading.value = true 
   try {
-    const response = await fetch('https://previson-agriculture.onrender.com/api/signup/', {
+    const response = await fetch('https://mvp-dvws.onrender.com/api/signup/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

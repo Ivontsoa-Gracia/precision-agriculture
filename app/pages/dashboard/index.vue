@@ -340,14 +340,14 @@ async function fetchDashboard() {
   try {
     // Dashboard
     const res = await axios.get(
-      "https://previson-agriculture.onrender.com/api/dashboard/full_dashboard/",
+      "https://mvp-dvws.onrender.com/api/dashboard/full_dashboard/",
       { headers: { Authorization: `Token ${token}` } }
     );
     dashboard.value = res.data;
 
     // Analytics
     const resanalytics = await fetch(
-      `https://previson-agriculture.onrender.com/analytics/yields/`,
+      `https://mvp-dvws.onrender.com/analytics/yields/`,
       { headers: { Authorization: `Token ${token}` } }
     );
 

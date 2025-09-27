@@ -153,7 +153,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await fetch(`https://previson-agriculture.onrender.com/api/users/${uuid}/`, {
+    const response = await fetch(`https://mvp-dvws.onrender.com/api/users/${uuid}/`, {
       headers: { 'Authorization': `Token ${token}` }
     })
     if (!response.ok) throw new Error(`Erreur API: ${response.status}`)

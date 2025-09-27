@@ -106,7 +106,7 @@
     if (!token) return id // fallback à l'ID si pas de token
 
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${id}/`, {
+      const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error('Parcel API error')
@@ -169,7 +169,7 @@
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
+      const res = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -189,7 +189,7 @@
     if (!confirm("Are you sure you want to delete this parcel crop?")) return
     const token = sessionStorage.getItem('token')
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` }})
+      const res = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` }})
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       parcelCrops.value = parcelCrops.value.filter(pc => pc.id !== id)
       updatePaginated()

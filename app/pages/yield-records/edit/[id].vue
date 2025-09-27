@@ -100,7 +100,7 @@ async function fetchYield() {
 
   try {
     const res = await axios.get(
-      `https://previson-agriculture.onrender.com/api/yield-records/${route.params.id}/`,
+      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     form.value = {
@@ -121,7 +121,7 @@ async function update() {
 
   try {
     await axios.put(
-      `https://previson-agriculture.onrender.com/api/yield-records/${route.params.id}/`,
+      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
       form.value,
       { headers: { Authorization: `Token ${token}` } }
     );

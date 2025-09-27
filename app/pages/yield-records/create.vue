@@ -128,7 +128,7 @@ onMounted(async () => {
 
 async function loadParcelCrops() {
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
+    const res = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
       headers: { Authorization: `Token ${token}` }
     })
     const data = await res.json()
@@ -136,7 +136,7 @@ async function loadParcelCrops() {
     // Pour chaque parcelCrop, récupérer le parcel complet si nécessaire
     for (const pc of data) {
       if (pc.parcel) {
-        const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${pc.parcel}/`, {
+        const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${pc.parcel}/`, {
           headers: { Authorization: `Token ${token}` }
         })
         pc.parcel = await resParcel.json()
@@ -181,7 +181,7 @@ async function createYieldRecord() {
   if (!token) return
   isLoading.value = true 
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/api/yield-records/', {
+    const res = await fetch('https://mvp-dvws.onrender.com/api/yield-records/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
       body: JSON.stringify(form.value)

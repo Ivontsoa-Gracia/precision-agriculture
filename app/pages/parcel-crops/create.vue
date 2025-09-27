@@ -174,15 +174,15 @@
   
     try {
       // Load parcels
-      const resParcels = await fetch('https://previson-agriculture.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } })
+      const resParcels = await fetch('https://mvp-dvws.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } })
       parcels.value = await resParcels.json()
   
       // Load crops
-      const resCrops = await fetch('https://previson-agriculture.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } })
+      const resCrops = await fetch('https://mvp-dvws.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } })
       crops.value = await resCrops.json()
   
       // Load status-crops
-      const resStatus = await fetch('https://previson-agriculture.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } })
+      const resStatus = await fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } })
       statuses.value = await resStatus.json()
       // console.log("status", statuses)
   
@@ -197,7 +197,7 @@
     if (!token) { router.push('/login'); return }
     isLoading.value = true 
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
+      const res = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
         method: 'POST',
         headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form.value)

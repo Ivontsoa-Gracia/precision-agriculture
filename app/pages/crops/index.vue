@@ -127,7 +127,7 @@
     }
   
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/crops/', {
+      const res = await fetch('https://mvp-dvws.onrender.com/api/crops/', {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -145,7 +145,7 @@
     if (!confirm("Are you sure you want to delete this crop?")) return
   
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/crops/${id}/`, {
+      const res = await fetch(`https://mvp-dvws.onrender.com/api/crops/${id}/`, {
         method: 'DELETE',
         headers: { Authorization: `Token ${token}` }
       })
