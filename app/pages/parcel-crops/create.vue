@@ -83,6 +83,18 @@
         </button>
       </form>
     </div>
+    <div v-if="isLoading" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl">
+        <div class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"></div>
+    </div>
+      <!-- Notification -->
+    <transition name="fade">
+      <div 
+        v-if="notification.visible" 
+        :class="['fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold', 
+                 notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500']">
+        {{ notification.message }}
+      </div>
+    </transition>
   </template>
   
   
@@ -93,6 +105,21 @@
   import { watch } from 'vue'
   import * as turf from '@turf/turf'
 
+  const isLoading = ref(false)
+
+  // Notification state
+  const notification = ref({
+    visible: false,
+    message: '',
+    type: 'success' // 'success' | 'error'
+  })
+
+  const showNotification = (message: string, type: 'success' | 'error' = 'success', duration = 3000) => {
+    notification.value.message = message
+    notification.value.type = type
+    notification.value.visible = true
+    setTimeout(() => notification.value.visible = false, duration)
+  }
 
   const router = useRouter()
   const form = ref({
@@ -168,7 +195,7 @@
   const submitParcelCrop = async () => {
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
-  
+    isLoading.value = true 
     try {
       const res = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
         method: 'POST',
@@ -177,11 +204,13 @@
       })
   
       if (!res.ok) throw new Error(`API error: ${res.status}`)
-      // alert("✅ Parcel Crop created successfully!")
+      showNotification('Parcel Crop created successfully!', 'success')
       router.push('/parcel-crops')
     } catch (err) {
       console.error(err)
-      // alert("❌ Failed to create parcel crop")
+      showNotification('Failed to create parcel crop', 'error')
+    } finally {
+      isLoading.value = false 
     }
   }
   </script>
