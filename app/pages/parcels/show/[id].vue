@@ -76,7 +76,7 @@
         </div>
 
         <!-- Yield Evolution -->
-        <div class="bg-white rounded-2xl shadow p-4 flex-1">
+        <div class="bg-white rounded-2xl shadow p-4">
           <h3 class="font-semibold text-gray-800 mb-2">Yield Evolution</h3>
           <canvas id="yieldEvolutionChart"></canvas>
         </div>
@@ -139,11 +139,10 @@
             <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#6d4c41]"></div>
           </div>
         </div>
-        <div v-if="selectedParcel" class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
+        <div v-if="selectedParcel" class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition hidden">
           <h3 class="font-semibold text-gray-800 mb-2">Yield Evolution per Year</h3>
           <canvas id="analyticsChart"></canvas>
         </div>
-
       </div>
     </div>
 

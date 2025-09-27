@@ -110,7 +110,7 @@
                 >
                 <i class="bx bx-edit text-[#f4a261] text-xl"></i>
                 </NuxtLink>
-                <button @click="" class="p-2 rounded-full hover:bg-[#e63946]/10">
+                <button @click="confirmDelete(field.fieldId)" class="p-2 rounded-full hover:bg-[#e63946]/10">
                   <i class="bx bx-trash text-[#e63946] text-xl"></i>
                 </button>
               </td>
@@ -157,6 +157,17 @@
       </div>
     </div>
   </div>
+  <div v-if="showDeleteModal" class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+  <div class="bg-white rounded-lg p-6 w-80 text-center shadow-lg">
+    <h3 class="text-xl font-bold mb-4">Delete Parcel</h3>
+    <p class="mb-6">Are you sure you want to delete this parcel?</p>
+    <div class="flex justify-center gap-4">
+      <button @click="deleteParcelConfirmed" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Yes</button>
+      <button @click="cancelDelete" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">No</button>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script setup lang="ts">
@@ -333,8 +344,43 @@ function toggleMenu(id: string, event: MouseEvent) {
   }
 }
 
+const showDeleteModal = ref(false)
+const parcelToDelete = ref<string | null>(null)
+
+function confirmDelete(uuid: string) {
+  parcelToDelete.value = uuid
+  showDeleteModal.value = true
+}
+
+async function deleteParcelConfirmed() {
+  if (!parcelToDelete.value) return
+  const token = sessionStorage.getItem("token")
+  if (!token) {
+    alert("Vous devez être connecté")
+    return
+  }
+
+  try {
+    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelToDelete.value}/`, {
+      method: 'DELETE',
+      headers: { Authorization: `Token ${token}` }
+    })
+    if (!res.ok) throw new Error(`Failed to delete parcel: ${res.status}`)
+    fields.value = fields.value.filter(f => f.fieldId !== parcelToDelete.value)
+    showDeleteModal.value = false
+    parcelToDelete.value = null
+  } catch (err) {
+    console.error(err)
+    alert("❌ Failed to delete parcel")
+  }
+}
+
+function cancelDelete() {
+  showDeleteModal.value = false
+  parcelToDelete.value = null
+}
+
 function prevPage() { if (currentPage.value > 1) currentPage.value-- }
 function nextPage() { if (currentPage.value < totalPages.value) currentPage.value++ }
 function goToPage(page: number | string) { if (page !== '...') currentPage.value = page as number }
 </script>
-

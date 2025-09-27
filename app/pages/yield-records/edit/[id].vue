@@ -45,6 +45,18 @@
       </button>
     </form>
   </div>
+  <div v-if="isLoading" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl">
+      <div class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"></div>
+  </div>
+      <!-- Notification -->
+  <transition name="fade">
+    <div 
+      v-if="notification.visible" 
+      :class="['fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold', 
+                notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500']">
+      {{ notification.message }}
+    </div>
+  </transition>
 </template>
 
 <script setup>
@@ -55,6 +67,25 @@ import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+
+const isLoading = ref(false)
+
+// Notification state
+const notification = ref({
+  visible: false,
+  message: '',
+  type: 'success' // 'success' ou 'error'
+})
+
+// Fonction pour afficher la notification
+const showNotification = (message, type = 'success', duration = 3000) => {
+  notification.value.message = message
+  notification.value.type = type
+  notification.value.visible = true
+  setTimeout(() => {
+    notification.value.visible = false
+  }, duration)
+}
 
 const form = ref({
   date: "",
@@ -86,6 +117,7 @@ async function fetchYield() {
 async function update() {
   const token = sessionStorage.getItem('token');
   if (!token) { router.push('/login'); return; }
+  isLoading.value = true 
 
   try {
     await axios.put(
@@ -93,9 +125,13 @@ async function update() {
       form.value,
       { headers: { Authorization: `Token ${token}` } }
     );
+    showNotification('Yield updated successfully!', 'success')
     router.push(`/yield-records`);
   } catch (err) {
     console.error(err);
+    showNotification('Network error, please check your server', 'error')
+  } finally {
+    isLoading.value = false 
   }
 }
 
