@@ -24,7 +24,7 @@ const handleForgotPassword = async (formData: { email: string }) => {
   }
 
   try {
-    const response = await fetch('https://mvp-dvws.onrender.com/api/forgot-password/', {
+    const response = await fetch('https://previson-agriculture.onrender.com/api/forgot-password/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: formData.email })

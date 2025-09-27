@@ -97,7 +97,7 @@
       return
     }
     try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/varieties/', {
+      const res = await fetch('https://previson-agriculture.onrender.com/api/varieties/', {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -117,7 +117,7 @@
 
     isLoading.value = true 
     try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/crops/', {
+      const res = await fetch('https://previson-agriculture.onrender.com/api/crops/', {
         method: 'POST',
         headers: {
           'Authorization': `Token ${token}`,

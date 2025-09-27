@@ -668,7 +668,7 @@ async function fetchParcelData() {
 
   try {
     const fullDataResponse = await axios.get(
-      `https://mvp-dvws.onrender.com/api/parcels-full/${fieldIdParam}/full_data/`,
+      `https://previson-agriculture.onrender.com/api/parcels-full/${fieldIdParam}/full_data/`,
       { headers: { "Authorization": `Token ${token}` } }
     );
     Object.assign(parcelFullData, fullDataResponse.data);
@@ -688,7 +688,7 @@ async function fetchParcelData() {
     updatePaginatedHarvest();
 
     const parcelResponse = await axios.get(
-      `https://mvp-dvws.onrender.com/api/parcels/${fieldIdParam}/`,
+      `https://previson-agriculture.onrender.com/api/parcels/${fieldIdParam}/`,
       { headers: { "Authorization": `Token ${token}` } }
     );
     Object.assign(parcelData, parcelResponse.data);
@@ -696,7 +696,7 @@ async function fetchParcelData() {
     const ownerId = parcelData.owner;
     if (ownerId) {
       const userResponse = await axios.get(
-        `https://mvp-dvws.onrender.com/api/users/${ownerId}/`,
+        `https://previson-agriculture.onrender.com/api/users/${ownerId}/`,
         { headers: { "Authorization": `Token ${token}` } }
       );
       Object.assign(ownerData, userResponse.data);
@@ -807,7 +807,7 @@ async function fetchAnalyticsData() {
   }
 
   try {
-    const res = await fetch('https://mvp-dvws.onrender.com/analytics/yields/', {
+    const res = await fetch('https://previson-agriculture.onrender.com/analytics/yields/', {
       headers: { Authorization: `Token ${token}` }
     });
 

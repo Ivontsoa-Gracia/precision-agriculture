@@ -99,7 +99,7 @@ onMounted(async () => {
 
   try {
     // 1️⃣ Récupérer le parcel
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, { 
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${id}/`, { 
       headers: { Authorization: `Token ${token}` } 
     })
     const data = await res.json()
@@ -115,7 +115,7 @@ onMounted(async () => {
 
     // 2️⃣ Récupérer le nom du owner via son UUID
     if (data.owner) {
-      const ownerRes = await fetch(`https://mvp-dvws.onrender.com/api/users/${data.owner}/`, { 
+      const ownerRes = await fetch(`https://previson-agriculture.onrender.com/api/users/${data.owner}/`, { 
         headers: { Authorization: `Token ${token}` } 
       })
       if (ownerRes.ok) {
@@ -147,7 +147,7 @@ const submitParcel = async () => {
       }]
     }
 
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, {
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${id}/`, {
       method: 'PUT',
       headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

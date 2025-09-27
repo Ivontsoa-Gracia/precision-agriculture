@@ -74,7 +74,7 @@
     }
   
     try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/varieties/', {
+      const res = await fetch('https://previson-agriculture.onrender.com/api/varieties/', {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -93,7 +93,7 @@
     }
   
     try {
-      const res = await fetch(`https://mvp-dvws.onrender.com/api/crops/${cropId}/`, {
+      const res = await fetch(`https://previson-agriculture.onrender.com/api/crops/${cropId}/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -114,7 +114,7 @@
     }
   
     try {
-      const res = await fetch(`https://mvp-dvws.onrender.com/api/crops/${cropId}/`, {
+      const res = await fetch(`https://previson-agriculture.onrender.com/api/crops/${cropId}/`, {
         method: 'PUT', // ou PATCH si tu veux partial update
         headers: {
           'Authorization': `Token ${token}`,

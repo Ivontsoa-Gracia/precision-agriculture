@@ -84,20 +84,20 @@ onMounted(async () => {
 
   try {
     // Récupération du parcel crop
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, {
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${route.params.id}/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error("Failed to load parcel crop")
     const data = await res.json()
 
     // Nom du parcel
-    const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/`, { headers: { Authorization: `Token ${token}` } })
+    const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/`, { headers: { Authorization: `Token ${token}` } })
     const parcels = await resParcel.json()
     const parcel = parcels.find((p:any) => p.uuid === data.parcel)
     parcelCrop.value = { ...data, parcel_name: parcel?.parcel_name || data.parcel }
 
     // Récupération du forecast
-    const resForecast = await fetch(`https://mvp-dvws.onrender.com/forecast/${route.params.id}/`, {
+    const resForecast = await fetch(`https://previson-agriculture.onrender.com/forecast/${route.params.id}/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!resForecast.ok) throw new Error("Failed to load forecast")
