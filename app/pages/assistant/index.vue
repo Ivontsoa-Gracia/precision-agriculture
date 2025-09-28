@@ -119,11 +119,11 @@
       messages.value.push({ sender: 'ai', text: res.data.answer })
   
     } catch (err: any) {
-      console.error("Erreur API :", err)
+      console.error("Error API :", err)
       isLoading.value = false
       messages.value.push({
         sender: 'ai',
-        text: "⚠️ Erreur lors de la communication avec l'assistant."
+        text: "Error while communicating with the assistant."
       })
     }
   

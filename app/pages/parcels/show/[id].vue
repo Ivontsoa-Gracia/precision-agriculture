@@ -7,7 +7,7 @@
         <pre>{{ JSON.stringify(parcelFullData, null, 2) }}</pre>
       </div> -->
 
-      <div class="fixed bottom-6 right-6 z-50">
+      <div class="fixed bottom-6 right-6 z-50 hidden">
         <NuxtLink
           :to="`/assistant/p/${parcelData.uuid}`"
           class="px-6 py-3 bg-[#212121] rounded-full shadow hover:bg-[#000000] flex items-center gap-2"
