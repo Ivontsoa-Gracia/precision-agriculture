@@ -55,7 +55,7 @@ const handleLogin = async (formData: { username: string; password: string }) => 
 
   isLoading.value = true 
   try {
-    const response = await fetch('https://mvp-dvws.onrender.com/api/login/', {
+    const response = await fetch('https://previson-agriculture.onrender.com/api/login/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),

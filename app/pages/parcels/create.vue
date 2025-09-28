@@ -206,7 +206,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await fetch(`https://mvp-dvws.onrender.com/api/users/${uuid}/`, {
+    const response = await fetch(`https://previson-agriculture.onrender.com/api/users/${uuid}/`, {
       headers: { "Authorization": `Token ${token}` }
     })
     const data = await response.json()
@@ -285,7 +285,7 @@ async function submitForm() {
       parcel_points
     }
 
-    const response = await fetch("https://mvp-dvws.onrender.com/api/parcels/", {
+    const response = await fetch("https://previson-agriculture.onrender.com/api/parcels/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

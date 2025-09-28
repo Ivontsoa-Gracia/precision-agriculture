@@ -99,7 +99,7 @@ async function parcelName(id){
   if (!token) return id // fallback à l'ID si pas de token
 
   try {
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${id}/`, {
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${id}/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error('Parcel API error')
@@ -114,7 +114,7 @@ async function parcelName(id){
 
 async function fetchParcelCrop(id, token) {
   try {
-    const res = await axios.get(`https://mvp-dvws.onrender.com/api/parcel-crops/${id}/`, {
+    const res = await axios.get(`https://previson-agriculture.onrender.com/api/parcel-crops/${id}/`, {
       headers: { Authorization: `Token ${token}` }
     });
     return res.data; // renvoie l'objet parcelCrop complet
@@ -132,7 +132,7 @@ async function fetchYields() {
   }
 
   try {
-    const res = await axios.get("https://mvp-dvws.onrender.com/api/yield-records/", {
+    const res = await axios.get("https://previson-agriculture.onrender.com/api/yield-records/", {
       headers: { Authorization: `Token ${token}` }
     });
 
@@ -162,7 +162,7 @@ async function deleteYield(id) {
 
   try {
     const token = sessionStorage.getItem('token');
-    await axios.delete(`https://mvp-dvws.onrender.com/api/yield-records/${id}/`, {
+    await axios.delete(`https://previson-agriculture.onrender.com/api/yield-records/${id}/`, {
       headers: { Authorization: `Token ${token}` }
     });
     yields.value = yields.value.filter(y => y.id !== id);

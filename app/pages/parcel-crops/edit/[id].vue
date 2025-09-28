@@ -106,10 +106,10 @@ const loadData = async () => {
 
   try {
     const [resParcels, resCrops, resStatuses, resParcelCrop] = await Promise.all([
-      fetch('https://mvp-dvws.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } }),
-      fetch('https://mvp-dvws.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } }),
-      fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } }),
-      fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, { headers: { Authorization: `Token ${token}` } })
+      fetch('https://previson-agriculture.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } }),
+      fetch('https://previson-agriculture.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } }),
+      fetch('https://previson-agriculture.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } }),
+      fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${route.params.id}/`, { headers: { Authorization: `Token ${token}` } })
     ])
     parcels.value = await resParcels.json()
     crops.value = await resCrops.json()
@@ -136,7 +136,7 @@ const submitParcelCrop = async () => {
   if (!token) { router.push('/login'); return }
 
   try {
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, {
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${route.params.id}/`, {
       method: 'PUT',
       headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)

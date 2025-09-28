@@ -136,18 +136,18 @@ onMounted(async () => {
 
   try {
     // Charger les priorités
-    const priRes = await fetch('https://mvp-dvws.onrender.com/api/task-priority/', {
+    const priRes = await fetch('https://previson-agriculture.onrender.com/api/task-priority/', {
       headers: { Authorization: `Token ${token}` }
     })
     priorities.value = await priRes.json()
 
     // Charger les statuts
-    const staRes = await fetch('https://mvp-dvws.onrender.com/api/task-status/', {
+    const staRes = await fetch('https://previson-agriculture.onrender.com/api/task-status/', {
       headers: { Authorization: `Token ${token}` }
     })
     statuses.value = await staRes.json()
 
-    const cropRes = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
+    const cropRes = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
       headers: { Authorization: `Token ${token}` }
     })
     const cropsData = await cropRes.json() // array de parcelCrops
@@ -155,7 +155,7 @@ onMounted(async () => {
     // Pour chaque parcelCrop, récupérer le parcel correspondant
     const enrichedCrops = await Promise.all(cropsData.map(async (pc: any) => {
       try {
-        const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${pc.parcel}/`, {
+        const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${pc.parcel}/`, {
           headers: { Authorization: `Token ${token}` }
         })
         const parcelData = await resParcel.json()
@@ -184,7 +184,7 @@ const submitTask = async () => {
   }
   isLoading.value = true 
   try {
-    const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
+    const res = await fetch('https://previson-agriculture.onrender.com/api/tasks/', {
       method: 'POST',
       headers: {
         'Authorization': `Token ${token}`,

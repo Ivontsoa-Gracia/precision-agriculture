@@ -69,7 +69,7 @@ async function fetchYield() {
   try {
     // 1️⃣ Récupérer le YieldRecord
     const res = await axios.get(
-      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
+      `https://previson-agriculture.onrender.com/api/yield-records/${route.params.id}/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     yieldRecord.value = res.data;
@@ -77,7 +77,7 @@ async function fetchYield() {
     // 2️⃣ Récupérer le parcelCrop complet
     if (yieldRecord.value.parcelCrop) {
       const resParcelCrop = await axios.get(
-        `https://mvp-dvws.onrender.com/api/parcel-crops/${yieldRecord.value.parcelCrop}/`,
+        `https://previson-agriculture.onrender.com/api/parcel-crops/${yieldRecord.value.parcelCrop}/`,
         { headers: { Authorization: `Token ${token}` } }
       );
       parcelCropData.value = resParcelCrop.data;
@@ -85,7 +85,7 @@ async function fetchYield() {
       // 3️⃣ Récupérer le parcel complet pour avoir le parcel_name
       if (parcelCropData.value.parcel) {
         const resParcel = await axios.get(
-          `https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.value.parcel}/`,
+          `https://previson-agriculture.onrender.com/api/parcels/${parcelCropData.value.parcel}/`,
           { headers: { Authorization: `Token ${token}` } }
         );
         parcelData.value = resParcel.data; // { parcel_name, points, ... }

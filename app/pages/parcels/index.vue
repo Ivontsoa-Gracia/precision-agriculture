@@ -242,7 +242,7 @@ onMounted(async () => {
 
   try {
     // 1️⃣ Récupérer toutes les parcelles
-    const response = await fetch("https://mvp-dvws.onrender.com/api/parcels/", {
+    const response = await fetch("https://previson-agriculture.onrender.com/api/parcels/", {
       headers: { "Authorization": `Token ${token}` }
     });
     const parcels = await response.json();
@@ -259,7 +259,7 @@ onMounted(async () => {
 
     await Promise.all(ownerUUIDs.map(async (uuid: string) => {
       try {
-        const ownerRes = await fetch(`https://mvp-dvws.onrender.com/api/users/${uuid}/`, {
+        const ownerRes = await fetch(`https://previson-agriculture.onrender.com/api/users/${uuid}/`, {
           headers: { "Authorization": `Token ${token}` }
         });
         if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
@@ -361,7 +361,7 @@ async function deleteParcelConfirmed() {
   }
 
   try {
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelToDelete.value}/`, {
+    const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${parcelToDelete.value}/`, {
       method: 'DELETE',
       headers: { Authorization: `Token ${token}` }
     })
