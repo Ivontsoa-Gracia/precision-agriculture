@@ -62,6 +62,7 @@
   
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
+  import { API_URL } from '~/config'
 
   const isLoading = ref(false)
 
@@ -97,7 +98,7 @@
       return
     }
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/varieties/', {
+      const res = await fetch(`${API_URL}/api/varieties/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -117,7 +118,7 @@
 
     isLoading.value = true 
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/crops/', {
+      const res = await fetch(`${API_URL}/api/crops/`, {
         method: 'POST',
         headers: {
           'Authorization': `Token ${token}`,

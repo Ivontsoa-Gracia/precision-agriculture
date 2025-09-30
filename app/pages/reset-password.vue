@@ -16,6 +16,8 @@
 
 <script setup lang="ts">
 import AuthForm from '~/components/AuthForm.vue'
+import { API_URL } from '~/config'
+
 
 const handleForgotPassword = async (formData: { email: string }) => {
   if (!formData.email) {
@@ -24,7 +26,7 @@ const handleForgotPassword = async (formData: { email: string }) => {
   }
 
   try {
-    const response = await fetch('https://previson-agriculture.onrender.com/api/forgot-password/', {
+    const response = await fetch(`${API_URL}/api/forgot-password/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: formData.email })

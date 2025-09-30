@@ -26,17 +26,17 @@
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700">Yield Amount</label>
+          <label class="block mb-1 font-medium text-gray-700">Yield (kg)</label>
           <input v-model.number="form.yield_amount" type="number" class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]" required />
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700">Area (ha)</label>
+          <label class="block mb-1 font-medium text-gray-700">Area (m²)</label>
           <input 
             v-model.number="form.area" 
             type="number" 
-            :max="maxArea" 
-            step="0.01"
+            :max="areaInM2(maxArea)" 
+            step="1"
             @input="checkArea"
             class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]" 
             required
@@ -79,6 +79,8 @@ definePageMeta({ layout: 'dashboard' })
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import * as turf from '@turf/turf'
+import { API_URL } from '~/config'
+
 
 const router = useRouter()
 const parcelCrops = ref([])
@@ -128,7 +130,7 @@ onMounted(async () => {
 
 async function loadParcelCrops() {
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
+    const res = await fetch(`${API_URL}/api/parcel-crops/`, {
       headers: { Authorization: `Token ${token}` }
     })
     const data = await res.json()
@@ -136,7 +138,7 @@ async function loadParcelCrops() {
     // Pour chaque parcelCrop, récupérer le parcel complet si nécessaire
     for (const pc of data) {
       if (pc.parcel) {
-        const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${pc.parcel}/`, {
+        const resParcel = await fetch(`${API_URL}/api/parcels/${pc.parcel}/`, {
           headers: { Authorization: `Token ${token}` }
         })
         pc.parcel = await resParcel.json()
@@ -163,7 +165,7 @@ function onParcelCropChange() {
   if (selected?.parcel?.points) {
     const area = calculateParcelArea(selected.parcel.points)
     maxArea.value = area.toFixed(2)
-    form.value.area = maxArea.value
+    form.value.area = areaInM2(maxArea.value)
   } else {
     maxArea.value = null
     form.value.area = null
@@ -172,8 +174,8 @@ function onParcelCropChange() {
 
 // Empêcher l'utilisateur de dépasser l'aire calculée
 function checkArea() {
-  if (maxArea.value && form.value.area > maxArea.value) {
-    form.value.area = maxArea.value
+  if (areaInM2(maxArea.value) && form.value.area > areaInM2(maxArea.value)) {
+    form.value.area = areaInM2(maxArea.value)
   }
 }
 
@@ -181,7 +183,7 @@ async function createYieldRecord() {
   if (!token) return
   isLoading.value = true 
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/api/yield-records/', {
+    const res = await fetch(`${API_URL}/api/yield-records/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Token ${token}` },
       body: JSON.stringify(form.value)
@@ -196,4 +198,14 @@ async function createYieldRecord() {
     isLoading.value = false 
   }
 }
+
+const formatM2 = (areaInHa) => {
+    if (!areaInHa) return "0 m²";
+    return `${(areaInHa * 10000).toLocaleString()} m²`;
+  };
+
+  const areaInM2 = (areaInHa) => {
+    if (!areaInHa) return 0;
+    return areaInHa * 10000;
+  }
 </script>

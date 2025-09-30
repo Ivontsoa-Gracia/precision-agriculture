@@ -88,6 +88,7 @@
   definePageMeta({ layout: 'dashboard' })
   import { ref, onMounted } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
+  import { API_URL } from '~/config'
   
   const router = useRouter()
   const route = useRoute()
@@ -128,7 +129,7 @@
 
     try {
       // Load task
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
+      const res = await fetch(`${API_URL}/api/tasks/${id}/`, { headers: { Authorization: `Token ${token}` } })
       const data = await res.json()
       form.value = {
         name: data.name,
@@ -141,9 +142,9 @@
 
       // Load dynamic options
       const [priRes, staRes, cropRes] = await Promise.all([
-        fetch('https://previson-agriculture.onrender.com/api/task-priority/', { headers: { Authorization: `Token ${token}` } }),
-        fetch('https://previson-agriculture.onrender.com/api/task-status/', { headers: { Authorization: `Token ${token}` } }),
-        fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', { headers: { Authorization: `Token ${token}` } })
+        fetch(`${API_URL}/api/task-priority/`, { headers: { Authorization: `Token ${token}` } }),
+        fetch(`${API_URL}/api/task-status/`, { headers: { Authorization: `Token ${token}` } }),
+        fetch(`${API_URL}/api/parcel-crops/`, { headers: { Authorization: `Token ${token}` } })
       ])
 
       priorities.value = await priRes.json()
@@ -153,7 +154,7 @@
       // Pour chaque parcelCrop, récupérer le parcel name et construire un label
       parcelCrops.value = await Promise.all(parcelCropsRaw.map(async (pc: any) => {
         try {
-          const resParcel = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${pc.parcel}/`, { headers: { Authorization: `Token ${token}` } })
+          const resParcel = await fetch(`${API_URL}/api/parcels/${pc.parcel}/`, { headers: { Authorization: `Token ${token}` } })
           const parcelData = await resParcel.json()
           return { ...pc, label: `${parcelData.parcel_name} - ${pc.crop.name}` }
         } catch (err) {
@@ -175,7 +176,7 @@
     isLoading.value = true 
   
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/tasks/${id}/`, {
+      const res = await fetch(`${API_URL}/api/tasks/${id}/`, {
         method: 'PUT',
         headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form.value)

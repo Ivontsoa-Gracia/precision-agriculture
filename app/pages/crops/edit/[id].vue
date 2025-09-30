@@ -51,6 +51,7 @@
   
   import { ref, onMounted } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
+  import { API_URL } from '~/config'
   
   const router = useRouter()
   const route = useRoute()
@@ -74,7 +75,7 @@
     }
   
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/varieties/', {
+      const res = await fetch(`${API_URL}/api/varieties/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -93,7 +94,7 @@
     }
   
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/crops/${cropId}/`, {
+      const res = await fetch(`${API_URL}/api/crops/${cropId}/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -114,7 +115,7 @@
     }
   
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/crops/${cropId}/`, {
+      const res = await fetch(`${API_URL}/api/crops/${cropId}/`, {
         method: 'PUT', // ou PATCH si tu veux partial update
         headers: {
           'Authorization': `Token ${token}`,
@@ -125,11 +126,11 @@
   
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       const data = await res.json()
-      alert("✅ Crop updated successfully!")
+      alert("Crop updated successfully!")
       router.push('/crops')
     } catch (err) {
       console.error(err)
-      alert("❌ Failed to update crop")
+      alert("Failed to update crop")
     }
   }
   </script>

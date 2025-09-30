@@ -139,6 +139,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { API_URL } from '~/config'
 
 const user = ref<{ username: string; email: string } | null>(null)
 const router = useRouter()
@@ -153,7 +154,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await fetch(`https://previson-agriculture.onrender.com/api/users/${uuid}/`, {
+    const response = await fetch(`${API_URL}/api/users/${uuid}/`, {
       headers: { 'Authorization': `Token ${token}` }
     })
     if (!response.ok) throw new Error(`Erreur API: ${response.status}`)

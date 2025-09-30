@@ -36,6 +36,10 @@
               {{ parcelData.parcel_name || "N/A" }}
             </p>
             <p>
+              <span class="font-medium">Area:</span>
+              {{ formatM2(parcelAreaHa) }}
+            </p>
+            <p>
               <span class="font-medium">Latitude:</span>
               {{ parcelData.parcel_points?.[0]?.latitude ?? "-" }}
             </p>
@@ -355,6 +359,8 @@ import { useRoute } from 'vue-router';
 import { reactive, ref, computed, onMounted, watch } from "vue";
 import axios from "axios";
 import Chart from "chart.js/auto";
+import { API_URL } from '~/config'
+
 
 const route = useRoute()
 const fieldIdParam = route.params.id ?? null
@@ -374,7 +380,10 @@ const parcelFullData = reactive({});
 const parcelData = reactive({});
 const ownerData = reactive({});
 
-console.log("parcel data", parcelData)
+const parcelAreaHa = computed(() => {
+  return calculateParcelArea(parcelData.parcel_points);
+});
+
 
 const tasks = ref([]);
 const cropsInfo = ref([]); 
@@ -668,7 +677,7 @@ async function fetchParcelData() {
 
   try {
     const fullDataResponse = await axios.get(
-      `https://previson-agriculture.onrender.com/api/parcels-full/${fieldIdParam}/full_data/`,
+      `${API_URL}/api/parcels-full/${fieldIdParam}/full_data/`,
       { headers: { "Authorization": `Token ${token}` } }
     );
     Object.assign(parcelFullData, fullDataResponse.data);
@@ -688,7 +697,7 @@ async function fetchParcelData() {
     updatePaginatedHarvest();
 
     const parcelResponse = await axios.get(
-      `https://previson-agriculture.onrender.com/api/parcels/${fieldIdParam}/`,
+      `${API_URL}/api/parcels/${fieldIdParam}/`,
       { headers: { "Authorization": `Token ${token}` } }
     );
     Object.assign(parcelData, parcelResponse.data);
@@ -696,7 +705,7 @@ async function fetchParcelData() {
     const ownerId = parcelData.owner;
     if (ownerId) {
       const userResponse = await axios.get(
-        `https://previson-agriculture.onrender.com/api/users/${ownerId}/`,
+        `${API_URL}/api/users/${ownerId}/`,
         { headers: { "Authorization": `Token ${token}` } }
       );
       Object.assign(ownerData, userResponse.data);
@@ -807,7 +816,7 @@ async function fetchAnalyticsData() {
   }
 
   try {
-    const res = await fetch('https://previson-agriculture.onrender.com/analytics/yields/', {
+    const res = await fetch(`${API_URL}/analytics/yields/`, {
       headers: { Authorization: `Token ${token}` }
     });
 
@@ -831,10 +840,10 @@ async function fetchAnalyticsData() {
       parcel_name: parcel.parcel_name ?? 'Unknown Parcel'
     }));
 
-    console.log("📊 analyticsData =", analyticsData.value);
+    console.log("analyticsData =", analyticsData.value);
 
   } catch (err) {
-    console.error('❌ Error fetching analytics data:', err);
+    console.error('Error fetching analytics data:', err);
   }
 }
 
@@ -894,6 +903,40 @@ watch(() => selectedParcel.value, async (parcel) => {
     }
   });
 });
+
+function calculateParcelArea(points) {
+  if (!points || points.length < 3) return 0; // au moins 3 points pour un polygone
+
+  let area = 0;
+  const n = points.length;
+
+  for (let i = 0; i < n; i++) {
+    const { latitude: x1, longitude: y1 } = points[i];
+    const { latitude: x2, longitude: y2 } = points[(i + 1) % n];
+    area += x1 * y2 - x2 * y1;
+  }
+
+  area = Math.abs(area / 2);
+
+  // Convertir approximativement degrés lat/lng en mètres carrés
+  // 1° latitude ≈ 111 km ; 1° longitude ≈ 111 km * cos(lat)
+  // On prend latitude moyenne pour approximation
+  const latitudes = points.map(p => p.latitude);
+  const avgLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
+  const meterPerDegLat = 111_000;
+  const meterPerDegLng = 111_000 * Math.cos(avgLat * Math.PI / 180);
+
+  const areaMeters2 = area * meterPerDegLat * meterPerDegLng;
+
+  const areaHa = areaMeters2 / 10_000; // conversion en hectares
+
+  return areaHa.toFixed(2); // 2 décimales
+}
+
+const formatM2 = (areaInHa) => {
+  if (!areaInHa) return "- m²";
+  return `${(areaInHa * 10000).toLocaleString()} m²`;
+};
 
 
 </script>

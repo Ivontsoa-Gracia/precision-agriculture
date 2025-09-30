@@ -24,7 +24,7 @@
               <th class="px-6 py-2 border-b">Crop</th>
               <th class="px-6 py-2 border-b">Planting Date</th>
               <th class="px-6 py-2 border-b">Harvest Date</th>
-              <th class="px-6 py-2 border-b">Area (ha)</th>
+              <th class="px-6 py-2 border-b">Area (m²)</th>
               <th class="px-6 py-2 border-b">Status</th>
               <th class="px-6 py-2 border-b text-center">Actions</th>
             </tr>
@@ -93,6 +93,8 @@
   definePageMeta({ layout: 'dashboard' })
   import { ref, computed, onMounted, watch } from 'vue'
   import { useRouter } from 'vue-router'
+  import { API_URL } from '~/config'
+
   
   const router = useRouter()
   const parcelCrops = ref<any[]>([])
@@ -106,7 +108,7 @@
     if (!token) return id // fallback à l'ID si pas de token
 
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/parcels/${id}/`, {
+      const res = await fetch(`${API_URL}/api/parcels/${id}/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error('Parcel API error')
@@ -169,7 +171,7 @@
     const token = sessionStorage.getItem('token')
     if (!token) { router.push('/login'); return }
     try {
-      const res = await fetch('https://previson-agriculture.onrender.com/api/parcel-crops/', {
+      const res = await fetch(`${API_URL}/api/parcel-crops/`, {
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -189,7 +191,7 @@
     if (!confirm("Are you sure you want to delete this parcel crop?")) return
     const token = sessionStorage.getItem('token')
     try {
-      const res = await fetch(`https://previson-agriculture.onrender.com/api/parcel-crops/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` }})
+      const res = await fetch(`${API_URL}/api/parcel-crops/${id}/`, { method: 'DELETE', headers: { Authorization: `Token ${token}` }})
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       parcelCrops.value = parcelCrops.value.filter(pc => pc.id !== id)
       updatePaginated()

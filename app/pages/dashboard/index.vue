@@ -265,6 +265,7 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import Chart from "chart.js/auto";
 import { nextTick } from "vue";
+import { API_URL } from '~/config'
 
 definePageMeta({ layout: "dashboard" });
 
@@ -340,14 +341,14 @@ async function fetchDashboard() {
   try {
     // Dashboard
     const res = await axios.get(
-      "https://previson-agriculture.onrender.com/api/dashboard/full_dashboard/",
+      `${API_URL}/api/dashboard/full_dashboard/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     dashboard.value = res.data;
 
     // Analytics
     const resanalytics = await fetch(
-      `https://previson-agriculture.onrender.com/analytics/yields/`,
+      `${API_URL}/analytics/yields/`,
       { headers: { Authorization: `Token ${token}` } }
     );
 
@@ -400,7 +401,7 @@ function addLegend(L: any) {
 
     legendDiv.innerHTML = `
       <span style="display:flex; align-items:center;">
-        <i style="background:#10b481; width:12px; height:12px; display:inline-block; margin-right:6px; border-radius:100%;"></i> Parcel
+        <i style="background:#219ebc; width:12px; height:12px; display:inline-block; margin-right:6px; border-radius:100%;"></i> Parcel
       </span>
       <span style="display:flex; align-items:center;">
         <i style="background:#e63946; width:12px; height:12px; display:inline-block; margin-right:6px; border-radius:100%;"></i> Fire
@@ -463,12 +464,11 @@ async function initMap() {
 
   // --- Contrôle pour changer les fonds de carte ---
   const baseMaps = {
-  "Satellite": satellite,
-  "Street Map": streets,
-  "Topographic Map": topo,
-  // "Soil / Terrain": soil,
-  "Agricultural View": agriculture
-};
+    "Satellite": satellite,
+    "Street Map": streets,
+    "Topographic Map": topo,
+    "Agricultural View": agriculture
+  };
 
   L.control.layers(baseMaps).addTo(map);
 
@@ -493,8 +493,8 @@ function updateMap(L: any) {
     // Cercle rouge plus gros pour le point unique
     L.circleMarker([pt.lat, pt.lng], {
       radius: 1,       // taille du point
-      color: "#10b481",    // bordure
-      fillColor: "#10b481", // couleur intérieure
+      color: "#219ebc",    // bordure
+      fillColor: "#219ebc", // couleur intérieure
       fillOpacity: 0.9
     })
     .bindPopup(`<strong>${p.name}</strong>`)
@@ -502,8 +502,8 @@ function updateMap(L: any) {
   } else {
     const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
     L.polygon(latlngs, {
-      color: "#10b481",
-      fillColor: "#10b481",
+      color: "#219ebc",
+      fillColor: "#219ebc",
       fillOpacity: 0.3
     })
     .bindPopup(`<strong>${p.name}</strong>`)
@@ -512,10 +512,10 @@ function updateMap(L: any) {
     // Pour rendre les sommets visibles
     p.points.forEach((pt: any) => {
       L.circleMarker([pt.lat, pt.lng], {
-        radius: 2,
-        color: "#10b481",
-        fillColor: "#10b481",
-        fillOpacity: 0.7
+        radius: 3,
+        color: "#219ebc",
+        fillColor: "#219ebc",
+        fillOpacity: 1
       }).addTo(parcelLayer);
     });
   }
