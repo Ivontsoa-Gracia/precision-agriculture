@@ -2,48 +2,39 @@
   <div class="h-screen font-sans bg-[#fafafa] flex flex-col">
 
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 h-20 
-                  bg-[#fafafa] backdrop-blur-md">
-      
-      <!-- Logo + Titre -->
-      <div class="flex items-center space-x-4 -ml-4">
-        <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-[#222831] to-[#3a3f47] 
-                    flex items-center justify-center shadow-lg">
-          <img src="/icons/logo-smartsaha_HD.svg" alt="Logo" class="h-10 w-10 invert brightness-0"/>
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 h-20 bg-[#fafafa] backdrop-blur-md">
+      <!-- Logo -->
+      <div class="flex items-center space-x-4">
+        <div class="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-gradient-to-br from-[#222831] to-[#3a3f47] flex items-center justify-center shadow-lg">
+          <img src="/icons/logo-smartsaha_HD.svg" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10 invert brightness-0"/>
         </div>
-        <div class="flex flex-col text-left">
+        <div class="hidden sm:flex flex-col text-left">
           <h1 class="text-xl font-extrabold text-[#222831] tracking-tight">SmartSaha</h1>
           <p class="text-sm text-gray-500">Nurture data. Harvest impact</p>
         </div>
       </div>
 
-      <!-- Navigation droite -->
-      <div class="flex items-center space-x-6 -mr-4">
-        <NuxtLink 
-          to="/assistant" 
-          class="flex items-center gap-3 text-gray-800 hover:text-[#10b481] transition-colors duration-300 font-medium text-sm tracking-wide"
-        >
-          <i class='bx bx-brain bx-sm text-gray-700'></i>
-          <span class="hidden sm:inline">Agronomist IA</span>
-        </NuxtLink>
+      <!-- Right menu -->
+      <div class="flex items-center space-x-2 sm:space-x-6">
+        <!-- Mobile menu burger -->
+        <button class="sm:hidden p-2 text-gray-800">
+          <i class='bx bx-menu text-2xl'></i>
+        </button>
 
-        <NuxtLink 
-          to="/contact" 
-          class="flex items-center gap-3 text-gray-800 hover:text-[#10b481] transition-colors duration-300 font-medium text-sm tracking-wide"
-        >
-          <i class='bx bx-envelope bx-sm text-gray-700'></i>
-          <span class="hidden sm:inline">Contact</span>
-        </NuxtLink>
+        <!-- Links desktop -->
+        <div class="hidden sm:flex items-center space-x-6">
+          <NuxtLink to="/assistant" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-brain'></i> <span>Agronomist IA</span></NuxtLink>
+          <NuxtLink to="/contact" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-envelope'></i> <span>Contact</span></NuxtLink>
+          <NuxtLink to="/help" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-help-circle'></i> <span>Help</span></NuxtLink>
+        </div>
 
-
-        <!-- User card -->
-        <div class="flex items-center bg-white/80 backdrop-blur-sm px-3 py-2 rounded-2xl shadow-sm border border-gray-100">
-          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] 
-                      flex items-center justify-center shadow">
-            <i class='bx-light bx bx-user text-white text-lg'></i>
+        <!-- User -->
+        <div class="hidden sm:flex items-center bg-white/80 backdrop-blur-sm px-3 py-2 rounded-2xl shadow-sm border border-gray-100">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center shadow">
+            <i class='bx bx-user text-white'></i>
           </div>
           <div class="ml-3 text-left">
-            <p class="font-semibold text-[#222831] text-sm leading-tight">{{ user?.username }}</p>
+            <p class="font-semibold text-[#222831] text-sm">{{ user?.username }}</p>
             <p class="text-xs text-gray-500">{{ user?.email }}</p>
           </div>
         </div>
@@ -54,9 +45,10 @@
     <div class="flex flex-1 pt-16">
       <!-- Sidebar -->
       <aside
-        class="peer group  fixed top-20 left-0 h-[calc(100vh-4rem)] 
+        class="hidden sm:flex peer group  fixed top-20 left-0 h-[calc(100vh-4rem)] 
              flex flex-col justify-between bg-[#222831] shadow-lg 
              w-20 hover:w-56 transition-all duration-300"
+        
       >
         <nav class="flex flex-col space-y-2 py-4">
           <NuxtLink
@@ -124,6 +116,14 @@
           </button>
         </div>
       </aside>
+
+      <nav class="fixed bottom-0 left-0 right-0 sm:hidden bg-[#222831] flex justify-around py-2 shadow-lg">
+        <NuxtLink to="/dashboard" class="text-white text-2xl"><i class='bx bx-grid-alt'></i></NuxtLink>
+        <NuxtLink to="/parcels" class="text-white text-2xl"><i class='bx bx-map'></i></NuxtLink>
+        <NuxtLink to="/tasks" class="text-white text-2xl"><i class='bx bx-task'></i></NuxtLink>
+        <NuxtLink to="/yield-records" class="text-white text-2xl"><i class='bx bx-bar-chart'></i></NuxtLink>
+        <NuxtLink to="/parcel-crops" class="text-white text-2xl"><i class='bx bx-box'></i></NuxtLink>
+      </nav>
 
       <!-- Main -->
       <main
