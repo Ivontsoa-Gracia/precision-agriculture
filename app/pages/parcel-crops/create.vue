@@ -54,19 +54,22 @@
         <!-- Area & Status side by side -->
         <div class="flex gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="block font-medium">Area (ha) *</label>
+            <label class="block font-medium">Area (m²) *</label>
             <input 
               v-model.number="form.area" 
               type="number" 
-              step="0.01" 
-              :max="calculatedArea" 
+              step="1" 
+              :max="areaInM2(calculatedArea)" 
               required 
-              placeholder="Enter area" 
+              placeholder="Enter area in m²" 
               class="w-full border p-2 rounded focus:ring-[#212121]" 
               @input="onAreaInput"
             />
-            <small class="text-gray-500 text-sm">Max: {{ calculatedArea }} ha</small>
+            <small class="text-gray-500 text-sm">
+              Max: {{ formatM2(calculatedArea) }}
+            </small>
           </div>
+
           
           <div class="flex-1 flex flex-col">
             <label class="block font-medium">Status *</label>
@@ -104,6 +107,7 @@
   import { useRouter } from 'vue-router'
   import { watch } from 'vue'
   import * as turf from '@turf/turf'
+  import { API_URL } from '~/config'
 
   const isLoading = ref(false)
 
@@ -152,21 +156,20 @@
     if (selectedParcel?.points?.length) {
       const area = calculateParcelArea(selectedParcel.points)
       calculatedArea.value = Number(area.toFixed(2))
-      form.value.area = calculatedArea.value
+      form.value.area = areaInM2(calculatedArea.value)
     } else {
       calculatedArea.value = 0
       form.value.area = null
     }
   })
 
-  // empêcher la saisie supérieure à l'aire calculée
   const onAreaInput = () => {
-    if (form.value.area > calculatedArea.value) {
-      form.value.area = calculatedArea.value
+    if (form.value.area > areaInM2(calculatedArea.value)) {
+      form.value.area = areaInM2(calculatedArea.value);
     } else if (form.value.area < 0) {
-      form.value.area = 0
+      form.value.area = 0;
     }
-  }
+  };
 
   onMounted(async () => {
     const token = sessionStorage.getItem('token')
@@ -174,15 +177,15 @@
   
     try {
       // Load parcels
-      const resParcels = await fetch('https://mvp-dvws.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } })
+      const resParcels = await fetch(`${API_URL}/api/parcels/`, { headers: { Authorization: `Token ${token}` } })
       parcels.value = await resParcels.json()
   
       // Load crops
-      const resCrops = await fetch('https://mvp-dvws.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } })
+      const resCrops = await fetch(`${API_URL}/api/crops/`, { headers: { Authorization: `Token ${token}` } })
       crops.value = await resCrops.json()
   
       // Load status-crops
-      const resStatus = await fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } })
+      const resStatus = await fetch(`${API_URL}/api/status-crops/`, { headers: { Authorization: `Token ${token}` } })
       statuses.value = await resStatus.json()
       // console.log("status", statuses)
   
@@ -197,7 +200,7 @@
     if (!token) { router.push('/login'); return }
     isLoading.value = true 
     try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/parcel-crops/', {
+      const res = await fetch(`${API_URL}/api/parcel-crops/`, {
         method: 'POST',
         headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form.value)
@@ -213,6 +216,17 @@
       isLoading.value = false 
     }
   }
+
+  const formatM2 = (areaInHa) => {
+    if (!areaInHa) return "0 m²";
+    return `${(areaInHa * 10000).toLocaleString()} m²`;
+  };
+
+  const areaInM2 = (areaInHa: number) => {
+    if (!areaInHa) return 0;
+    return areaInHa * 10000;
+  }
+
   </script>
   
   <style scoped>

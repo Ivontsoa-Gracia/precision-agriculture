@@ -51,8 +51,8 @@
 
         <!-- Area -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Area (ha) *</label>
-          <input v-model="form.area" type="number" step="0.01" required
+          <label class="font-semibold mb-1">Area (m²) *</label>
+          <input v-model="form.area" type="number" step="1" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
@@ -83,6 +83,8 @@
 definePageMeta({ layout: 'dashboard' })
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { API_URL } from '~/config'
+
 
 const route = useRoute()
 const router = useRouter()
@@ -106,11 +108,12 @@ const loadData = async () => {
 
   try {
     const [resParcels, resCrops, resStatuses, resParcelCrop] = await Promise.all([
-      fetch('https://mvp-dvws.onrender.com/api/parcels/', { headers: { Authorization: `Token ${token}` } }),
-      fetch('https://mvp-dvws.onrender.com/api/crops/', { headers: { Authorization: `Token ${token}` } }),
-      fetch('https://mvp-dvws.onrender.com/api/status-crops/', { headers: { Authorization: `Token ${token}` } }),
-      fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, { headers: { Authorization: `Token ${token}` } })
+      fetch(`${API_URL}/api/parcels/`, { headers: { Authorization: `Token ${token}` } }),
+      fetch(`${API_URL}/api/crops/`, { headers: { Authorization: `Token ${token}` } }),
+      fetch(`${API_URL}/api/status-crops/`, { headers: { Authorization: `Token ${token}` } }),
+      fetch(`${API_URL}/api/parcel-crops/${route.params.id}/`, { headers: { Authorization: `Token ${token}` } })
     ])
+
     parcels.value = await resParcels.json()
     crops.value = await resCrops.json()
     statuses.value = await resStatuses.json()
@@ -136,17 +139,18 @@ const submitParcelCrop = async () => {
   if (!token) { router.push('/login'); return }
 
   try {
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, {
+    const res = await fetch(`${API_URL}/api/parcel-crops/${route.params.id}/`, {
       method: 'PUT',
       headers: { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
     })
+
     if (!res.ok) throw new Error(`API error: ${res.status}`)
-    alert("✅ Parcel Crop updated successfully!")
+    alert("Parcel Crop updated successfully!")
     router.push('/parcel-crops')
   } catch (err) {
     console.error(err)
-    alert("❌ Failed to update parcel crop")
+    alert("Failed to update parcel crop")
   }
 }
 </script>

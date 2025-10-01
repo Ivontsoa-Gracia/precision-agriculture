@@ -42,7 +42,7 @@
         <DetailItem label="Crop" :value="parcelCrop.crop?.name + ' (' + (parcelCrop.crop?.variety?.name || '-') + ')'"/>
         <DetailItem label="Planting Date" :value="parcelCrop.planting_date"/>
         <DetailItem label="Harvest Date" :value="parcelCrop.harvest_date || '-'"/>
-        <DetailItem label="Area (ha)" :value="parcelCrop.area"/>
+        <DetailItem label="Area (m²)" :value="parcelCrop.area"/>
         <DetailItem label="Status" :value="parcelCrop.status?.name || '-'"/>
         <DetailItem label="Created At" :value="parcelCrop.created_at"/>
       </div>
@@ -72,6 +72,7 @@ definePageMeta({ layout: 'dashboard' })
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import DetailItem from '~/components/DetailItem.vue'
+import { API_URL } from '~/config'
 
 const route = useRoute()
 const router = useRouter()
@@ -84,20 +85,20 @@ onMounted(async () => {
 
   try {
     // Récupération du parcel crop
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${route.params.id}/`, {
+    const res = await fetch(`${API_URL}/api/parcel-crops/${route.params.id}/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error("Failed to load parcel crop")
     const data = await res.json()
 
     // Nom du parcel
-    const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/`, { headers: { Authorization: `Token ${token}` } })
+    const resParcel = await fetch(`${API_URL}/api/parcels/`, { headers: { Authorization: `Token ${token}` } })
     const parcels = await resParcel.json()
     const parcel = parcels.find((p:any) => p.uuid === data.parcel)
     parcelCrop.value = { ...data, parcel_name: parcel?.parcel_name || data.parcel }
 
     // Récupération du forecast
-    const resForecast = await fetch(`https://mvp-dvws.onrender.com/forecast/${route.params.id}/`, {
+    const resForecast = await fetch(`${API_URL}/forecast/${route.params.id}/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!resForecast.ok) throw new Error("Failed to load forecast")
@@ -105,7 +106,6 @@ onMounted(async () => {
 
   } catch (err) {
     console.error(err)
-    // alert("❌ Failed to load data")
   }
 })
 </script>

@@ -88,6 +88,7 @@
   import { ref, nextTick } from 'vue'
   import axios from 'axios'
   import { useRoute } from 'vue-router'
+  import { API_URL } from '~/config'
   
   definePageMeta({ layout: 'dashboard' })
   
@@ -143,7 +144,7 @@
       const token = sessionStorage.getItem("token")
   
       const res = await axios.post(
-        "https://mvp-dvws.onrender.com/api/assistant-agronome/",
+        `${API_URL}/api/assistant-agronome/`,
         {
           question: userMessage,
           question_type: "general",
@@ -151,9 +152,11 @@
           crop_name: null,
           user_modules: buildModulesPayload()
         },
-        { headers: { Authorization: `Token ${token}` } }
+        {
+          headers: { Authorization: `Token ${token}` }
+        }
       )
-  
+      
       messages.value.push({ sender: 'ai', text: res.data.answer })
     } catch (err: any) {
       console.error("Erreur API :", err)

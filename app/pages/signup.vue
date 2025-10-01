@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import AuthForm from '~/components/AuthForm.vue'
+import { API_URL } from '~/config'
 
 const isLoading = ref(false)
 
@@ -58,7 +59,7 @@ const handleSignup = async (formData: {
 
   isLoading.value = true 
   try {
-    const response = await fetch('https://mvp-dvws.onrender.com/api/signup/', {
+    const response = await fetch(`${API_URL}/api/signup/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

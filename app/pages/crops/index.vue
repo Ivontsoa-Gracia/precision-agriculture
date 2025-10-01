@@ -95,6 +95,7 @@
   
   import { ref, computed, onMounted, watch } from 'vue'
   import { useRouter } from 'vue-router'
+  import { API_URL } from '~/config'
   
   const router = useRouter()
   const crops = ref<any[]>([])
@@ -127,7 +128,7 @@
     }
   
     try {
-      const res = await fetch('https://mvp-dvws.onrender.com/api/crops/', {
+      const res = await fetch(`${API_URL}/api/crops/`, {  
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -145,17 +146,17 @@
     if (!confirm("Are you sure you want to delete this crop?")) return
   
     try {
-      const res = await fetch(`https://mvp-dvws.onrender.com/api/crops/${id}/`, {
+      const res = await fetch(`${API_URL}/api/crops/${id}/`, {  
         method: 'DELETE',
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       crops.value = crops.value.filter(c => c.id !== id)
       updatePaginated()
-      alert("✅ Crop deleted successfully")
+      alert("Crop deleted successfully")
     } catch (err) {
       console.error(err)
-      alert("❌ Failed to delete crop")
+      alert("Failed to delete crop")
     }
   }
   

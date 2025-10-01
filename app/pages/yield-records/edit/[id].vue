@@ -16,7 +16,7 @@
         </div>
 
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Yield Amount</label>
+          <label class="font-semibold mb-1">Yield (kg)</label>
           <input v-model.number="form.yield_amount" type="number" step="0.01"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
@@ -25,7 +25,7 @@
       <!-- Row 2: Area & Notes -->
       <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Area</label>
+          <label class="font-semibold mb-1">Area (m²)</label>
           <input v-model.number="form.area" type="number" step="0.01"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
@@ -64,6 +64,7 @@ definePageMeta({ layout: 'dashboard' })
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import { API_URL } from '~/config'
 
 const route = useRoute();
 const router = useRouter();
@@ -100,7 +101,7 @@ async function fetchYield() {
 
   try {
     const res = await axios.get(
-      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
+      `${API_URL}/api/yield-records/${route.params.id}/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     form.value = {
@@ -121,7 +122,7 @@ async function update() {
 
   try {
     await axios.put(
-      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
+      `${API_URL}/api/yield-records/${route.params.id}/`,
       form.value,
       { headers: { Authorization: `Token ${token}` } }
     );
