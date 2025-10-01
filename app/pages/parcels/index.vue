@@ -172,6 +172,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
+import { API_URL } from '~/config'
+
 
 definePageMeta({
   layout: 'dashboard'
@@ -242,7 +244,7 @@ onMounted(async () => {
 
   try {
     // 1️⃣ Récupérer toutes les parcelles
-    const response = await fetch("https://mvp-dvws.onrender.com/api/parcels/", {
+    const response = await fetch(`${API_URL}/api/parcels/`, {
       headers: { "Authorization": `Token ${token}` }
     });
     const parcels = await response.json();
@@ -259,7 +261,7 @@ onMounted(async () => {
 
     await Promise.all(ownerUUIDs.map(async (uuid: string) => {
       try {
-        const ownerRes = await fetch(`https://mvp-dvws.onrender.com/api/users/${uuid}/`, {
+        const ownerRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
           headers: { "Authorization": `Token ${token}` }
         });
         if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
@@ -361,7 +363,7 @@ async function deleteParcelConfirmed() {
   }
 
   try {
-    const res = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelToDelete.value}/`, {
+    const res = await fetch(`${API_URL}/api/parcels/${parcelToDelete.value}/`, {
       method: 'DELETE',
       headers: { Authorization: `Token ${token}` }
     })
@@ -371,7 +373,7 @@ async function deleteParcelConfirmed() {
     parcelToDelete.value = null
   } catch (err) {
     console.error(err)
-    alert("❌ Failed to delete parcel")
+    alert("Failed to delete parcel")
   }
 }
 

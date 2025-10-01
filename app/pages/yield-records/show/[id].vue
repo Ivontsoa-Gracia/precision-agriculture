@@ -15,7 +15,7 @@
       <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DetailItem label="Date" :value="yieldRecord.date" />
         <DetailItem label="Yield (kg)" :value="yieldRecord.yield_amount" />
-        <DetailItem label="Area (ha)" :value="yieldRecord.area" />
+        <DetailItem label="Area (m²)" :value="yieldRecord.area" />
         <DetailItem 
           label="Parcel Crop" 
           :value="parcelCropData && parcelData 
@@ -51,6 +51,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import DetailItem from '~/components/DetailItem.vue'
+import { API_URL } from "~/config";
 
 const route = useRoute();
 const router = useRouter();
@@ -69,7 +70,7 @@ async function fetchYield() {
   try {
     // 1️⃣ Récupérer le YieldRecord
     const res = await axios.get(
-      `https://mvp-dvws.onrender.com/api/yield-records/${route.params.id}/`,
+      `${API_URL}/api/yield-records/${route.params.id}/`,
       { headers: { Authorization: `Token ${token}` } }
     );
     yieldRecord.value = res.data;
@@ -77,7 +78,7 @@ async function fetchYield() {
     // 2️⃣ Récupérer le parcelCrop complet
     if (yieldRecord.value.parcelCrop) {
       const resParcelCrop = await axios.get(
-        `https://mvp-dvws.onrender.com/api/parcel-crops/${yieldRecord.value.parcelCrop}/`,
+        `${API_URL}/api/parcel-crops/${yieldRecord.value.parcelCrop}/`,
         { headers: { Authorization: `Token ${token}` } }
       );
       parcelCropData.value = resParcelCrop.data;
@@ -85,7 +86,7 @@ async function fetchYield() {
       // 3️⃣ Récupérer le parcel complet pour avoir le parcel_name
       if (parcelCropData.value.parcel) {
         const resParcel = await axios.get(
-          `https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.value.parcel}/`,
+          `${API_URL}/api/parcels/${parcelCropData.value.parcel}/`,
           { headers: { Authorization: `Token ${token}` } }
         );
         parcelData.value = resParcel.data; // { parcel_name, points, ... }

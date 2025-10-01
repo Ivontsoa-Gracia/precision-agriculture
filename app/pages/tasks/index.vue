@@ -141,6 +141,8 @@
   definePageMeta({ layout: 'dashboard' })
   import { ref, computed, onMounted, watch } from 'vue'
   import { useRouter } from 'vue-router'
+  import { API_URL } from '~/config'
+
   
   const router = useRouter()
   const tasks = ref<any[]>([])
@@ -162,10 +164,10 @@
 
     try {
       const [priorityRes, statusRes] = await Promise.all([
-        fetch('https://mvp-dvws.onrender.com/api/task-priority/', {
+        fetch(`${API_URL}/api/task-priority/`, {
           headers: { Authorization: `Token ${token}` }
         }),
-        fetch('https://mvp-dvws.onrender.com/api/task-status/', {
+        fetch(`${API_URL}/api/task-status/`, {
           headers: { Authorization: `Token ${token}` }
         })
       ])
@@ -208,7 +210,7 @@
   if (!token) { router.push('/login'); return }
 
   try {
-    const res = await fetch('https://mvp-dvws.onrender.com/api/tasks/', {
+    const res = await fetch(`${API_URL}/api/tasks/`, {
       headers: { Authorization: `Token ${token}` }
     })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
@@ -219,13 +221,13 @@
     await Promise.all(tasks.value.map(async (task: any) => {
       if (task.parcelCrop) {
         try {
-          const resParcelCrop = await fetch(`https://mvp-dvws.onrender.com/api/parcel-crops/${task.parcelCrop}/`, {
+          const resParcelCrop = await fetch(`${API_URL}/api/parcel-crops/${task.parcelCrop}/`, {
             headers: { Authorization: `Token ${token}` }
           });
           if (!resParcelCrop.ok) throw new Error('ParcelCrop fetch error');
           const parcelCropData = await resParcelCrop.json();
 
-          const resParcel = await fetch(`https://mvp-dvws.onrender.com/api/parcels/${parcelCropData.parcel}/`, {
+          const resParcel = await fetch(`${API_URL}/api/parcels/${parcelCropData.parcel}/`, {
             headers: { Authorization: `Token ${token}` }
           });
           if (!resParcel.ok) throw new Error('Parcel fetch error');
@@ -272,17 +274,17 @@ const filteredTasks = computed(() => {
     if (!confirm("Are you sure you want to delete this task?")) return
   
     try {
-      const res = await fetch(`https://mvp-dvws.onrender.com/api/tasks/${id}/`, {
+      const res = await fetch(`${API_URL}/api/tasks/${id}/`, {
         method: 'DELETE',
         headers: { Authorization: `Token ${token}` }
       })
       if (!res.ok) throw new Error(`API error: ${res.status}`)
       tasks.value = tasks.value.filter(t => t.id !== id)
       updatePaginated()
-      alert("✅ Task deleted successfully")
+      alert("Task deleted successfully")
     } catch (err) {
       console.error(err)
-      alert("❌ Failed to delete task")
+      alert("Failed to delete task")
     }
   }
   
