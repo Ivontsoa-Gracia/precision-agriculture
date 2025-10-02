@@ -2,14 +2,14 @@
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md mt-10">
       <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
         <i class='bx bx-leaf text-3xl text-[#10b481]'></i>
-        New Crop
+        {{ t('newcrop') }}
       </h2>
 
   
       <form @submit.prevent="submitCrop" class="space-y-5">
         <!-- Crop Name -->
         <div class="flex flex-col">
-          <label class="block font-medium">Crop Name *</label>
+          <label class="block font-medium">{{ t('cropname') }} *</label>
           <input 
             v-model="form.name" 
             type="text" 
@@ -21,7 +21,7 @@
   
         <!-- Variety -->
         <div class="flex flex-col">
-          <label class="block font-medium">Variety *</label>
+          <label class="block font-medium">{{ t('variety') }} *</label>
           <select 
             v-model="form.variety_id" 
             required
@@ -39,7 +39,7 @@
           class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded-xl text-white text-lg flex justify-center items-center gap-2"
         >
           <i class='bx bx-plus text-xl'></i>
-          Add Crop
+          {{ t('btnsavecrop') }}
         </button>
       </form>
     </div>
@@ -63,7 +63,14 @@
   import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { API_URL } from '~/config'
+  import { useLanguageStore } from '~/stores/language'
+  import { translate } from '~/utils/translate'
 
+  const languageStore = useLanguageStore()
+
+  const t = (key: string) => translate[languageStore.lang][key] || key
+
+  const currentLocale = computed(() => languageStore.lang)
   const isLoading = ref(false)
 
   // Notification state

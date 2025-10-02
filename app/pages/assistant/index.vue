@@ -35,9 +35,10 @@
       v-if="showWelcome && messages.length === 0" 
       class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 pointer-events-none"
     >
-      <h1 class="text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in">
-        I'm <span class="text-[#10b481]">Sesile</span>, your Agronomist Assistant. <br/>Ask me your farming questions!
-      </h1>
+    <h1 class="text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in"
+        v-html="t('heroTitle')">
+    </h1>
+
 
       <!-- Questions suggérées -->
       <div class="flex flex-wrap gap-3 justify-center pointer-events-auto">
@@ -61,7 +62,7 @@
         v-model="inputMessage"
         @keyup.enter="sendMessage"
         type="text"
-        placeholder="Écris un message..."
+        :placeholder="t('ask')"
         class="flex-1 p-3 border rounded-l-full focus:outline-none"
       />
       <button
@@ -78,7 +79,14 @@
 import { ref, nextTick } from 'vue'
 import axios from 'axios'
 import { API_URL } from '~/config'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
 
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 definePageMeta({
   layout: 'dashboard'
 })
@@ -89,14 +97,7 @@ const chatContainer = ref<HTMLElement | null>(null)
 const isLoading = ref(false)
 const showWelcome = ref(true)
 
-// Questions recommandées
-const suggestedQuestions = ref([
-  "What is the best fertilizer for rice?",
-  "How do I prevent maize pests?",
-  "When should I plant cassava?",
-  "What is the right spacing for tomato plants?",
-  "How can I improve soil fertility?"
-])
+const suggestedQuestions = ref(t('suggestedQuestions'))
 
 function formatMessage(text: string) {
   return text
@@ -112,10 +113,11 @@ async function sendMessage() {
   if (showWelcome.value) {
     messages.value.push({
       sender: 'ai',
-      text: "I’m **Sesile**, your Agronomist Assistant. Ask me your farming questions!"
+      text: t('welcomeMessage')
     })
     showWelcome.value = false
   }
+
 
   messages.value.push({ sender: 'user', text: inputMessage.value })
   const userMessage = inputMessage.value

@@ -23,6 +23,10 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { useAuthStore } from '~/stores/auth'
+const authStore = useAuthStore()
+const token = computed(() => authStore.token)
+const uuid = computed(() => authStore.uuid)
 
 const router = useRouter();
 const showLogo = ref(true);
@@ -30,9 +34,6 @@ const showLogo = ref(true);
 onMounted(() => {
   setTimeout(() => {
     showLogo.value = false;
-
-    const token = sessionStorage.getItem("token");
-
     if (token) {
       router.push("/dashboard");
     } else {

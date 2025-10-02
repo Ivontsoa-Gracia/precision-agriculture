@@ -3,20 +3,20 @@
     <!-- Header -->
     <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
       <i class='bx bx-edit text-3xl text-[#10b481]'></i>
-      Edit Yield Record
+      {{ t('edityield') }}
     </h2>
 
     <form @submit.prevent="update" class="space-y-6">
       <!-- Row 1: Date & Yield Amount -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Date</label>
+          <label class="font-semibold mb-1">{{ t('thdate') }}</label>
           <input v-model="form.date" type="date"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Yield (kg)</label>
+          <label class="font-semibold mb-1">{{ t('thyield') }}</label>
           <input v-model.number="form.yield_amount" type="number" step="0.01"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
@@ -25,13 +25,13 @@
       <!-- Row 2: Area & Notes -->
       <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Area (m²)</label>
+          <label class="font-semibold mb-1">{{ t('area') }} (m²)</label>
           <input v-model.number="form.area" type="number" step="0.01"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Notes</label>
+          <label class="font-semibold mb-1">{{ t('notes') }}</label>
           <textarea v-model="form.notes"
             class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"></textarea>
         </div>
@@ -41,7 +41,7 @@
       <button type="submit"
         class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white py-3 rounded-2xl text-lg flex justify-center items-center gap-2 hover:scale-105 transition-transform shadow-md">
         <i class='bx bx-save text-xl'></i>
-        Update Yield
+       {{ t('btnsaveyield') }}
       </button>
     </form>
   </div>
@@ -65,6 +65,15 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import { API_URL } from '~/config'
+
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const route = useRoute();
 const router = useRouter();

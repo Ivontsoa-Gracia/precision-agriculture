@@ -10,7 +10,7 @@
         </div>
         <div class="hidden sm:flex flex-col text-left">
           <h1 class="text-xl font-extrabold text-[#222831] tracking-tight">SmartSaha</h1>
-          <p class="text-sm text-gray-500">Nurture data. Harvest impact</p>
+          <p class="text-sm text-gray-500">{{ t('slogan') }}</p>
         </div>
       </div>
 
@@ -21,11 +21,44 @@
           <i class='bx bx-menu text-2xl'></i>
         </button>
 
-        <!-- Links desktop -->
-        <div class="hidden sm:flex items-center space-x-6">
-          <NuxtLink to="/assistant" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-brain'></i> <span>Agronomist IA</span></NuxtLink>
-          <NuxtLink to="/contact" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-envelope'></i> <span>Contact</span></NuxtLink>
-          <NuxtLink to="/help" class="flex items-center gap-3 hover:text-[#10b481]"><i class='bx bx-help-circle'></i> <span>Help</span></NuxtLink>
+        <div class="hidden sm:flex items-center space-x-4">
+          <NuxtLink 
+            to="/assistant" 
+            class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#10b481]/10 hover:text-[#10b481] transition-all duration-200 font-medium"
+          >
+            <i class='bx bx-brain text-lg'></i>
+            <span>Agronomist IA</span>
+          </NuxtLink>
+
+          <NuxtLink 
+            to="/contact" 
+            class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#10b481]/10 hover:text-[#10b481] transition-all duration-200 font-medium"
+          >
+            <i class='bx bx-envelope text-lg'></i>
+            <span>Contact</span>
+          </NuxtLink>
+        </div>
+
+
+        <div class="ml-4 flex items-center gap-2">
+
+          <div class="relative inline-flex bg-gray-100 rounded-xl p-1 px-4 shadow-inner gap-4">
+          <!-- Slider animé pour la langue active -->
+            <div
+              class="absolute top-0 left-0 h-full w-1/2 bg-[#10b481] rounded-xl transition-all duration-300 "
+              :style="{ transform: currentLocale.code === 'en' ? 'translateX(0%)' : 'translateX(100%)' }"
+            ></div>
+
+            <button
+              v-for="(loc, index) in locales"
+              :key="loc.code"
+              @click="switchLocale(loc.code)"
+              class="relative z-10 flex-1 text-center py-2 text-sm font-medium transition-colors duration-200 px-1"
+              :class="currentLocale.code === loc.code ? 'text-white' : 'text-gray-700'"
+            >
+              {{ loc.name }}
+            </button>
+         </div>
         </div>
 
         <!-- User -->
@@ -57,7 +90,7 @@
             active-class="bg-[#10b481]/40 rounded-full text-black"
           >
             <i class="bx-light bx bx-grid-alt text-3xl text-white ml-2 "></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Dashboard</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('dashboard') }}</span>
           </NuxtLink>
 
           <NuxtLink
@@ -66,7 +99,7 @@
             active-class="bg-[#10b481]/40"
           >
             <i class="bx-light bx bx-map text-3xl text-white ml-2"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Parcels</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('parcels') }}</span>
           </NuxtLink>
 
           <NuxtLink
@@ -75,7 +108,7 @@
             active-class="bg-[#10b481]/40"
           >
             <i class="bx-light bx bx-task text-3xl text-white ml-2"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Tasks</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('tasks') }}</span>
           </NuxtLink>
 
           <NuxtLink
@@ -84,7 +117,7 @@
             active-class="bg-[#10b481]/40"
           >
             <i class="bx-light bx bx-bar-chart text-3xl text-white ml-2"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Yields</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('yields') }}</span>
           </NuxtLink>
 
           <NuxtLink
@@ -93,7 +126,7 @@
             active-class="bg-[#10b481]/40"
           >
             <i class="bx-light bx bx-box text-3xl text-white ml-2"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Crops</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('crops') }}</span>
           </NuxtLink>
         </nav>
 
@@ -104,7 +137,7 @@
             class="flex items-center gap-3 px-3 py-2 hover:bg-[#10b481]/20 rounded-lg transition"
           >
             <i class="bx-light bx bx-help-circle text-3xl text-white"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Help</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('help') }}</span>
           </NuxtLink>
 
           <button
@@ -112,7 +145,7 @@
             class="flex items-center gap-3 px-3 py-2 hover:bg-red-500/20 rounded-lg transition"
           >
             <i class="bx-light bx bx-log-out text-3xl text-white"></i>
-            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">Logout</span>
+            <span class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300">{{ t('logout') }}</span>
           </button>
         </div>
       </aside>
@@ -137,9 +170,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_URL } from '~/config'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+// Fonction pour récupérer la traduction
+const t = (key: string) => {
+  const lang = languageStore.lang
+  return translate[lang][key] || key
+}
+
+// Liste des langues
+const locales = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'Français' },
+]
+
+// Langue courante
+const currentLocale = computed(() =>
+  locales.find(l => l.code === languageStore.lang) || locales[0]
+)
+
+// Switcher de langue
+const switchLocale = (code: string) => {
+  languageStore.setLang(code)
+}
+
 
 const user = ref<{ username: string; email: string } | null>(null)
 const router = useRouter()

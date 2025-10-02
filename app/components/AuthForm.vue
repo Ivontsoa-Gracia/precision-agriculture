@@ -10,43 +10,51 @@
       
       <form @submit.prevent="submit" class="space-y-4">
         <div v-for="field in fields" :key="field" class="relative">
-          <!-- Icon mapping -->
-          <i 
-            :class="icons[field] + ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'">
-          </i>
-
-          <!-- Input -->
+          <i :class="icons[field] + ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'"></i>
           <input
             v-model="formData[field]"
             :type="field === 'password' ? 'password' : 'text'"
             placeholder=" "
             class="peer w-full p-3 pl-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481]"
           />
-
-          <!-- Label -->
           <label
             :for="field"
             class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200
                   peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400
                   peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#10b481] peer-focus:bg-[#101010] px-2 rounded"
-                  :class="[
-                'absolute left-10 px-2 rounded transition-all duration-200 pointer-events-none',
-                (formData[field] || fieldHasFocus[field])
-                  ? '-top-3 text-sm text-[#10b481] bg-[#101010]'
-                  : 'top-3 text-base text-[#10b481]'
-              ]"
+            :class="[
+              'absolute left-10 px-2 rounded transition-all duration-200 pointer-events-none',
+              (formData[field] || fieldHasFocus[field])
+                ? '-top-3 text-sm text-[#10b481] bg-[#101010]'
+                : 'top-3 text-base text-[#10b481]'
+            ]"
           >
             {{ labels[field] || passwordLabel }}
+          </label>
+        </div>
+
+        <!-- Checkbox Terms of Service & Privacy Policy -->
+        <div v-if="buttonText.toLowerCase().includes('sign') || buttonText === 'S\'inscrire'" class="mt-2 text-sm text-gray-200">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" v-model="acceptedPolicy" class="h-4 w-4 accent-[#10b481]" required />
+            <span>
+              I agree to the 
+              <NuxtLink to="/privacy-policy" class="underline hover:text-[#10b481]">Privacy Policy</NuxtLink> 
+              and 
+              <NuxtLink to="/terms-of-service" class="underline hover:text-[#10b481]">Terms of Service</NuxtLink>
+            </span>
           </label>
         </div>
 
         <!-- Submit button -->
         <button
           type="submit"
-          class="w-full py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-bold rounded-lg hover:bg-[#0da06a] transition-all duration-300 shadow-md"
+          :disabled="(buttonText.toLowerCase().includes('sign') || buttonText === 'S\'inscrire') && !acceptedPolicy"
+          class="w-full py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-bold rounded-lg hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {{ buttonText }}
         </button>
+
       </form>
 
       <!-- Footer links slot -->
@@ -71,6 +79,7 @@ const emit = defineEmits<{
   (e: 'submit', formData: Record<string,string>): void
 }>()
 
+const acceptedPolicy = ref(false)
 // Initialise les champs dynamiquement
 const formData = reactive<Record<string,string>>({})
 props.fields.forEach(f => formData[f] = '')

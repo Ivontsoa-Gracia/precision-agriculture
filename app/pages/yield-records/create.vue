@@ -2,16 +2,15 @@
   <div class="p-6 bg-white rounded-xl shadow-md max-w-3xl mx-auto">
     <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
       <i class='bx bx-bar-chart text-4xl text-[#10b481] animate-pulse'></i>
-      New Yield Record
+      {{ t('newyield') }}
     </h2>
 
     <form @submit.prevent="createYieldRecord" class="space-y-4">
 
       <!-- Parcel Crop -->
       <div>
-        <label class="block mb-1 font-medium text-gray-700">Parcel Crop</label>
+        <label class="block mb-1 font-medium text-gray-700">{{ t('parcelcrop') }}</label>
         <select v-model="form.parcelCrop" @change="onParcelCropChange" class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]" required>
-          <option disabled value="">-- Select --</option>
           <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
             {{ crop.parcel.parcel_name }} - {{ crop.crop.name }}
           </option>
@@ -21,17 +20,17 @@
       <!-- Inputs en ligne pour desktop -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block mb-1 font-medium text-gray-700">Date</label>
+          <label class="block mb-1 font-medium text-gray-700">{{ t('thdate') }}</label>
           <input v-model="form.date" type="date" class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]" required />
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700">Yield (kg)</label>
+          <label class="block mb-1 font-medium text-gray-700">{{ t('thyield') }}</label>
           <input v-model.number="form.yield_amount" type="number" class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]" required />
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700">Area (m²)</label>
+          <label class="block mb-1 font-medium text-gray-700">{{ t('area') }} (m²)</label>
           <input 
             v-model.number="form.area" 
             type="number" 
@@ -46,7 +45,7 @@
 
       <!-- Notes -->
       <div>
-        <label class="block mb-1 font-medium text-gray-700">Notes</label>
+        <label class="block mb-1 font-medium text-gray-700">{{ t('notes') }}</label>
         <textarea v-model="form.notes" class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"></textarea>
       </div>
 
@@ -54,7 +53,7 @@
       <div class="text-right">
         <button type="submit" 
           class="bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white px-6 py-2 rounded-lg font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5">
-          Create
+          {{ t('btnsaveyield') }}
         </button>
       </div>
     </form>
@@ -81,6 +80,14 @@ import { useRouter } from 'vue-router'
 import * as turf from '@turf/turf'
 import { API_URL } from '~/config'
 
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const router = useRouter()
 const parcelCrops = ref([])

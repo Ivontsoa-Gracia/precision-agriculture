@@ -2,21 +2,21 @@
   <div class="p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg mt-10">
     <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
       <i class='bx bx-edit text-3xl text-[#10b481]'></i>
-      Edit Parcel
+      {{ t('titleeditparcel') }}
     </h2>
 
     <form @submit.prevent="submitParcel" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <!-- Owner (UUID -> Nom complet, readonly) -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Owner</label>
+          <label class="font-semibold mb-1">{{ t('owner') }}</label>
           <input v-model="ownerName" type="text" readonly
             class="px-3 py-2 rounded-lg border bg-gray-100 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#10b481]" />
         </div>
 
         <!-- Parcel Name -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Parcel Name *</label>
+          <label class="font-semibold mb-1">{{ t('thparcelname') }} *</label>
           <input v-model="form.parcel_name" type="text" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#10b481]" />
         </div>
@@ -25,14 +25,14 @@
       <div class="grid grid-cols-2 gap-4">
         <!-- Latitude -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Latitude *</label>
+          <label class="font-semibold mb-1">{{ t('thlatitude') }} *</label>
           <input v-model.number="form.latitude" type="number" step="any" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#10b481]" />
         </div>
 
         <!-- Longitude -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Longitude *</label>
+          <label class="font-semibold mb-1">{{ t('thlongitude') }} *</label>
           <input v-model.number="form.longitude" type="number" step="any" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#10b481]" />
         </div>
@@ -41,7 +41,7 @@
       <button type="submit"
         class="w-full bg-[#10b481] hover:bg-[#0c9069] transition-colors py-3 rounded-xl text-white text-lg flex justify-center items-center gap-2">
         <i class='bx bx-save text-xl'></i>
-        Save Parcel
+        {{ t('btnsaveparcel') }}
       </button>
     </form>
   </div>
@@ -64,6 +64,14 @@ definePageMeta({ layout: 'dashboard' })
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { API_URL } from '~/config'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 
 const router = useRouter()

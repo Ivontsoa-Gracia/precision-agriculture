@@ -2,8 +2,9 @@
   <div class="min-h-screen bg-[#212121] flex flex-col items-center justify-center">
     <!-- AuthForm -->
     <AuthForm
+    class="mt-6"
       title="Login"
-      buttonText="Sign in"
+      buttonText="Login"
       :fields="['username','password']"
       passwordLabel="Password"
       @submit="handleLogin"
@@ -25,7 +26,6 @@
       id="googleButton"
       class="w-full max-w-md bg-[#0f0f0f] hover:bg-[#1a1a1a] cursor-pointer flex items-center justify-center py-3 rounded-lg shadow-md transition-all duration-300 border border-gray-700"
     >
-      <span class="text-white font-medium">Sign in with Google</span>
     </div>
 
     <div v-if="isLoading" class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl">
@@ -139,8 +139,8 @@ const renderGoogleButton = () => {
 
   window.google.accounts.id.renderButton(
     document.getElementById('googleButton'),
-    { theme: 'filled_blue', size: 'large' }
-  )
+    { theme: 'outline', size: 'large', type: 'standard', shape: 'rectangular',  width: '100%' }
+  );
 }
 </script>
 

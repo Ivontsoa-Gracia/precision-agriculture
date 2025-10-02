@@ -2,7 +2,7 @@
     <div class="p-6 mx-auto">
       <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
         <i class='bx bx-task text-3xl text-[#10b481]'></i>
-        Tasks List
+        {{ t('titiletaskslist') }}
       </h2>
   
       <div class="border-b border-gray-200 flex items-center justify-between mb-6">
@@ -11,13 +11,13 @@
           <a href="#"
             @click.prevent="activeTab = 'historique'"
             :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'historique' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
-            History
+            {{ t('history') }}
           </a>
 
           <a href="#"
             @click.prevent="activeTab = 'upcoming'"
             :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'upcoming' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
-            Upcoming
+            {{ t('upcoming') }}
           </a>
 
         </nav>
@@ -28,7 +28,7 @@
             to="/tasks/create"
             class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
           >
-            <i class='bx bx-plus text-lg'></i> Add Task
+            <i class='bx bx-plus text-lg'></i> {{ t('btnaddtask') }}
           </NuxtLink>
         </div>
       </div>
@@ -38,12 +38,12 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">Name</th>
-              <th class="px-6 py-2 border-b">Due Date</th>
-              <th class="px-6 py-2 border-b">Parcel Crop</th>
-              <th class="px-6 py-2 border-b text-center">Priority</th>
-              <th class="px-6 py-2 border-b text-center">Status</th>
-              <th class="px-6 py-2 border-b text-center">Actions</th>
+              <th class="px-6 py-2 border-b">{{ t('taskname')}}</th>
+              <th class="px-6 py-2 border-b">{{ t('due')}}</th>
+              <th class="px-6 py-2 border-b">{{ t('parcelcrop')}}</th>
+              <th class="px-6 py-2 border-b text-center">{{ t('priority')}}</th>
+              <th class="px-6 py-2 border-b text-center">{{ t('status')}}</th>
+              <th class="px-6 py-2 border-b text-center">{{ t('thactions')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -61,7 +61,7 @@
                     'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
                   ]"
                 >
-                  {{ priorities[task.priority] }}
+                {{ t(priorityKeyMap[priorities[task.priority]]) }}
                 </span>
                 <span v-else>-</span>
               </td>
@@ -78,7 +78,8 @@
                     'bg-gray-200 text-gray-700'
                   ]"
                 >
-                  {{ statuses[task.status] }}
+                {{ t(statusKeyMap[statuses[task.status]]) }}
+
                 </span>
                 <span v-else>-</span>
               </td>
@@ -96,7 +97,7 @@
               </td>
             </tr>
             <tr v-if="paginatedTasks.length === 0">
-              <td colspan="7" class="p-6 text-center text-gray-500">No tasks found.</td>
+              <td colspan="7" class="p-6 text-center text-gray-500">{{ t('notaskfound')}}</td>
             </tr>
           </tbody>
         </table>
@@ -108,7 +109,7 @@
             :disabled="currentPage === 1"
             class="flex items-center px-3 py-1 rounded disabled:opacity-50"
           >
-            <i class="bx bx-chevron-left"></i> Prev
+            <i class="bx bx-chevron-left"></i> {{ t('prev')}}
           </button>
     
           <div class="flex items-center space-x-2">
@@ -130,7 +131,7 @@
             :disabled="currentPage === totalPages"
             class="flex items-center px-3 py-1 rounded disabled:opacity-50"
           >
-            Next <i class="bx bx-chevron-right"></i>
+          {{ t('next')}} <i class="bx bx-chevron-right"></i>
           </button>
         </div>
       </div>
@@ -143,7 +144,28 @@
   import { useRouter } from 'vue-router'
   import { API_URL } from '~/config'
 
-  
+  import { useLanguageStore } from '~/stores/language'
+  import { translate } from '~/utils/translate'
+
+  const languageStore = useLanguageStore()
+
+  const t = (key: string) => translate[languageStore.lang][key] || key
+
+  const currentLocale = computed(() => languageStore.lang)
+
+  const priorityKeyMap = {
+    Low: 'priorityLow',
+    Medium: 'priorityMedium',
+    High: 'priorityHigh'
+  }
+
+  const statusKeyMap = {
+    Pending: 'statusPending',
+    "In Progress": 'statusInProgress',
+    Done: 'statusDone',
+    Cancelled: 'statusCancelled'
+  }
+
   const router = useRouter()
   const tasks = ref<any[]>([])
 

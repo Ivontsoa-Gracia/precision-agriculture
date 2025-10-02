@@ -9,11 +9,11 @@
       </div>
       <!-- Content -->
       <div class="flex-1 items-center">
-        <h3 class="text-2xl font-bold text-gray-800 mb-2">Yield Forecast</h3>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ t('titleyieldforcast') }}</h3>
         <div class="flex flex-col md:flex-row items-center md:items-center md:justify-between gap-1 md:gap-6">
           <!-- Label -->
           <p class="text-gray-500 text-sm md:text-base">
-            Forecast Date: <span class="font-medium text-gray-800">{{ forecastData.forecast_date }}</span>
+            {{ t('forecastdate') }}: <span class="font-medium text-gray-800">{{ forecastData.forecast_date }}</span>
           </p>
         </div>
       </div>
@@ -31,20 +31,23 @@
       <div class="flex items-center gap-3 mb-6">
         <i class="bx bx-box text-5xl text-[#10b481] animate-pulse"></i>
         <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight relative">
-          Parcel Crop Details
+          {{ t('pareclcropdetail') }}
           <span class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"></span>
         </h2>
       </div>
 
       <!-- Details Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailItem label="Parcel" :value="parcelCrop.parcel_name"/>
-        <DetailItem label="Crop" :value="parcelCrop.crop?.name + ' (' + (parcelCrop.crop?.variety?.name || '-') + ')'"/>
-        <DetailItem label="Planting Date" :value="parcelCrop.planting_date"/>
-        <DetailItem label="Harvest Date" :value="parcelCrop.harvest_date || '-'"/>
-        <DetailItem label="Area (m²)" :value="parcelCrop.area"/>
-        <DetailItem label="Status" :value="parcelCrop.status?.name || '-'"/>
-        <DetailItem label="Created At" :value="parcelCrop.created_at"/>
+        <DetailItem :label="t('parcel')" :value="parcelCrop.parcel_name"/>
+        <DetailItem :label="t('crop')" :value="parcelCrop.crop?.name + ' (' + (parcelCrop.crop?.variety?.name || '-') + ')'"/>
+        <DetailItem :label="t('plantingdate')" :value="parcelCrop.planting_date"/>
+        <DetailItem :label="t('harvestdate')" :value="parcelCrop.harvest_date || '-'"/>
+        <DetailItem :label="`${t('area')} (m²)`" :value="parcelCrop.area"/>
+        <DetailItem 
+          :label="t('status')" 
+          :value="parcelCrop.status?.name ? t(cropStatusKeyMap[parcelCrop.status?.name]) : '-'"/>
+
+        <DetailItem :label="t('createdat')" :value="parcelCrop.created_at"/>
       </div>
 
       <!-- Action Buttons -->
@@ -53,13 +56,13 @@
           :to="`/parcel-crops/edit/${parcelCrop.id}`"
           class="px-6 py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition transform flex items-center gap-2"
         >
-          <i class="bx bx-edit-alt"></i> Edit
+          <i class="bx bx-edit-alt"></i> {{ t('edit') }}
         </NuxtLink>
 
         <NuxtLink
           to="/parcel-crops"
           class="px-6 py-3 bg-gray-50 text-gray-800 rounded-2xl font-semibold shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5 flex items-center gap-2">
-          <i class="bx bx-arrow-back"></i> Back
+          <i class="bx bx-arrow-back"></i> {{ t('back') }}
         </NuxtLink>
       </div>
 
@@ -73,6 +76,28 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import DetailItem from '~/components/DetailItem.vue'
 import { API_URL } from '~/config'
+import { useLanguageStore } from '~/stores/language'
+  import { translate } from '~/utils/translate'
+
+  const languageStore = useLanguageStore()
+
+  const t = (key: string) => translate[languageStore.lang][key] || key
+
+  const currentLocale = computed(() => languageStore.lang)
+
+  const cropStatusKeyMap: Record<string, string> = {
+    Planned: "cropStatusPlanned",
+    Planted: "cropStatusPlanted",
+    Germinated: "cropStatusGerminated",
+    Growing: "cropStatusGrowing",
+    Flowering: "cropStatusFlowering",
+    Fruiting: "cropStatusFruiting",
+    Mature: "cropStatusMature",
+    Harvested: "cropStatusHarvested",
+    "Post-Harvest": "cropStatusPostHarvest",
+    Failed: "cropStatusFailed"
+  }
+  const isLoading = ref(false)
 
 const route = useRoute()
 const router = useRouter()

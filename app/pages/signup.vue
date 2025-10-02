@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background: #212121;">
     <AuthForm
-      title="Créer un compte"
-      buttonText="S'inscrire"
+      title="Sign up"
+      buttonText="Sign up"
       :fields="['first_name','last_name','email','password']"
       passwordLabel="Password"
       @submit="handleSignup"
@@ -82,8 +82,6 @@ const handleSignup = async (formData: {
       alert(errors)
       return
     }
-
-    console.log('Inscription réussie:', data)
     showNotification('Signup successful!', 'success')
 
 

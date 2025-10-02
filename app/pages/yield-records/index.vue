@@ -2,12 +2,12 @@
     <div class="p-6 mx-auto">
       <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
       <i class='bx bx-bar-chart text-3xl text-[#10b481]'></i>
-      Yield Records
+      {{ t('yieldlist') }}
     </h2>
 
     <div class="flex justify-end mb-4">
       <button @click="goToCreate" class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition">
-        <i class='bx bx-plus text-lg'></i> Add Yield Record
+        <i class='bx bx-plus text-lg'></i> {{ t('btnyield') }}
       </button>
     </div>
 
@@ -16,12 +16,12 @@
       <table class="min-w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-6 py-2 border-b">Date</th>
-            <th class="px-6 py-2 border-b">Parcels</th>
-            <th class="px-6 py-2 border-b">Area (m²)</th>
-            <th class="px-6 py-2 border-b">Crop</th>
-            <th class="px-6 py-2 border-b">Yield (kg)</th>
-            <th class="px-6 py-2 border-b text-center">Actions</th>
+            <th class="px-6 py-2 border-b">{{ t('thdate') }}</th>
+            <th class="px-6 py-2 border-b">{{ t('thparcelname') }}</th>
+            <th class="px-6 py-2 border-b">{{ t('area') }} (m²)</th>
+            <th class="px-6 py-2 border-b">{{ t('crop') }}</th>
+            <th class="px-6 py-2 border-b">{{ t('thyield') }}</th>
+            <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@
             </td>
           </tr>
           <tr v-if="yields.length === 0">
-            <td colspan="6" class="p-6 text-center text-gray-500">No yield records found.</td>
+            <td colspan="6" class="p-6 text-center text-gray-500">{{ t('noyieldfound') }}</td>
           </tr>
         </tbody>
       </table>
@@ -58,7 +58,7 @@
       <!-- Pagination -->
       <div class="flex justify-between items-center mt-4 mb-2">
         <button @click="prevPage" :disabled="currentPage === 1" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-          <i class="bx bx-chevron-left"></i> Prev
+          <i class="bx bx-chevron-left"></i> {{ t('prev') }}
         </button>
 
         <div class="flex items-center space-x-2">
@@ -71,7 +71,7 @@
         </div>
 
         <button @click="nextPage" :disabled="currentPage === totalPages" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-          Next <i class="bx bx-chevron-right"></i>
+          {{ t('next') }} <i class="bx bx-chevron-right"></i>
         </button>
     </div>
     </div>
@@ -84,6 +84,15 @@ import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { API_URL } from '~/config'
+
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const yields = ref([]);
 const currentPage = ref(1);

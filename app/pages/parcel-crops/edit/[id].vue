@@ -5,7 +5,7 @@
     <div class="flex items-center gap-3 mb-6">
       <i class='bx bx-edit text-4xl text-[#10b481] animate-pulse'></i>
       <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight relative">
-        Edit Parcel Crop
+        {{ t('editparcelcrop') }}
         <!-- <span class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"></span> -->
       </h2>
     </div>
@@ -17,52 +17,55 @@
 
         <!-- Parcel -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Parcel *</label>
+          <label class="font-semibold mb-1">{{ t('parcel') }} *</label>
           <select v-model="form.parcel" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]">
-            <option disabled value="">-- Select a parcel --</option>
             <option v-for="p in parcels" :key="p.uuid" :value="p.uuid">{{ p.parcel_name }}</option>
           </select>
         </div>
 
         <!-- Crop -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Crop *</label>
+          <label class="font-semibold mb-1">{{ t('crop') }} *</label>
           <select v-model="form.crop_id" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]">
-            <option disabled value="">-- Select a crop --</option>
             <option v-for="c in crops" :key="c.id" :value="c.id">{{ c.name }} ({{ c.variety?.name }})</option>
           </select>
         </div>
 
         <!-- Planting Date -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Planting Date *</label>
+          <label class="font-semibold mb-1">{{ t('plantingdate') }} *</label>
           <input v-model="form.planting_date" type="date" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
         <!-- Harvest Date -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Harvest Date</label>
+          <label class="font-semibold mb-1">{{ t('harvestdate') }}</label>
           <input v-model="form.harvest_date" type="date"
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
         <!-- Area -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Area (m²) *</label>
+          <label class="font-semibold mb-1">{{ t('area') }} (m²) *</label>
           <input v-model="form.area" type="number" step="1" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]" />
         </div>
 
         <!-- Status -->
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">Status *</label>
+          <label class="font-semibold mb-1">{{ t('status') }} *</label>
           <select v-model="form.status_id" required
             class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]">
-            <option disabled value="">-- Select status --</option>
-            <option v-for="s in statuses" :key="s.id" :value="s.id">{{ s.name }}</option>
+            <option 
+              v-for="s in statuses" 
+              :key="s.id" 
+              :value="s.id"
+            >
+              {{ t(cropStatusKeyMap[s.name]) }}
+            </option>
           </select>
         </div>
 
@@ -72,7 +75,7 @@
       <button type="submit"
         class="w-full bg-gradient-to-r from-[#10b481] to-[#0da06a] hover:from-[#0da06a] hover:to-[#10b481] transition-colors py-3 rounded-xl font-semibold text-white text-lg flex justify-center items-center gap-2">
         <i class='bx bx-save text-xl'></i>
-        Update Parcel Crop
+        {{ t('btnsaveparcelcrop') }}
       </button>
 
     </form>
@@ -85,7 +88,29 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { API_URL } from '~/config'
 
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
 
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
+
+const cropStatusKeyMap: Record<string, string> = {
+    Planned: "cropStatusPlanned",
+    Planted: "cropStatusPlanted",
+    Germinated: "cropStatusGerminated",
+    Growing: "cropStatusGrowing",
+    Flowering: "cropStatusFlowering",
+    Fruiting: "cropStatusFruiting",
+    Mature: "cropStatusMature",
+    Harvested: "cropStatusHarvested",
+    "Post-Harvest": "cropStatusPostHarvest",
+    Failed: "cropStatusFailed"
+  }
+
+const isLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
 

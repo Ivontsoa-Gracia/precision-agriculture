@@ -2,7 +2,7 @@
     <div class="p-6">
       <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
         <i class='bx bx-box text-3xl text-[#10b481]'></i>
-        Parcel Crops List
+        {{ t('parcelcroplist') }}
       </h2>
   
       <!-- Add ParcelCrop Button -->
@@ -11,7 +11,7 @@
           to="/parcel-crops/create" 
           class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
         >
-          <i class='bx bx-plus text-lg'></i> Add Parcel Crop
+          <i class='bx bx-plus text-lg'></i> {{ t('btnaddparcelcrop') }}
         </NuxtLink>
       </div>
   
@@ -20,13 +20,13 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b">Parcel</th>
-              <th class="px-6 py-2 border-b">Crop</th>
-              <th class="px-6 py-2 border-b">Planting Date</th>
-              <th class="px-6 py-2 border-b">Harvest Date</th>
-              <th class="px-6 py-2 border-b">Area (m²)</th>
-              <th class="px-6 py-2 border-b">Status</th>
-              <th class="px-6 py-2 border-b text-center">Actions</th>
+              <th class="px-6 py-2 border-b">{{ t('thparcelname') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('crop') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('plantingdate') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('harvestdate') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('area') }} (m²)</th>
+              <th class="px-6 py-2 border-b">{{ t('status') }}</th>
+              <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -44,8 +44,9 @@
                     statusClasses(pc.status.name)
                   ]"
                 >
-                  {{ pc.status.name }}
+                  {{ t(cropStatusKeyMap[pc.status.name]) }}
                 </span>
+
                 <span v-else>-</span>
               </td>
 
@@ -62,7 +63,7 @@
               </td>
             </tr>
             <tr v-if="paginatedParcelCrops.length === 0">
-              <td colspan="8" class="p-6 text-center text-gray-500">No parcel crops found.</td>
+              <td colspan="8" class="p-6 text-center text-gray-500">{{ t('noparcelcropfound') }}</td>
             </tr>
           </tbody>
         </table>
@@ -70,7 +71,7 @@
         <!-- Pagination -->
         <div class="flex justify-between items-center mt-4 mb-2">
           <button @click="prevPage" :disabled="currentPage === 1" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-            <i class="bx bx-chevron-left"></i> Prev
+            <i class="bx bx-chevron-left"></i> {{ t('prev') }}
           </button>
     
           <div class="flex items-center space-x-2">
@@ -82,7 +83,7 @@
           </div>
     
           <button @click="nextPage" :disabled="currentPage === totalPages" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-            Next <i class="bx bx-chevron-right"></i>
+            {{ t('next') }} <i class="bx bx-chevron-right"></i>
           </button>
         </div>
       </div>
@@ -95,10 +96,33 @@
   import { useRouter } from 'vue-router'
   import { API_URL } from '~/config'
 
+  import { useLanguageStore } from '~/stores/language'
+  import { translate } from '~/utils/translate'
+
+  const languageStore = useLanguageStore()
+
+  const t = (key: string) => translate[languageStore.lang][key] || key
+
+  const currentLocale = computed(() => languageStore.lang)
   
+  // Mapping des statuts culture
+  const cropStatusKeyMap: Record<string, string> = {
+    Planned: "cropStatusPlanned",
+    Planted: "cropStatusPlanted",
+    Germinated: "cropStatusGerminated",
+    Growing: "cropStatusGrowing",
+    Flowering: "cropStatusFlowering",
+    Fruiting: "cropStatusFruiting",
+    Mature: "cropStatusMature",
+    Harvested: "cropStatusHarvested",
+    "Post-Harvest": "cropStatusPostHarvest",
+    Failed: "cropStatusFailed"
+  }
+
+
   const router = useRouter()
   const parcelCrops = ref<any[]>([])
-  const parcelCache: Record<string, string> = {} // pour éviter de re-appeler plusieurs fois le même parcel
+  const parcelCache: Record<string, string> = {} 
 
   async function parcelName(id: string): Promise<string> {
     // Retourne directement si déjà en cache

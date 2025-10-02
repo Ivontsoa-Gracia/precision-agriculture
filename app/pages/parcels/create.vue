@@ -8,27 +8,28 @@
 
         <!-- Content -->
         <div>
-          <h3 class="font-semibold text-[#f4a261] mb-2 text-lg">Instructions</h3>
+          <h3 class="font-semibold text-[#f4a261] mb-2 text-lg">{{ t('instructions') }}</h3>
           <ul class="list-disc list-inside text-sm space-y-1">
-            <li>First, use the <span class="font-semibold">search bar</span> to locate your field.</li>
-            <li>Click on the <span class="font-semibold">map</span> to add points and draw your parcel.</li>
-            <li>A minimum of <span class="font-semibold">3 points</span> is required to create a polygon.</li>
-            <li>Enter a <span class="font-semibold">parcel name</span> in the form.</li>
-            <li>Finally, click <span class="font-semibold text-[#f4a261]">Save parcel</span> to validate.</li>
+            <li v-html="t('step1')"></li>
+            <li v-html="t('step2')"></li>
+            <li v-html="t('step3')"></li>
+            <li v-html="t('step4')"></li>
+            <li v-html="t('step5')"></li>
           </ul>
         </div>
+
       </div>
 
       <form class="space-y-4">
         <div class="bg-[#f9f9f9] shadow p-6 space-y-4 rounded-lg">
-          <h2 class="text-3xl font-extrabold text-[#222831] mb-4">Save field parcel</h2>
+          <h2 class="text-3xl font-extrabold text-[#222831] mb-4">{{ t('titlesaveparcel') }}</h2>
           
           <div class="hidden">
             <label class="block text-sm font-medium mb-1">Owner</label>
             <input v-model="user.username" type="text" class="w-full p-2 border rounded bg-gray-100" readonly>
           </div>
 
-          <p class="text-xs text-gray-500 mt-1">Cliquez sur la carte pour tracer votre polygon</p>
+          <p class="text-xs text-gray-500 mt-1">{{ t('searchintruction') }}</p>
           <div class="flex flex-col relative w-full">
             
             <i class="bx bx-search absolute left-3 top-6 -translate-y-1/2 text-gray-400 pointer-events-none text-lg"></i>
@@ -37,13 +38,13 @@
               v-model="form.search"
               type="text"
               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
-              placeholder="Search on map"
+              :placeholder="t('searchonmap')"
               @input="onSearchInput"
             >
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Parcel Area</label>
+            <label class="block text-sm font-medium mb-1">{{ t('parcelarea') }}</label>
             <input 
               :value="formatM2(form.area)" 
               type="text" 
@@ -53,7 +54,7 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">Parcel Name</label>
+            <label class="block text-sm font-medium mb-1">{{ t('thparcelname') }}</label>
             <input v-model="form.parcel" type="text" class="w-full p-2 border rounded" placeholder="Parcel name">
           </div>
 
@@ -62,7 +63,7 @@
             class="bg-[#10b481] text-white px-4 py-2 rounded shadow hover:bg-[#0da06a] w-full" 
             @click="submitForm"
           >
-            Save parcel
+            {{ t('btnsaveparcel') }}
           </button>
         </div>
       </form>
@@ -90,7 +91,14 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
 
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 definePageMeta({ layout: 'dashboard' })
 import { API_URL } from '~/config'
 
