@@ -2,7 +2,7 @@
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
       <h2 class="text-3xl font-bold mb-6 text-[#10b481] flex items-center gap-2">
         <i class='bx bx-task text-3xl text-[#212121]'></i>
-        New Task
+        {{ t('titlenewtask')}}
       </h2>
 
   
@@ -11,26 +11,26 @@
         <!-- Nom & Date côte à côte -->
         <div class="flex gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="block font-medium">Task Name *</label>
+            <label class="block font-medium">{{ t('taskname')}} *</label>
             <input v-model="form.name" type="text" required class="w-full border p-2 rounded focus:ring-[#212121]" />
           </div>
   
           <div class="flex-1 flex flex-col">
-            <label class="block font-medium">Due Date *</label>
+            <label class="block font-medium">{{ t('due')}} *</label>
             <input v-model="form.due_date" type="date" required class="w-full border p-2 rounded focus:ring-[#212121]" />
           </div>
         </div>
   
         <!-- Description (full width) -->
         <div class="flex flex-col">
-          <label class="block font-medium">Description *</label>
+          <label class="block font-medium">{{ t('desc')}} *</label>
           <textarea v-model="form.description" required class="w-full border p-2 rounded focus:ring-[#212121]"></textarea>
         </div>
   
         <!-- ParcelCrop & Priority côte à côte -->
         <div class="flex gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="block font-medium">Parcel Crop</label>
+            <label class="block font-medium">{{ t('parcelcrop')}}</label>
             <select v-model="form.parcelCrop" class="w-full border p-2 rounded focus:ring-[#212121]">
               <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
                 {{ crop.fullName }}
@@ -39,10 +39,14 @@
           </div>
   
           <div class="flex-1 flex flex-col">
-            <label class="block font-medium">Priority</label>
+            <label class="block font-medium">{{ t('priority')}}</label>
             <select v-model="form.priority" class="w-full border p-2 rounded focus:ring-[#212121]">
-              <option v-for="p in priorities" :key="p.id" :value="p.id">
-                {{ p.name }}
+              <option 
+                v-for="p in priorities" 
+                :key="p.id" 
+                :value="p.id"
+              >
+                {{ t(priorityKeyMap[p.name]) }}
               </option>
             </select>
           </div>
@@ -50,10 +54,14 @@
   
         <!-- Status (full width) -->
         <div class="flex flex-col">
-          <label class="block font-medium">Status</label>
+          <label class="block font-medium">{{ t('status')}}</label>
           <select v-model="form.status" class="w-full border p-2 rounded focus:ring-[#212121]">
-            <option v-for="s in statuses" :key="s.id" :value="s.id">
-              {{ s.name }}
+            <option 
+              v-for="s in statuses" 
+              :key="s.id" 
+              :value="s.id"
+            >
+              {{ t(statusKeyMap[s.name]) }}
             </option>
           </select>
         </div>
@@ -63,7 +71,7 @@
           type="submit" 
           class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white py-2 rounded-lg hover:opacity-90 transition"
         >
-          Create Task
+        {{ t('btnaddtask')}}
         </button>
       </form>
     </div>
@@ -91,16 +99,36 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_URL } from '~/config'
 
-// Router
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
+
+const priorityKeyMap = {
+  Low: 'priorityLow',
+  Medium: 'priorityMedium',
+  High: 'priorityHigh'
+}
+
+const statusKeyMap = {
+  Pending: 'statusPending',
+  "In Progress": 'statusInProgress',
+  Done: 'statusDone',
+  Cancelled: 'statusCancelled'
+}
+
 const router = useRouter()
 
 const isLoading = ref(false)
 
-// Notification state
 const notification = ref({
   visible: false,
   message: '',
-  type: 'success' // 'success' | 'error'
+  type: 'success'
 })
 
 const showNotification = (message: string, type: 'success' | 'error' = 'success', duration = 3000) => {

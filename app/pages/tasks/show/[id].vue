@@ -6,28 +6,28 @@
       <div class="flex items-center gap-3 mb-8">
         <i class="bx bx-show text-4xl text-[#10b481] animate-pulse"></i>
         <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight relative">
-          Task Details
+          {{ t('detailtask') }}
           <span class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"></span>
         </h2>
       </div>
 
       <!-- Task Info Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailItem label="Task Name" :value="task.name"/>
-        <DetailItem label="Due Date" :value="task.due_date"/>
-        <DetailItem label="Parcel Crop" :value="task.parcelCropFull || '-'"/>
-        <DetailItem label="Created At" :value="task.created_at"/>
-        <DetailItem label="Updated At" :value="task.updated_at"/>
-        <DetailItem label="Completed At" :value="task.completed_at || '-'"/>
+        <DetailItem :label="t('taskname')" :value="task.name"/>
+        <DetailItem :label="t('due')" :value="task.due_date"/>
+        <DetailItem :label="t('parcelcrop')" :value="task.parcelCropFull || '-'"/>
+        <DetailItem :label="t('createdat')" :value="task.created_at"/>
+        <DetailItem :label="t('updatedat')" :value="task.updated_at"/>
+        <DetailItem :label="t('completedat')" :value="task.completed_at || '-'"/>
 
         <div class="col-span-1 md:col-span-2 flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">Description</span>
+          <span class="font-semibold text-[#212121]">{{t('desc')}}</span>
           <p class="mt-1 text-gray-700 bg-gray-50 p-4 rounded-md border">{{ task.description }}</p>
         </div>
 
         <!-- Priority Badge -->
         <div class="flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">Priority</span>
+          <span class="font-semibold text-[#212121]">{{ t('priority') }}</span>
           <span
             :class="[
               'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
@@ -36,13 +36,13 @@
               priorityName === 'High' ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50' : 'bg-gray-400'
             ]"
           >
-            {{ priorityName || '-' }}
+          {{ t(priorityKeyMap[priorityName]) }}
           </span>
         </div>
 
         <!-- Status Badge -->
         <div class="flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">Status</span>
+          <span class="font-semibold text-[#212121]">{{ t('status') }}</span>
           <span
             :class="[
               'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
@@ -52,7 +52,7 @@
               statusName === 'Cancelled' ? 'bg-gary-10 text-gary border-gary-500' : 'bg-gray-100'
             ]"
           >
-            {{ statusName || '-' }}
+          {{ t(statusKeyMap[statusName]) }}
           </span>
         </div>
       </div>
@@ -61,12 +61,12 @@
       <div class="mt-10 flex justify-end gap-4">
         <button @click="editTask"
           class="px-6 py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white rounded-2xl font-bold shadow-md hover:shadow-xl hover:scale-105 transition transform">
-          <i class="bx bx-edit-alt"></i> Edit
+          <i class="bx bx-edit-alt"></i> {{ t('edit')}}
         </button>
 
         <button @click="goBack"
           class="px-6 py-3 bg-gray-50 text-gray-800 rounded-2xl font-semibold shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5">
-          <i class="bx bx-arrow-back"></i> Back
+          <i class="bx bx-arrow-back"></i> {{ t('back')}}
         </button>
       </div>
     </div>
@@ -79,7 +79,28 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { API_URL } from '~/config'
 import DetailItem from '~/components/DetailItem.vue'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
 
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
+
+const priorityKeyMap = {
+    Low: 'priorityLow',
+    Medium: 'priorityMedium',
+    High: 'priorityHigh'
+  }
+
+  const statusKeyMap = {
+    Pending: 'statusPending',
+    "In Progress": 'statusInProgress',
+    Done: 'statusDone',
+    Canceled: 'statusCancelled'
+  }
+  
 const router = useRouter()
 const route = useRoute()
 const id = route.params.id as string

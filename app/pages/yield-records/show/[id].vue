@@ -6,25 +6,25 @@
       <div class="flex items-center gap-3 mb-8">
         <i class="bx bx-bar-chart text-4xl text-[#10b481] animate-pulse"></i>
         <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight relative">
-          Yield Record Detail
+          {{ t('yielddetail') }}
           <span class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"></span>
         </h1>
       </div>
 
       <!-- Yield Info Grid -->
       <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailItem label="Date" :value="yieldRecord.date" />
-        <DetailItem label="Yield (kg)" :value="yieldRecord.yield_amount" />
-        <DetailItem label="Area (m²)" :value="yieldRecord.area" />
+        <DetailItem :label="t('thdate')" :value="yieldRecord.date" />
+        <DetailItem :label="t('thyield')" :value="yieldRecord.yield_amount" />
+        <DetailItem :label="`${t('area')} (m²)`" :value="yieldRecord.area" />
         <DetailItem 
-          label="Parcel Crop" 
+          :label="t('parcelcrop')" 
           :value="parcelCropData && parcelData 
                   ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}` 
                   : '-'" 
         />
 
         <div class="col-span-1 md:col-span-2 flex flex-col gap-1">
-          <span class="font-semibold text-[#10b481]">Notes</span>
+          <span class="font-semibold text-[#10b481]">{{ t('note') }}</span>
           <p class="mt-1 text-gray-700 bg-gray-50 p-4 rounded-md border">{{ yieldRecord.notes }}</p>
         </div>
       </div>
@@ -33,11 +33,11 @@
       <div class="mt-8 flex justify-end gap-4">
         <button @click="goToEdit"
           class="px-6 py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white rounded-2xl font-bold shadow-md hover:shadow-xl hover:scale-105 transition transform">
-          <i class="bx bx-edit-alt"></i> Edit
+          <i class="bx bx-edit-alt"></i> {{ t('edit') }}
         </button>
         <button @click="goBack" 
           class="px-6 py-3 bg-gray-50 text-gray-800 rounded-2xl font-semibold shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5">
-          <i class="bx bx-arrow-back"></i> Back
+          <i class="bx bx-arrow-back"></i> {{ t('back') }}
         </button>
       </div>
 
@@ -52,6 +52,15 @@ import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import DetailItem from '~/components/DetailItem.vue'
 import { API_URL } from "~/config";
+
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const route = useRoute();
 const router = useRouter();

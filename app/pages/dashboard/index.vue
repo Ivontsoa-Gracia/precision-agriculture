@@ -8,7 +8,7 @@
         </div>
         <div class="flex flex-col text-left">
           <p class="text-3xl font-bold text-[#10b481]">{{ totalParcels }}</p>
-          <p class="text-sm font-medium text-[#10b481]">Active parcels</p>
+          <p class="text-sm font-medium text-[#10b481]">{{ t('activeparcels') }}</p>
         </div>
         <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#10b481]"></div>
       </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="flex flex-col text-left">
           <p class="text-3xl font-bold text-[#c99383]">{{ taskCompletionRate }}%</p>
-          <p class="text-sm font-medium text-[#c99383]">Completed tasks</p>
+          <p class="text-sm font-medium text-[#c99383]">{{ t('completedtasks') }}</p>
         </div>
         <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#c99383]"></div>
       </div>
@@ -30,7 +30,7 @@
         </div>
         <div class="flex flex-col text-left">
           <p class="text-3xl font-bold text-[#222831]">{{ yieldTotal }} kg</p>
-          <p class="text-sm font-medium text-[#222831]">Total yield</p>
+          <p class="text-sm font-medium text-[#222831]">{{ t('totalyield') }}</p>
         </div>
         <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#222831]"></div>
       </div>
@@ -41,7 +41,7 @@
         </div>
         <div class="flex flex-col text-left">
           <p class="text-3xl font-bold text-[#6d4c41]">{{ yieldAvg }} kg</p>
-          <p class="text-sm font-medium text-[#6d4c41]">Average yield</p>
+          <p class="text-sm font-medium text-[#6d4c41]">{{ t('averageyield') }}</p>
         </div>
         <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#6d4c41]"></div>
       </div>
@@ -60,11 +60,11 @@
           <div class="flex items-center justify-between mb-5">
             <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
               <i class='bx bx-fullscreen text-[#10b481] text-xl'></i>
-              Zoom on Parcel
+              {{ t('zoomonparcel') }}
             </h3>
 
 
-            <span class="text-sm text-gray-500">{{ totalParcels }} parcel(s)</span>
+            <span class="text-sm text-gray-500">{{ totalParcels }} {{ t('parcel') }}(s)</span>
           </div>
 
           <div class="relative mb-4 flex items-center gap-2">
@@ -73,7 +73,7 @@
               <input
                 type="text"
                 v-model="parcelSearch"
-                placeholder="Search for a parcel..."
+                :placeholder="t('search')"
                 class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
               />
               <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'></i>
@@ -94,7 +94,7 @@
                   v-if="showSortMenu"
                   class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-xl shadow-xl z-50"
                 >
-                  <p class="px-4 py-2 text-gray-500 font-semibold border-b border-gray-200">Sort by</p>
+                  <p class="px-4 py-2 text-gray-500 font-semibold border-b border-gray-200">{{ t('sortby') }}</p>
                   <label 
                     class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded-lg"
                   >
@@ -105,7 +105,7 @@
                       class="accent-[#212121]" 
                       @change="showSortMenu = false"
                     />
-                    Name (A → Z)
+                    {{ t('sortname') }}
                   </label>
                   <label 
                     class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded-lg"
@@ -117,7 +117,7 @@
                       class="accent-[#212121]" 
                       @change="showSortMenu = false"
                     />
-                    Yield (desc)
+                    {{ t('sortyield') }}
                   </label>
                 </div>
               </transition>
@@ -189,12 +189,12 @@
 
     <div class=" space-y-6">
       <!-- Grand titre Analytics -->
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Analytics</h2>
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-6">{{ t('titleanalytics') }}</h2>
 
       <div class="grid grid-cols-3 gap-6">
         <!-- Graphique linéaire Yield Evolution -->
         <div class="col-span-2 bg-white rounded-2xl shadow-md p-6">
-          <h3 class="font-bold text-lg mb-4 text-gray-900">Yield Evolution</h3>
+          <h3 class="font-bold text-lg mb-4 text-gray-900">{{ t('charttitleyield') }}</h3>
           <canvas id="parcelYieldChart" class="h-96 w-full rounded-xl"></canvas>
         </div>
 
@@ -202,7 +202,7 @@
         <div class="col-span-1 bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition flex-1 min-w-[200px]">
           <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2 mb-4">
             <i class='bx bx-bar-chart text-[#10b481] text-xl'></i>
-            Parcels Analytics
+            {{ t('parcelanalytics') }}
           </h3>
 
           <div v-for="(parcel, key) in analyticsData" :key="key" class="bg-white rounded-md shadow-md mb-4 overflow-hidden transition hover:shadow-xl">
@@ -220,11 +220,11 @@
               <!-- Yield Summary -->
               <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
-                  <span class="text-gray-500 text-sm">Mean Yield</span>
+                  <span class="text-gray-500 text-sm">{{ t('meanyield') }}</span>
                   <span class="text-lg font-bold text-[#10b481]">{{ parcel.mean_yield.toFixed(2) }} kg</span>
                 </div>
                 <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
-                  <span class="text-gray-500 text-sm">Mean Yield per Area</span>
+                  <span class="text-gray-500 text-sm">{{ t('meanyieldperarea') }}</span>
                   <span class="text-lg font-bold text-[#c99383]">{{ parcel.mean_yield_per_area.toFixed(2) }} kg/ha</span>
                 </div>
               </div>
@@ -237,7 +237,7 @@
                     <span class="text-gray-800 font-medium">{{ parcel.yield_amount[i].toFixed(2) }} kg</span>
                   </div>
                   <div class="flex flex-col text-right">
-                    <span class="text-gray-400 text-xs mb-1">Yield per Area</span>
+                    <span class="text-gray-400 text-xs mb-1">{{ t('yieldperarea') }}</span>
                     <span class="text-[#10b481] font-medium text-lg">
                       {{ parcel.yield_per_area[i].toFixed(2) }} kg/ha
                     </span>
@@ -268,6 +268,15 @@ import { nextTick } from "vue";
 import { API_URL } from '~/config'
 
 definePageMeta({ layout: "dashboard" });
+
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const showSortMenu = ref(false)
 

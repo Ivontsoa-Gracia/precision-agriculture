@@ -26,25 +26,25 @@
           <div class="flex-1 space-y-2">
             <h3 class="text-lg font-semibold">
               <i class='bx bx-map text-lg text-gray-800'></i>
-              Parcel Details</h3>
+              {{ t('parceldetail') }}</h3>
             <p>
-              <span class="font-medium">Owner:</span>
+              <span class="font-medium">{{ t('owner') }}:</span>
               {{ ownerData.first_name || "N/A" }} {{ ownerData.last_name || "N/A" }}
             </p>
             <p>
-              <span class="font-medium">Parcel name:</span>
+              <span class="font-medium">{{ t('thparcelname') }}:</span>
               {{ parcelData.parcel_name || "N/A" }}
             </p>
             <p>
-              <span class="font-medium">Area:</span>
+              <span class="font-medium">{{ t('Area') }}:</span>
               {{ formatM2(parcelAreaHa) }}
             </p>
             <p>
-              <span class="font-medium">Latitude:</span>
+              <span class="font-medium">{{ t('thlatitude') }}:</span>
               {{ parcelData.parcel_points?.[0]?.latitude ?? "-" }}
             </p>
             <p>
-              <span class="font-medium">Longitude:</span>
+              <span class="font-medium">{{ t('thlongitude') }}:</span>
               {{ parcelData.parcel_points?.[0]?.longitude ?? "-" }}
             </p>
           </div>
@@ -52,45 +52,38 @@
 
           <!-- Crop Type -->
           <div class="w-1/3 bg-[#10b481]/10 rounded-xl p-4 flex flex-col justify-center items-center shadow-inner text-center">
-            <h3 class="text-gray-700 mb-2">Crop Type</h3>
+            <h3 class="text-gray-700 mb-2">{{ t('croptype') }}</h3>
             <div v-for="(c, i) in cropsInfo" :key="i" class="p-2">
               <p><strong class="text-[#10b481] font-bold text-3xl">{{ c.type }}</strong></p>
-              <p class="text-gray-700 mb-2 text-sm">{{ c.variety }}</p>
+              <p class="text-gray-700 mb-2 text-sm hidden">{{ c.variety }}</p>
             </div>
 
           </div>
-        <!-- <div class="absolute right-0 top-6 bottom-6 border-l-4 border-[#10b481]"></div> -->
-
         </div>
 
-
-        <!-- Graphs -->
         <div class="grid grid-cols-2 gap-6">
-          <!-- Weather Condition -->
           <div class="bg-white rounded-2xl shadow p-4">
-            <h3 class="font-semibold text-gray-800 mb-2">Weather Condition</h3>
+            <h3 class="font-semibold text-gray-800 mb-2">{{ t('charttitleweather') }}</h3>
             <canvas id="weatherConditionChart"></canvas>
           </div>
 
           <!-- Precipitation -->
           <div class="bg-white rounded-2xl shadow p-4">
-            <h3 class="font-semibold text-gray-800 mb-2">Precipitation</h3>
+            <h3 class="font-semibold text-gray-800 mb-2">{{ t('chartprecipitation') }}</h3>
             <canvas id="precipitationChart"></canvas>
           </div>
         </div>
 
         <!-- Yield Evolution -->
         <div class="bg-white rounded-2xl shadow p-4">
-          <h3 class="font-semibold text-gray-800 mb-2">Yield Evolution</h3>
+          <h3 class="font-semibold text-gray-800 mb-2">{{ t('charttitleyield') }}</h3>
           <canvas id="yieldEvolutionChart"></canvas>
         </div>
       </div>
 
-      <!-- 1/3 Right -->
       <div class="flex-1 flex flex-col space-y-6 w-1/3 text-gray-800">
-        <!-- Soil Info -->
         <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
-          <h3 class="text-lg font-semibold ">Soil Info</h3>
+          <h3 class="text-lg font-semibold ">{{ t('soilinfo') }}</h3>
           <div class="mt-4 space-y-3">
             <div
               v-for="(quality, index) in soilQualities"
@@ -115,7 +108,7 @@
         </div>
 
         <div v-if="selectedParcel" class="grid grid-cols-1 gap-6">
-          <h3 class=" text-gray-800 mb-2 text-lg font-semibold">Analytics</h3>
+          <h3 class=" text-gray-800 mb-2 text-lg font-semibold">{{ t('titleanalytics') }}</h3>
           <div class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
             <div class="flex items-center justify-center w-16 h-16 rounded-full bg-[#222831]/10">
               <i class='bx bx-bar-chart-alt-2 text-4xl text-[#222831]'></i>
@@ -124,7 +117,7 @@
               <p class="text-3xl font-bold text-[#222831]">
                 {{ selectedParcel.mean_yield?.toFixed(2) ?? '-' }} kg
               </p>
-              <p class="text-sm font-medium text-[#222831]">Mean Yield</p>
+              <p class="text-sm font-medium text-[#222831]">{{ t('meanyield') }}</p>
             </div>
             <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#222831]"></div>
           </div>
@@ -138,7 +131,7 @@
               <p class="text-3xl font-bold text-[#6d4c41]">
                 {{ selectedParcel.mean_yield_per_area?.toFixed(2) ?? '-' }} kg/ha
               </p>
-              <p class="text-sm font-medium text-[#6d4c41]">Mean Yield per Area</p>
+              <p class="text-sm font-medium text-[#6d4c41]">{{ t('meanyieldperarea') }}</p>
             </div>
             <div class="absolute right-0 top-6 bottom-6 border-r-4 border-[#6d4c41]"></div>
           </div>
@@ -159,12 +152,12 @@
             <div class="flex justify-between items-start">
               <!-- Titre + See All -->
               <div>
-                <h3 class="text-xl font-bold text-gray-800">Tasks to Perform</h3>
+                <h3 class="text-xl font-bold text-gray-800">{{ t('titletaskperform') }}</h3>
                 <NuxtLink 
                   to="/tasks"
                   class="text-sm font-medium text-gray-600 hover:text-black hover:underline mt-4"
                 >
-                  See All
+                  {{ t('seeall') }}
                 </NuxtLink>
               </div>
 
@@ -174,7 +167,7 @@
                   to="/tasks/create" 
                   class="flex items-center px-4 py-2 bg-[#10b481] text-white rounded-lg shadow hover:bg-[#0da06a] transition"
                 >
-                  <i class="bx bx-plus mr-2"></i> Add Task
+                  <i class="bx bx-plus mr-2"></i>{{ t('addtask') }}
                 </NuxtLink>
               </div>
             </div>
@@ -195,8 +188,13 @@
                 <!-- Task info -->
                 <div class="flex flex-col">
                   <p class="font-semibold text-gray-800 text-lg">{{ task.name }}</p>
-                  <p class="text-gray-500 text-sm">Priority: <span class="capitalize">{{ task.priority }}</span></p>
-                  <p class="text-gray-500 text-sm">Due: {{ formatDate(task.due_date) }}</p>
+                  <p class="text-gray-500 text-sm">
+                    {{ t('priority') }}: 
+                    <span class="capitalize">
+                      {{ t('priority' + task.priority) }}
+                    </span>
+                  </p>
+                  <p class="text-gray-500 text-sm">{{ t('due') }}: {{ formatDate(task.due_date) }}</p>
                 </div>
 
                 <!-- Status badge -->
@@ -210,7 +208,7 @@
                     'bg-gray-100 text-gray-600 border-gray-300'
                   ]"
                 >
-                  {{ task.status }}
+                  {{ t('status' + task.status.replace(/ /g, '')) }}
                 </span>
 
                 <!-- Menu actions -->
@@ -228,14 +226,14 @@
                       :to="`/tasks/edit/${task.id}`"
                       class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
                     >
-                      Edit
+                    {{ t('edit') }}
                     </NuxtLink>
 
                     <NuxtLink
                       :to="`/tasks/show/${task.id}`"
                       class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
                     >
-                      Show
+                    {{ t('show') }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -246,26 +244,20 @@
 
         <!-- Performance Graph -->
         <div class="bg-white rounded-2xl shadow p-6 w-1/3 flex flex-col">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">Task Performance</h3>
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ t('charttitletask') }}</h3>
           <canvas id="taskPerformanceChart" class="flex-1 w-full"></canvas>
         </div>
       </div>
 
-      <!-- Harvest History (Table with Pagination) -->
       <div class="bg-white rounded-2xl shadow p-6 space-y-4">
-        <!-- Header with actions -->
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-[#212121]">Harvest History</h3>
+          <h3 class="text-lg font-semibold text-[#212121]">{{ t('harvesthistory') }}</h3>
 
-          <!-- Boutons -->
           <div class="flex space-x-3">
-            <button class="flex items-center px-3 py-2 bg-[#e63946] text-white rounded hover:bg-[#e63946]/80 hidden">
-              <i class="bx bx-trash mr-2"></i> Effacer
-            </button>
             <button 
               @click="exportCSV"
               class="flex items-center px-3 py-2 bg-[#4da6ff] text-white rounded hover:bg-blue-600">
-              <i class="bx bx-export mr-2"></i> Exporter
+              <i class="bx bx-export mr-2"></i> {{ t('export') }}
             </button>
           </div>
 
@@ -275,11 +267,11 @@
           <table class="min-w-full text-left border-collapse">
             <thead class="bg-gray-100">
               <tr>
-                <th class="px-6 py-2 border-b">Date</th>
-                <th class="px-6 py-2 border-b">Rendement (kg)</th>
-                <th class="px-6 py-2 border-b">Observation</th>
-                <th class="px-6 py-2 border-b">Tendance</th>
-                <th class="px-6 py-2 border-b text-center">Actions</th>
+                <th class="px-6 py-2 border-b">{{ t('thdate') }}</th>
+                <th class="px-6 py-2 border-b">{{ t('thyield') }}</th>
+                <th class="px-6 py-2 border-b">{{ t('thobservation') }}</th>
+                <th class="px-6 py-2 border-b">{{ t('thtendance') }}</th>
+                <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -303,14 +295,10 @@
                 </td>
               </tr>
               <tr v-if="paginatedHarvest.length === 0">
-                <td colspan="5" class="p-6 text-center text-gray-500">No records found.</td>
+                <td colspan="5" class="p-6 text-center text-gray-500">{{ t('nohistoryfound') }}</td>
               </tr>
             </tbody>
           </table>
-
-          <!-- <p class="mt-2 text-gray-700 font-medium">
-            Tendance globale : {{ overallTrend }}
-          </p> -->
 
         </div>
 
@@ -320,7 +308,7 @@
             :disabled="currentPage === 1"
             class="flex items-center px-3 py-1 rounded disabled:opacity-50"
           >
-            <i class="bx bx-chevron-left"></i> Prev
+            <i class="bx bx-chevron-left"></i> {{ t('prev') }}
           </button>
 
           <div class="flex items-center space-x-2">
@@ -344,7 +332,7 @@
             :disabled="currentPage === totalPages"
             class="flex items-center px-3 py-1 rounded disabled:opacity-50"
           >
-            Next <i class="bx bx-chevron-right"></i>
+          {{ t('next') }} <i class="bx bx-chevron-right"></i>
           </button>
         </div>
       </div>
@@ -361,6 +349,14 @@ import axios from "axios";
 import Chart from "chart.js/auto";
 import { API_URL } from '~/config'
 
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
+
+const languageStore = useLanguageStore()
+
+const t = (key) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 const route = useRoute()
 const fieldIdParam = route.params.id ?? null
@@ -450,13 +446,15 @@ function updateTaskChart() {
     taskChart.destroy();
   }
 
+  const translatedLabels = Object.keys(statusCount).map(statusKey => t(`status${statusKey.replace(/\s+/g, '')}`));
+
   taskChart = new Chart(ctx.getContext("2d"), {
     type: "doughnut",
     data: {
-      labels: Object.keys(statusCount),
+      labels: translatedLabels,
       datasets: [
         {
-          label: "Tasks by Status",
+          label: t("chartTasksByStatus"),
           data: Object.values(statusCount),
           backgroundColor: ["#f4a261", "#10b481", "#219ebc", "#c99383"], 
         },
@@ -472,6 +470,7 @@ function updateTaskChart() {
       },
     },
   });
+
 }
 
 let yieldChart = null;
@@ -500,10 +499,10 @@ function updateYieldEvolutionChart() {
   yieldChart = new Chart(ctx.getContext("2d"), {
     type: "line",
     data: {
-      labels,
+      labels, // les mois/années restent inchangés
       datasets: [
         {
-          label: "Yield (kg)",
+          label: t("chartYieldEvolution"), // traduction appliquée ici
           data,
           borderColor: "#10b481",
           backgroundColor: "rgba(16, 180, 129, 0.2)",
@@ -523,6 +522,7 @@ function updateYieldEvolutionChart() {
       }
     }
   });
+
 }
 
 watch(() => parcelFullData.yield_records, updateYieldEvolutionChart, { immediate: true });
@@ -573,7 +573,7 @@ function updateClimateCharts(data) {
         labels: dates,
         datasets: [
           {
-            label: "Temperature (°C)",
+            label: t("chartTemperature"), // traduction ici
             data: temperature,
             borderColor: "#5fd4a2",
             backgroundColor: "rgba(16,180,129,0.2)",
@@ -588,7 +588,8 @@ function updateClimateCharts(data) {
         scales: { y: { beginAtZero: false } },
       },
     });
-  } else {
+  }
+ else {
     console.warn("Aucune donnée de température valide pour afficher le chart");
   }
 
@@ -600,7 +601,7 @@ function updateClimateCharts(data) {
         labels: dates,
         datasets: [
           {
-            label: "Precipitation (mm/day)",
+            label: t("chartPrecipitation"), 
             data: precipitation,
             backgroundColor: "#219ebc",
           },
@@ -612,7 +613,8 @@ function updateClimateCharts(data) {
         scales: { y: { beginAtZero: true } },
       },
     });
-  } else {
+  }
+  else {
     console.warn("Aucune donnée de précipitation valide pour afficher le chart");
   }
 }

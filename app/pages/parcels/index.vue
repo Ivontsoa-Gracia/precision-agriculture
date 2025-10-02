@@ -3,12 +3,12 @@
     <div class="mb-6">
       <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
         <i class='bx bx-map text-3xl text-[#10b481]'></i>
-        Parcels List
+        {{ t('titleparcellist') }}
       </h2>
 
       <div class="flex justify-between items-center flex-wrap gap-4">
         <div class="flex items-center space-x-2">
-          <label for="rows" class="text-sm">Rows per page:</label>
+          <label for="rows" class="text-sm">{{ t('rowperpage') }}</label>
           <select
             id="rows"
             v-model.number="rowsPerPage"
@@ -25,13 +25,13 @@
           <input
             v-model="filters.owner"
             type="text"
-            placeholder="Filter by Owner"
+            :placeholder="t('filterbyowner')"
             class="p-2 border border-gray-300 rounded w-60"
           />
           <input
             v-model="filters.parcel_name"
             type="text"
-            placeholder="Filter by parcel_name"
+            :placeholder="t('filterbyparcel')"
             class="p-2 border border-gray-300 rounded w-60"
           />
           <button
@@ -47,7 +47,7 @@
             <button
               class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
             >
-              <i class='bx bx-export mr-2 text-xl'></i> Export
+              <i class='bx bx-export mr-2 text-xl'></i> {{ t('export') }}
               <i class='bx bx-chevron-down ml-2'></i>
             </button>
             <!-- Dropdown Export -->
@@ -62,7 +62,7 @@
             to="/parcels/create"
             class="flex items-center bg-[#10b481] text-white px-12 py-2 rounded-xl shadow hover:bg-[#0da06a]"
           >
-            <i class='bx bx-plus mr-2 text-xl'></i> Add Parcel
+            <i class='bx bx-plus mr-2 text-xl'></i> {{ t('addparcel') }}
           </NuxtLink>
         </div>
       </div>
@@ -75,10 +75,10 @@
             <tr>
               <th class="px-6 py-2 border-b hidden">Owner 
               </th>
-              <th class="px-6 py-2 border-b">Parcel Name</th>
-              <th class="px-6 py-2 border-b">Latitude</th>
-              <th class="px-6 py-2 border-b">Longitude</th>
-              <th class="px-6 py-2 border-b text-center">Actions</th>
+              <th class="px-6 py-2 border-b">{{ t('thparcelname') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('thlatitude') }}</th>
+              <th class="px-6 py-2 border-b">{{ t('thlongitude') }}</th>
+              <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -116,7 +116,7 @@
               </td>
             </tr>
             <tr v-if="paginatedFields.length === 0">
-              <td colspan="6" class="p-6 text-center text-gray-500">No fields found.</td>
+              <td colspan="6" class="p-6 text-center text-gray-500">{{ t('noparcelsfound') }}</td>
             </tr>
           </tbody>
         </table>
@@ -128,7 +128,7 @@
           :disabled="currentPage === 1"
           class="flex items-center px-3 py-1 rounded disabled:opacity-50"
         >
-          <i class="bx bx-chevron-left"></i> Prev
+          <i class="bx bx-chevron-left"></i> {{ t('prev') }}
         </button>
 
         <div class="flex items-center space-x-2">
@@ -152,7 +152,7 @@
           :disabled="currentPage === totalPages"
           class="flex items-center px-3 py-1 rounded disabled:opacity-50"
         >
-          Next <i class="bx bx-chevron-right"></i>
+        {{ t('next') }} <i class="bx bx-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -173,7 +173,14 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { API_URL } from '~/config'
+import { useLanguageStore } from '~/stores/language'
+import { translate } from '~/utils/translate'
 
+const languageStore = useLanguageStore()
+
+const t = (key: string) => translate[languageStore.lang][key] || key
+
+const currentLocale = computed(() => languageStore.lang)
 
 definePageMeta({
   layout: 'dashboard'
