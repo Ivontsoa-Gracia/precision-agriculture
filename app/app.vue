@@ -6,7 +6,6 @@
 
 
 <script setup lang="ts">
-// inclure le CDN Boxicons via useHead
 useHead({
   link: [
     {

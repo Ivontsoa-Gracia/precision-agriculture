@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ label: string, value: string | number }>()
+defineProps<{ label: string; value: string | number }>();
 </script>
 
 <template #DetailItem="{ label, value }">
@@ -11,9 +11,15 @@ defineProps<{ label: string, value: string | number }>()
 
 <style scoped>
 @keyframes gradient-slide {
-  0% { background-position: 0% }
-  50% { background-position: 100% }
-  100% { background-position: 0% }
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
 }
 .animate-gradient {
   background-size: 200% 200%;

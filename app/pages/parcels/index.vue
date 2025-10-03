@@ -1,14 +1,16 @@
 <template>
   <div class="p-6">
     <div class="mb-6">
-      <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-        <i class='bx bx-map text-3xl text-[#10b481]'></i>
-        {{ t('titleparcellist') }}
+      <h2
+        class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+      >
+        <i class="bx bx-map text-3xl text-[#10b481]"></i>
+        {{ t("titleparcellist") }}
       </h2>
 
       <div class="flex justify-between items-center flex-wrap gap-4">
         <div class="flex items-center space-x-2">
-          <label for="rows" class="text-sm">{{ t('rowperpage') }}</label>
+          <label for="rows" class="text-sm">{{ t("rowperpage") }}</label>
           <select
             id="rows"
             v-model.number="rowsPerPage"
@@ -38,7 +40,7 @@
             @click="resetFilters"
             class="p-2 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center"
           >
-            <i class='bx bx-reset text-lg'></i>
+            <i class="bx bx-reset text-lg"></i>
           </button>
         </div>
 
@@ -47,22 +49,32 @@
             <button
               class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
             >
-              <i class='bx bx-export mr-2 text-xl'></i> {{ t('export') }}
-              <i class='bx bx-chevron-down ml-2'></i>
+              <i class="bx bx-export mr-2 text-xl"></i> {{ t("export") }}
+              <i class="bx bx-chevron-down ml-2"></i>
             </button>
-            <!-- Dropdown Export -->
-            <div class="absolute -mt-1 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50">
-              <button @click="exportData('pdf')" class="block px-4 py-2 w-full text-left hover:bg-gray-100">PDF</button>
-              <button @click="exportData('csv')" class="block px-4 py-2 w-full text-left hover:bg-gray-100">CSV</button>
+            <div
+              class="absolute -mt-1 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50"
+            >
+              <button
+                @click="exportData('pdf')"
+                class="block px-4 py-2 w-full text-left hover:bg-gray-100"
+              >
+                PDF
+              </button>
+              <button
+                @click="exportData('csv')"
+                class="block px-4 py-2 w-full text-left hover:bg-gray-100"
+              >
+                CSV
+              </button>
             </div>
           </div>
-
 
           <NuxtLink
             to="/parcels/create"
             class="flex items-center bg-[#10b481] text-white px-12 py-2 rounded-xl shadow hover:bg-[#0da06a]"
           >
-            <i class='bx bx-plus mr-2 text-xl'></i> {{ t('addparcel') }}
+            <i class="bx bx-plus mr-2 text-xl"></i> {{ t("addparcel") }}
           </NuxtLink>
         </div>
       </div>
@@ -73,20 +85,25 @@
         <table class="min-w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-2 border-b hidden">Owner 
+              <th class="px-6 py-2 border-b hidden">Owner</th>
+              <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
+              <th class="px-6 py-2 border-b">{{ t("thlatitude") }}</th>
+              <th class="px-6 py-2 border-b">{{ t("thlongitude") }}</th>
+              <th class="px-6 py-2 border-b text-center">
+                {{ t("thactions") }}
               </th>
-              <th class="px-6 py-2 border-b">{{ t('thparcelname') }}</th>
-              <th class="px-6 py-2 border-b">{{ t('thlatitude') }}</th>
-              <th class="px-6 py-2 border-b">{{ t('thlongitude') }}</th>
-              <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="field in paginatedFields" :key="field.id" class="hover:bg-gray-50">
+            <tr
+              v-for="field in paginatedFields"
+              :key="field.id"
+              class="hover:bg-gray-50"
+            >
               <td class="px-6 py-2 border-b hidden">{{ field.owner }}</td>
 
               <td class="px-6 py-2 border-b">
-                <NuxtLink 
+                <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
                   class="hover:text-[#10b481] transition-colors"
                 >
@@ -94,8 +111,12 @@
                 </NuxtLink>
               </td>
 
-              <td class="px-6 py-2 border-b">{{ field.latitude.toFixed(6) }}</td>
-              <td class="px-6 py-2 border-b">{{ field.longitude.toFixed(6) }}</td>
+              <td class="px-6 py-2 border-b">
+                {{ field.latitude.toFixed(6) }}
+              </td>
+              <td class="px-6 py-2 border-b">
+                {{ field.longitude.toFixed(6) }}
+              </td>
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
@@ -108,15 +129,20 @@
                   :to="`/parcels/edit/${field.fieldId}`"
                   class="p-2 rounded-full hover:bg-[#f4a261]/10"
                 >
-                <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+                  <i class="bx bx-edit text-[#f4a261] text-xl"></i>
                 </NuxtLink>
-                <button @click="confirmDelete(field.fieldId)" class="p-2 rounded-full hover:bg-[#e63946]/10">
+                <button
+                  @click="confirmDelete(field.fieldId)"
+                  class="p-2 rounded-full hover:bg-[#e63946]/10"
+                >
                   <i class="bx bx-trash text-[#e63946] text-xl"></i>
                 </button>
               </td>
             </tr>
             <tr v-if="paginatedFields.length === 0">
-              <td colspan="6" class="p-6 text-center text-gray-500">{{ t('noparcelsfound') }}</td>
+              <td colspan="6" class="p-6 text-center text-gray-500">
+                {{ t("noparcelsfound") }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -128,7 +154,7 @@
           :disabled="currentPage === 1"
           class="flex items-center px-3 py-1 rounded disabled:opacity-50"
         >
-          <i class="bx bx-chevron-left"></i> {{ t('prev') }}
+          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
         </button>
 
         <div class="flex items-center space-x-2">
@@ -138,7 +164,9 @@
             @click="goToPage(page)"
             :class="[
               'px-3 py-1 rounded',
-              currentPage === page ? 'bg-[#10b481] text-white' : 'bg-gray-100 hover:bg-gray-200',
+              currentPage === page
+                ? 'bg-[#10b481] text-white'
+                : 'bg-gray-100 hover:bg-gray-200',
             ]"
             v-if="page !== '...'"
           >
@@ -152,95 +180,103 @@
           :disabled="currentPage === totalPages"
           class="flex items-center px-3 py-1 rounded disabled:opacity-50"
         >
-        {{ t('next') }} <i class="bx bx-chevron-right"></i>
+          {{ t("next") }} <i class="bx bx-chevron-right"></i>
         </button>
       </div>
     </div>
   </div>
-  <div v-if="showDeleteModal" class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
-  <div class="bg-white rounded-lg p-6 w-80 text-center shadow-lg">
-    <h3 class="text-xl font-bold mb-4">Delete Parcel</h3>
-    <p class="mb-6">Are you sure you want to delete this parcel?</p>
-    <div class="flex justify-center gap-4">
-      <button @click="deleteParcelConfirmed" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Yes</button>
-      <button @click="cancelDelete" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">No</button>
+  <div
+    v-if="showDeleteModal"
+    class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
+  >
+    <div class="bg-white rounded-lg p-6 w-80 text-center shadow-lg">
+      <h3 class="text-xl font-bold mb-4">Delete Parcel</h3>
+      <p class="mb-6">Are you sure you want to delete this parcel?</p>
+      <div class="flex justify-center gap-4">
+        <button
+          @click="deleteParcelConfirmed"
+          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Yes
+        </button>
+        <button
+          @click="cancelDelete"
+          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          No
+        </button>
+      </div>
     </div>
   </div>
-</div>
-
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { API_URL } from '~/config'
-import { useLanguageStore } from '~/stores/language'
-import { translate } from '~/utils/translate'
+import { ref, reactive, computed, onMounted } from "vue";
+import { API_URL } from "~/config";
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
 
-const languageStore = useLanguageStore()
+const languageStore = useLanguageStore();
 
-const t = (key: string) => translate[languageStore.lang][key] || key
+const t = (key: string) => translate[languageStore.lang][key] || key;
 
-const currentLocale = computed(() => languageStore.lang)
+const currentLocale = computed(() => languageStore.lang);
 
 definePageMeta({
-  layout: 'dashboard'
-})
+  layout: "dashboard",
+});
 
-async function exportData(type: 'pdf' | 'csv') {
-  const data = filteredFields.value.map(f => ({
+async function exportData(type: "pdf" | "csv") {
+  const data = filteredFields.value.map((f) => ({
     Owner: f.owner,
     FieldID: f.fieldId,
     ParcelName: f.parcel_name,
     Latitude: f.latitude,
-    Longitude: f.longitude
-  }))
+    Longitude: f.longitude,
+  }));
 
-  if (type === 'pdf') {
+  if (type === "pdf") {
     if (process.client) {
-      // Import dynamique côté client
-      const { jsPDF } = await import('jspdf');
-      const autoTableModule = await import('jspdf-autotable');
+      const { jsPDF } = await import("jspdf");
+      const autoTableModule = await import("jspdf-autotable");
 
       const doc = new jsPDF();
-      // @ts-ignore
       autoTableModule.default(doc, {
-        head: [['Owner', 'FieldID', 'ParcelName', 'Latitude', 'Longitude']],
+        head: [["Owner", "FieldID", "ParcelName", "Latitude", "Longitude"]],
         body: data.map(Object.values),
-        startY: 20
+        startY: 20,
       });
 
-      doc.save('parcels.pdf');
+      doc.save("parcels.pdf");
     }
   } else {
-    // Générer CSV côté navigateur
-    if (!data.length) return
-    const headers = Object.keys(data[0])
+    if (!data.length) return;
+    const headers = Object.keys(data[0]);
     const csvRows = [
-      headers.join(','), // ligne d'en-tête
-      ...data.map(row => headers.map(h => `"${row[h]}"`).join(',')) // lignes de données
-    ]
-    const csvString = csvRows.join('\n')
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.setAttribute('download', 'parcels.csv')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+      headers.join(","),
+      ...data.map((row) => headers.map((h) => `"${row[h]}"`).join(",")),
+    ];
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "parcels.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }
 
-
 const filters = reactive({
-  owner: '',
-  parcel_name: ''
-})
+  owner: "",
+  parcel_name: "",
+});
 
-const fields = ref<any[]>([])
-const rowsPerPage = ref(4)
-const currentPage = ref(1)
-const activeMenu = ref<string | null>(null)
-const menuPosition = reactive({ top: 0, right: 0 })
+const fields = ref<any[]>([]);
+const rowsPerPage = ref(4);
+const currentPage = ref(1);
+const activeMenu = ref<string | null>(null);
+const menuPosition = reactive({ top: 0, right: 0 });
 
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
@@ -250,9 +286,8 @@ onMounted(async () => {
   }
 
   try {
-    // 1️⃣ Récupérer toutes les parcelles
     const response = await fetch(`${API_URL}/api/parcels/`, {
-      headers: { "Authorization": `Token ${token}` }
+      headers: { Authorization: `Token ${token}` },
     });
     const parcels = await response.json();
     if (!response.ok) {
@@ -260,136 +295,153 @@ onMounted(async () => {
       return;
     }
 
-    // 2️⃣ Récupérer tous les UUID uniques
     const ownerUUIDs = [...new Set(parcels.map((p: any) => p.owner))];
 
-    // 3️⃣ Créer un mapping UUID -> nom complet
     const ownersMap: Record<string, string> = {};
 
-    await Promise.all(ownerUUIDs.map(async (uuid: string) => {
-      try {
-        const ownerRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
-          headers: { "Authorization": `Token ${token}` }
-        });
-        if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
+    await Promise.all(
+      ownerUUIDs.map(async (uuid: string) => {
+        try {
+          const ownerRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
+            headers: { Authorization: `Token ${token}` },
+          });
+          if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
 
-        const ownerData = await ownerRes.json();
-        console.log("user data", ownerData);
-        ownersMap[uuid] = `${ownerData.first_name}`.trim() || "Unknown";
-      } catch (err) {
-        console.error("Erreur récupération user:", err);
-        ownersMap[uuid] = "Unknown";
-      }
-    }));
+          const ownerData = await ownerRes.json();
+          ownersMap[uuid] = `${ownerData.first_name}`.trim() || "Unknown";
+        } catch (err) {
+          console.error("Erreur récupération user:", err);
+          ownersMap[uuid] = "Unknown";
+        }
+      })
+    );
 
-    // 4️⃣ Construire fields avec nom complet
     fields.value = parcels.map((parcel: any, idx: number) => ({
       id: idx + 1,
       fieldId: parcel.uuid,
       owner: ownersMap[parcel.owner] || "Unknown Owner",
       parcel_name: parcel.parcel_name,
       latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
-      longitude: parcel.parcel_points?.[0]?.longitude ?? "-"
+      longitude: parcel.parcel_points?.[0]?.longitude ?? "-",
     }));
-
   } catch (err) {
     console.error("Erreur réseau:", err);
   }
 });
 
-
-// Filtrage
 const filteredFields = computed(() =>
-  fields.value.filter(f =>
-    f.owner.toLowerCase().includes(filters.owner.toLowerCase()) &&
-    f.parcel_name.toLowerCase().includes(filters.parcel_name.toLowerCase())
+  fields.value.filter(
+    (f) =>
+      f.owner.toLowerCase().includes(filters.owner.toLowerCase()) &&
+      f.parcel_name.toLowerCase().includes(filters.parcel_name.toLowerCase())
   )
-)
+);
 
-// Pagination
-const totalPages = computed(() => Math.ceil(filteredFields.value.length / rowsPerPage.value))
+const totalPages = computed(() =>
+  Math.ceil(filteredFields.value.length / rowsPerPage.value)
+);
 const paginatedFields = computed(() => {
-  const start = (currentPage.value - 1) * rowsPerPage.value
-  return filteredFields.value.slice(start, start + rowsPerPage.value)
-})
+  const start = (currentPage.value - 1) * rowsPerPage.value;
+  return filteredFields.value.slice(start, start + rowsPerPage.value);
+});
 
-// Pagination visible avec "..."
 const visiblePages = computed(() => {
-  const pages: (number | string)[] = []
+  const pages: (number | string)[] = [];
   if (totalPages.value <= 15) {
-    for (let i = 1; i <= totalPages.value; i++) pages.push(i)
+    for (let i = 1; i <= totalPages.value; i++) pages.push(i);
   } else {
     if (currentPage.value <= 7) {
-      pages.push(...Array.from({ length: 8 }, (_, i) => i + 1), "...", totalPages.value)
+      pages.push(
+        ...Array.from({ length: 8 }, (_, i) => i + 1),
+        "...",
+        totalPages.value
+      );
     } else if (currentPage.value >= totalPages.value - 6) {
-      pages.push(1, "...", ...Array.from({ length: 8 }, (_, i) => totalPages.value - 7 + i))
+      pages.push(
+        1,
+        "...",
+        ...Array.from({ length: 8 }, (_, i) => totalPages.value - 7 + i)
+      );
     } else {
       pages.push(
-        1, "...",
-        currentPage.value - 2, currentPage.value - 1, currentPage.value, currentPage.value + 1, currentPage.value + 2,
-        "...", totalPages.value
-      )
+        1,
+        "...",
+        currentPage.value - 2,
+        currentPage.value - 1,
+        currentPage.value,
+        currentPage.value + 1,
+        currentPage.value + 2,
+        "...",
+        totalPages.value
+      );
     }
   }
-  return pages
-})
+  return pages;
+});
 
-// Fonctions auxiliaires
 function resetFilters() {
-  filters.owner = ''
-  filters.parcel_name = ''
-  currentPage.value = 1
+  filters.owner = "";
+  filters.parcel_name = "";
+  currentPage.value = 1;
 }
 
 function toggleMenu(id: string, event: MouseEvent) {
   if (activeMenu.value === id) {
-    activeMenu.value = null
+    activeMenu.value = null;
   } else {
-    activeMenu.value = id
-    const button = event.currentTarget as HTMLElement
-    const rect = button.getBoundingClientRect()
-    menuPosition.top = rect.bottom + window.scrollY
-    menuPosition.right = rect.right + window.scrollX
+    activeMenu.value = id;
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+    menuPosition.top = rect.bottom + window.scrollY;
+    menuPosition.right = rect.right + window.scrollX;
   }
 }
 
-const showDeleteModal = ref(false)
-const parcelToDelete = ref<string | null>(null)
+const showDeleteModal = ref(false);
+const parcelToDelete = ref<string | null>(null);
 
 function confirmDelete(uuid: string) {
-  parcelToDelete.value = uuid
-  showDeleteModal.value = true
+  parcelToDelete.value = uuid;
+  showDeleteModal.value = true;
 }
 
 async function deleteParcelConfirmed() {
-  if (!parcelToDelete.value) return
-  const token = sessionStorage.getItem("token")
+  if (!parcelToDelete.value) return;
+  const token = sessionStorage.getItem("token");
   if (!token) {
-    alert("Vous devez être connecté")
-    return
+    alert("Vous devez être connecté");
+    return;
   }
 
   try {
     const res = await fetch(`${API_URL}/api/parcels/${parcelToDelete.value}/`, {
-      method: 'DELETE',
-      headers: { Authorization: `Token ${token}` }
-    })
-    if (!res.ok) throw new Error(`Failed to delete parcel: ${res.status}`)
-    fields.value = fields.value.filter(f => f.fieldId !== parcelToDelete.value)
-    showDeleteModal.value = false
-    parcelToDelete.value = null
+      method: "DELETE",
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) throw new Error(`Failed to delete parcel: ${res.status}`);
+    fields.value = fields.value.filter(
+      (f) => f.fieldId !== parcelToDelete.value
+    );
+    showDeleteModal.value = false;
+    parcelToDelete.value = null;
   } catch (err) {
-    console.error(err)
-    alert("Failed to delete parcel")
+    console.error(err);
+    alert("Failed to delete parcel");
   }
 }
 
 function cancelDelete() {
-  showDeleteModal.value = false
-  parcelToDelete.value = null
+  showDeleteModal.value = false;
+  parcelToDelete.value = null;
 }
 
-function prevPage() { if (currentPage.value > 1) currentPage.value-- }
-function nextPage() { if (currentPage.value < totalPages.value) currentPage.value++ }
-function goToPage(page: number | string) { if (page !== '...') currentPage.value = page as number }
+function prevPage() {
+  if (currentPage.value > 1) currentPage.value--;
+}
+function nextPage() {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+}
+function goToPage(page: number | string) {
+  if (page !== "...") currentPage.value = page as number;
+}
 </script>

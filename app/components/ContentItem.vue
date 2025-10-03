@@ -1,16 +1,16 @@
-<!-- DetailItem.vue -->
 <script setup lang="ts">
 defineProps<{
-  number: string | number
-  title: string
-  text: string
-  icon?: string // optionnel si tu veux ajouter une icône
-}>()
+  number: string | number;
+  title: string;
+  text: string;
+  icon?: string;
+}>();
 </script>
 
 <template>
-  <div class="flex items-start gap-4 p-4 rounded-xl border border-gray-200 hover:shadow-lg transition">
-    <!-- Cercle avec numéro ou icône -->
+  <div
+    class="flex items-start gap-4 p-4 rounded-xl border border-gray-200 hover:shadow-lg transition"
+  >
     <div
       class="w-10 h-10 bg-[#10b481] rounded-full flex items-center justify-center text-white font-bold text-lg"
     >
@@ -18,7 +18,6 @@ defineProps<{
       <template v-else>{{ number }}</template>
     </div>
 
-    <!-- Texte -->
     <div>
       <p class="font-semibold text-[#212121] mb-1">{{ title }}</p>
       <p class="text-gray-700 text-sm">{{ text }}</p>
@@ -27,11 +26,16 @@ defineProps<{
 </template>
 
 <style scoped>
-/* Animation gradient si nécessaire */
 @keyframes gradient-slide {
-  0% { background-position: 0% }
-  50% { background-position: 100% }
-  100% { background-position: 0% }
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
 }
 .animate-gradient {
   background-size: 200% 200%;

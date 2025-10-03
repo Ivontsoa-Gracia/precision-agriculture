@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-screen bg-[#212121] text-white relative">
+  <div
+    class="flex flex-col items-center justify-center h-screen bg-[#212121] text-white relative"
+  >
     <transition name="fade-zoom">
       <div v-if="showLogo" class="flex flex-col items-center">
         <img
@@ -16,17 +18,19 @@
       v-if="showLogo"
       class="absolute bottom-24 w-64 h-1 bg-gray-600 rounded-full overflow-hidden"
     >
-      <div class="h-1 bg-gradient-to-r from-[#10b481] to-[#00c3ff] animate-loading"></div>
+      <div
+        class="h-1 bg-gradient-to-r from-[#10b481] to-[#00c3ff] animate-loading"
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import { useAuthStore } from '~/stores/auth'
-const authStore = useAuthStore()
-const token = computed(() => authStore.token)
-const uuid = computed(() => authStore.uuid)
+import { useAuthStore } from "~/stores/auth";
+const authStore = useAuthStore();
+const token = computed(() => authStore.token);
+const uuid = computed(() => authStore.uuid);
 
 const router = useRouter();
 const showLogo = ref(true);
@@ -39,12 +43,11 @@ onMounted(() => {
     } else {
       router.push("/login");
     }
-  }, 8000); // 7 secondes
+  }, 4000);
 });
 </script>
 
 <style scoped>
-/* Zoom + fade logo */
 @keyframes scale-in {
   0% {
     transform: scale(0.8);
@@ -59,7 +62,6 @@ onMounted(() => {
   animation: scale-in 1.5s ease forwards;
 }
 
-/* Loading bar futuriste */
 @keyframes loading {
   0% {
     transform: translateX(-100%);
@@ -73,7 +75,6 @@ onMounted(() => {
   animation: loading 2s linear infinite;
 }
 
-/* Transition apparition */
 .fade-zoom-enter-active,
 .fade-zoom-leave-active {
   transition: all 0.8s ease;

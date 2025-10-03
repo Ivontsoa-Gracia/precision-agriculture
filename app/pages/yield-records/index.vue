@@ -1,157 +1,184 @@
 <template>
-    <div class="p-6 mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class='bx bx-bar-chart text-3xl text-[#10b481]'></i>
-      {{ t('yieldlist') }}
+  <div class="p-6 mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+      <i class="bx bx-bar-chart text-3xl text-[#10b481]"></i>
+      {{ t("yieldlist") }}
     </h2>
 
     <div class="flex justify-end mb-4">
-      <button @click="goToCreate" class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition">
-        <i class='bx bx-plus text-lg'></i> {{ t('btnyield') }}
+      <button
+        @click="goToCreate"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+      >
+        <i class="bx bx-plus text-lg"></i> {{ t("btnyield") }}
       </button>
     </div>
 
-    <!-- Table -->
     <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
       <table class="min-w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-6 py-2 border-b">{{ t('thdate') }}</th>
-            <th class="px-6 py-2 border-b">{{ t('thparcelname') }}</th>
-            <th class="px-6 py-2 border-b">{{ t('area') }} (m²)</th>
-            <th class="px-6 py-2 border-b">{{ t('crop') }}</th>
-            <th class="px-6 py-2 border-b">{{ t('thyield') }}</th>
-            <th class="px-6 py-2 border-b text-center">{{ t('thactions') }}</th>
+            <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
+            <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
+            <th class="px-6 py-2 border-b">{{ t("area") }} (m²)</th>
+            <th class="px-6 py-2 border-b">{{ t("crop") }}</th>
+            <th class="px-6 py-2 border-b">{{ t("thyield") }}</th>
+            <th class="px-6 py-2 border-b text-center">{{ t("thactions") }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
             <td class="px-6 py-2 border-b">{{ y.date }}</td>
             <td class="px-6 py-2 border-b">
-              {{ y.parcel_name || '-' }}
-              <!-- <pre>{{ JSON.stringify(y.parcelCrop, null, 2) }}</pre> -->
-
+              {{ y.parcel_name || "-" }}
             </td>
             <td class="px-6 py-2 border-b">{{ y.area }}</td>
             <td class="px-6 py-2 border-b">
-              {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : '-' }}
+              {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : "-" }}
             </td>
             <td class="px-6 py-2 border-b">{{ y.yield_amount }}</td>
-            <td class="px-6 py-2 border-b text-center flex justify-center gap-2">
-              <button @click="goToShow(y.id)" class="p-2 rounded-full hover:bg-[#10b481]/20">
+            <td
+              class="px-6 py-2 border-b text-center flex justify-center gap-2"
+            >
+              <button
+                @click="goToShow(y.id)"
+                class="p-2 rounded-full hover:bg-[#10b481]/20"
+              >
                 <i class="bx bx-show text-[#10b481] text-xl"></i>
               </button>
-              <button @click="goToEdit(y.id)" class="p-2 rounded-full hover:bg-[#f4a261]/10">
+              <button
+                @click="goToEdit(y.id)"
+                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              >
                 <i class="bx bx-edit text-[#f4a261] text-xl"></i>
               </button>
-              <button @click="deleteYield(y.id)" class="p-2 rounded-full hover:bg-[#e63946]/10">
+              <button
+                @click="deleteYield(y.id)"
+                class="p-2 rounded-full hover:bg-[#e63946]/10"
+              >
                 <i class="bx bx-trash text-[#e63946] text-xl"></i>
               </button>
             </td>
           </tr>
           <tr v-if="yields.length === 0">
-            <td colspan="6" class="p-6 text-center text-gray-500">{{ t('noyieldfound') }}</td>
+            <td colspan="6" class="p-6 text-center text-gray-500">
+              {{ t("noyieldfound") }}
+            </td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Pagination -->
       <div class="flex justify-between items-center mt-4 mb-2">
-        <button @click="prevPage" :disabled="currentPage === 1" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-          <i class="bx bx-chevron-left"></i> {{ t('prev') }}
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
         </button>
 
         <div class="flex items-center space-x-2">
-          <button v-for="page in visiblePages" :key="page" @click="goToPage(page)"
-            :class="['px-3 py-1 rounded', currentPage === page ? 'bg-[#10b481] text-white' : 'bg-gray-100 hover:bg-gray-200']"
-            v-if="page !== '...'">
+          <button
+            v-for="page in visiblePages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1 rounded',
+              currentPage === page
+                ? 'bg-[#10b481] text-white'
+                : 'bg-gray-100 hover:bg-gray-200',
+            ]"
+            v-if="page !== '...'"
+          >
             {{ page }}
           </button>
           <span v-else class="px-2">...</span>
         </div>
 
-        <button @click="nextPage" :disabled="currentPage === totalPages" class="flex items-center px-3 py-1 rounded disabled:opacity-50">
-          {{ t('next') }} <i class="bx bx-chevron-right"></i>
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          {{ t("next") }} <i class="bx bx-chevron-right"></i>
         </button>
-    </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({ layout: 'dashboard' })
+definePageMeta({ layout: "dashboard" });
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-import { API_URL } from '~/config'
+import { API_URL } from "~/config";
 
-import { useLanguageStore } from '~/stores/language'
-import { translate } from '~/utils/translate'
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
 
-const languageStore = useLanguageStore()
+const languageStore = useLanguageStore();
 
-const t = (key) => translate[languageStore.lang][key] || key
+const t = (key) => translate[languageStore.lang][key] || key;
 
-const currentLocale = computed(() => languageStore.lang)
+const currentLocale = computed(() => languageStore.lang);
 
 const yields = ref([]);
 const currentPage = ref(1);
-const perPage = 4; // nombre d'enregistrements par page
+const perPage = 4;
 const router = useRouter();
 
-const parcelCache = {} 
+const parcelCache = {};
 
-async function parcelName(id){
-  // Retourne directement si déjà en cache
-  if (parcelCache[id]) return parcelCache[id]
+async function parcelName(id) {
+  if (parcelCache[id]) return parcelCache[id];
 
-  const token = sessionStorage.getItem('token')
-  if (!token) return id // fallback à l'ID si pas de token
+  const token = sessionStorage.getItem("token");
+  if (!token) return id;
 
   try {
     const res = await fetch(`${API_URL}/api/parcels/${id}/`, {
-      headers: { Authorization: `Token ${token}` }
-    })
-    if (!res.ok) throw new Error('Parcel API error')
-    const data = await res.json()
-    parcelCache[id] = data.parcel_name
-    return data.parcel_name
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) throw new Error("Parcel API error");
+    const data = await res.json();
+    parcelCache[id] = data.parcel_name;
+    return data.parcel_name;
   } catch (err) {
-    console.error('Erreur récupération parcel:', err)
-    return id // fallback à l'ID en cas d'erreur
+    console.error("Erreur récupération parcel:", err);
+    return id;
   }
 }
 
 async function fetchParcelCrop(id, token) {
   try {
     const res = await axios.get(`${API_URL}/api/parcel-crops/${id}/`, {
-      headers: { Authorization: `Token ${token}` }
+      headers: { Authorization: `Token ${token}` },
     });
-    return res.data; // renvoie l'objet parcelCrop complet
+    return res.data;
   } catch (err) {
-    console.error('Error fetching parcelCrop:', err);
+    console.error("Error fetching parcelCrop:", err);
     return null;
   }
 }
 
 async function fetchYields() {
-  const token = sessionStorage.getItem('token');
+  const token = sessionStorage.getItem("token");
   if (!token) {
-    router.push('/login');
+    router.push("/login");
     return;
   }
 
   try {
     const res = await axios.get(`${API_URL}/api/yield-records/`, {
-      headers: { Authorization: `Token ${token}` }
+      headers: { Authorization: `Token ${token}` },
     });
 
-    // Pour chaque YieldRecord, récupérer le parcelCrop complet
     const yieldsWithParcelCrop = await Promise.all(
-      res.data.map(async y => {
+      res.data.map(async (y) => {
         if (y.parcelCrop) {
           y.parcelCrop = await fetchParcelCrop(y.parcelCrop, token);
-          y.parcel_name = await parcelName(y.parcelCrop.parcel, token)
+          y.parcel_name = await parcelName(y.parcelCrop.parcel, token);
         }
         return y;
       })
@@ -163,19 +190,25 @@ async function fetchYields() {
   }
 }
 
-function goToCreate() { router.push("/yield-records/create"); }
-function goToShow(id) { router.push(`/yield-records/show/${id}`); }
-function goToEdit(id) { router.push(`/yield-records/edit/${id}`); }
+function goToCreate() {
+  router.push("/yield-records/create");
+}
+function goToShow(id) {
+  router.push(`/yield-records/show/${id}`);
+}
+function goToEdit(id) {
+  router.push(`/yield-records/edit/${id}`);
+}
 
 async function deleteYield(id) {
   if (!confirm("Are you sure you want to delete this Yield Record?")) return;
 
   try {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
     await axios.delete(`${API_URL}/api/yield-records/${id}/`, {
-      headers: { Authorization: `Token ${token}` }
+      headers: { Authorization: `Token ${token}` },
     });
-    yields.value = yields.value.filter(y => y.id !== id);
+    yields.value = yields.value.filter((y) => y.id !== id);
     alert("Yield Record deleted successfully.");
   } catch (err) {
     console.error("Error deleting YieldRecord:", err);
@@ -183,16 +216,21 @@ async function deleteYield(id) {
   }
 }
 
-// Pagination logic
 const totalPages = computed(() => Math.ceil(yields.value.length / perPage));
 const paginatedYields = computed(() => {
   const start = (currentPage.value - 1) * perPage;
   return yields.value.slice(start, start + perPage);
 });
 
-function goToPage(page) { currentPage.value = page; }
-function prevPage() { if(currentPage.value > 1) currentPage.value--; }
-function nextPage() { if(currentPage.value < totalPages.value) currentPage.value++; }
+function goToPage(page) {
+  currentPage.value = page;
+}
+function prevPage() {
+  if (currentPage.value > 1) currentPage.value--;
+}
+function nextPage() {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+}
 
 const visiblePages = computed(() => {
   const pages = [];

@@ -1,6 +1,5 @@
 <template>
   <div class="relative flex flex-col h-full bg-gray-50">
-    <!-- Messages -->
     <div
       class="absolute top-0 left-0 right-0 bottom-40 p-4 overflow-y-auto space-y-3"
       ref="chatContainer"
@@ -16,7 +15,7 @@
             'px-4 py-2 rounded-xl max-w-2xl break-words shadow-md',
             msg.sender === 'user'
               ? 'bg-[#10b481] text-white rounded-br-none'
-              : 'bg-white text-gray-800 rounded-bl-none'
+              : 'bg-white text-gray-800 rounded-bl-none',
           ]"
         >
           <span v-html="formatMessage(msg.text)"></span>
@@ -30,17 +29,15 @@
       </div>
     </div>
 
-    <!-- Bienvenue -->
-    <div 
-      v-if="showWelcome && messages.length === 0" 
+    <div
+      v-if="showWelcome && messages.length === 0"
       class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 pointer-events-none"
     >
-    <h1 class="text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in"
-        v-html="t('heroTitle')">
-    </h1>
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in"
+        v-html="t('heroTitle')"
+      ></h1>
 
-
-      <!-- Questions suggérées -->
       <div class="flex flex-wrap gap-3 justify-center pointer-events-auto">
         <button
           v-for="(q, i) in suggestedQuestions"
@@ -53,10 +50,9 @@
       </div>
     </div>
 
-    <!-- Input -->
     <div
       class="absolute left-0 right-0 flex items-center p-4 bg-white border-t shadow-lg"
-      style="bottom: 10px;"
+      style="bottom: 10px"
     >
       <input
         v-model="inputMessage"
@@ -76,59 +72,61 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
-import axios from 'axios'
-import { API_URL } from '~/config'
-import { useLanguageStore } from '~/stores/language'
-import { translate } from '~/utils/translate'
+import { ref, nextTick } from "vue";
+import axios from "axios";
+import { API_URL } from "~/config";
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
 
-const languageStore = useLanguageStore()
+const languageStore = useLanguageStore();
 
-const t = (key: string) => translate[languageStore.lang][key] || key
+const t = (key: string) => translate[languageStore.lang][key] || key;
 
-const currentLocale = computed(() => languageStore.lang)
+const currentLocale = computed(() => languageStore.lang);
 definePageMeta({
-  layout: 'dashboard'
-})
+  layout: "dashboard",
+});
 
-const messages = ref<{ sender: string; text: string }[]>([])
-const inputMessage = ref('')
-const chatContainer = ref<HTMLElement | null>(null)
-const isLoading = ref(false)
-const showWelcome = ref(true)
+const messages = ref<{ sender: string; text: string }[]>([]);
+const inputMessage = ref("");
+const chatContainer = ref<HTMLElement | null>(null);
+const isLoading = ref(false);
+const showWelcome = ref(true);
 
-const suggestedQuestions = ref(t('suggestedQuestions'))
+const suggestedQuestions = ref(t("suggestedQuestions"));
 
 function formatMessage(text: string) {
   return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/^- (.*)$/gm, '• $1')
-    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/^- (.*)$/gm, "• $1")
+    .replace(/\n/g, "<br>");
 }
 
 async function sendMessage() {
-  if (!inputMessage.value.trim()) return
+  if (!inputMessage.value.trim()) return;
 
   if (showWelcome.value) {
     messages.value.push({
-      sender: 'ai',
-      text: t('welcomeMessage')
-    })
-    showWelcome.value = false
+      sender: "ai",
+      text: t("welcomeMessage"),
+    });
+    showWelcome.value = false;
   }
 
+  messages.value.push({ sender: "user", text: inputMessage.value });
+  const userMessage = inputMessage.value;
+  inputMessage.value = "";
 
-  messages.value.push({ sender: 'user', text: inputMessage.value })
-  const userMessage = inputMessage.value
-  inputMessage.value = ''
-
-  await nextTick()
-  chatContainer.value?.scrollTo({ top: chatContainer.value.scrollHeight, behavior: 'smooth' })
+  await nextTick();
+  chatContainer.value?.scrollTo({
+    top: chatContainer.value.scrollHeight,
+    behavior: "smooth",
+  });
 
   try {
-    isLoading.value = true
-    const token = sessionStorage.getItem("token")
+    isLoading.value = true;
+    const token = sessionStorage.getItem("token");
     const res = await axios.post(
       `${API_URL}/api/assistant-agronome/`,
       {
@@ -136,33 +134,34 @@ async function sendMessage() {
         question_type: "general",
         parcel_id: null,
         crop_name: null,
-        user_modules: {}
+        user_modules: {},
       },
       {
-        headers: { Authorization: `Token ${token}` }
+        headers: { Authorization: `Token ${token}` },
       }
-    )
+    );
 
-    isLoading.value = false
-    messages.value.push({ sender: 'ai', text: res.data.answer })
-
+    isLoading.value = false;
+    messages.value.push({ sender: "ai", text: res.data.answer });
   } catch (err: any) {
-    console.error("Error API :", err)
-    isLoading.value = false
+    console.error("Error API :", err);
+    isLoading.value = false;
     messages.value.push({
-      sender: 'ai',
-      text: "Error while communicating with the assistant."
-    })
+      sender: "ai",
+      text: "Error while communicating with the assistant.",
+    });
   }
 
-  await nextTick()
-  chatContainer.value?.scrollTo({ top: chatContainer.value.scrollHeight, behavior: 'smooth' })
+  await nextTick();
+  chatContainer.value?.scrollTo({
+    top: chatContainer.value.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
-// Envoi direct d’une question suggérée
 function askSuggestedQuestion(question: string) {
-  inputMessage.value = question
-  sendMessage()
+  inputMessage.value = question;
+  sendMessage();
 }
 </script>
 
