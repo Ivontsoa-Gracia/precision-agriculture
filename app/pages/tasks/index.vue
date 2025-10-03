@@ -1,323 +1,379 @@
 <template>
-    <div class="p-6 mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-        <i class='bx bx-task text-3xl text-[#10b481]'></i>
-        {{ t('titiletaskslist') }}
-      </h2>
-  
-      <div class="border-b border-gray-200 flex items-center justify-between mb-6">
-        <!-- Tabs -->
-        <nav class="flex space-x-8">
-          <a href="#"
-            @click.prevent="activeTab = 'historique'"
-            :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'historique' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
-            {{ t('history') }}
-          </a>
+  <div class="p-6 mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+      <i class="bx bx-task text-3xl text-[#10b481]"></i>
+      {{ t("titiletaskslist") }}
+    </h2>
 
-          <a href="#"
-            @click.prevent="activeTab = 'upcoming'"
-            :class="['loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm', activeTab === 'upcoming' ? 'text-[#10b481] border-[#10b481]' : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]']">
-            {{ t('upcoming') }}
-          </a>
+    <div
+      class="border-b border-gray-200 flex items-center justify-between mb-6"
+    >
+      <nav class="flex space-x-8">
+        <a
+          href="#"
+          @click.prevent="activeTab = 'historique'"
+          :class="[
+            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm',
+            activeTab === 'historique'
+              ? 'text-[#10b481] border-[#10b481]'
+              : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]',
+          ]"
+        >
+          {{ t("history") }}
+        </a>
 
-        </nav>
+        <a
+          href="#"
+          @click.prevent="activeTab = 'upcoming'"
+          :class="[
+            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm',
+            activeTab === 'upcoming'
+              ? 'text-[#10b481] border-[#10b481]'
+              : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]',
+          ]"
+        >
+          {{ t("upcoming") }}
+        </a>
+      </nav>
 
-        <!-- Button -->
-        <div class="flex justify-end">
-          <NuxtLink
-            to="/tasks/create"
-            class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
-          >
-            <i class='bx bx-plus text-lg'></i> {{ t('btnaddtask') }}
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
-        <table class="min-w-full text-left border-collapse">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="px-6 py-2 border-b">{{ t('taskname')}}</th>
-              <th class="px-6 py-2 border-b">{{ t('due')}}</th>
-              <th class="px-6 py-2 border-b">{{ t('parcelcrop')}}</th>
-              <th class="px-6 py-2 border-b text-center">{{ t('priority')}}</th>
-              <th class="px-6 py-2 border-b text-center">{{ t('status')}}</th>
-              <th class="px-6 py-2 border-b text-center">{{ t('thactions')}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="task in paginatedTasks" :key="task.id" class="hover:bg-gray-50">
-              <td class="px-6 py-2 border-b">{{ task.name }}</td>
-              <td class="px-6 py-2 border-b">{{ new Date(task.due_date).toLocaleDateString() }}</td>
-              <td class="px-6 py-2 border-b">{{ task.parcelCropFull || '-' }}</td>
-              <td class="px-6 py-2 border-b text-center">
-                <span
-                  v-if="priorities[task.priority]"
-                  :class="[
-                    'px-3 py-1 rounded-full text-xs font-medium border',
-                    priorities[task.priority] === 'High' ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50' :
-                    priorities[task.priority] === 'Medium' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
-                    'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
-                  ]"
-                >
-                {{ t(priorityKeyMap[priorities[task.priority]]) }}
-                </span>
-                <span v-else>-</span>
-              </td>
-
-              <td class="px-6 py-2 border-b text-center">
-                <span
-                  v-if="statuses[task.status]"
-                  :class="[
-                    'px-3 py-1 rounded-full text-xs font-medium border',
-                    statuses[task.status] === 'Pending' ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50' :
-                    statuses[task.status] === 'In Progress' ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50' :
-                    statuses[task.status] === 'Done' ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50' :
-                    statuses[task.status] === 'Canceled' ? 'bg-gray-100 text-gray-600 border-gray-500' :
-                    'bg-gray-200 text-gray-700'
-                  ]"
-                >
-                {{ t(statusKeyMap[statuses[task.status]]) }}
-
-                </span>
-                <span v-else>-</span>
-              </td>
-
-              <td class="p-3 border-b text-center flex justify-center gap-2">
-                <button @click="showTask(task.id)" class="p-2 rounded-full hover:bg-[#10b481]/20">
-                  <i class="bx bx-show text-[#10b481] text-xl"></i>
-                </button>
-                <button @click="editTask(task.id)" class="p-2 rounded-full hover:bg-[#f4a261]/10">
-                  <i class="bx bx-edit text-[#f4a261] text-xl"></i>
-                </button>
-                <button @click="deleteTask(task.id)" class="p-2 rounded-full hover:bg-[#e63946]/10">
-                  <i class="bx bx-trash text-[#e63946] text-xl"></i>
-                </button>
-              </td>
-            </tr>
-            <tr v-if="paginatedTasks.length === 0">
-              <td colspan="7" class="p-6 text-center text-gray-500">{{ t('notaskfound')}}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-4 mb-2">
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-          >
-            <i class="bx bx-chevron-left"></i> {{ t('prev')}}
-          </button>
-    
-          <div class="flex items-center space-x-2">
-            <button
-              v-for="page in visiblePages"
-              :key="page"
-              @click="goToPage(page)"
-              :class="[
-                'px-3 py-1 rounded',
-                currentPage === page ? 'bg-[#10b481] text-white' : 'bg-gray-100 hover:bg-gray-200',
-              ]"
-            >
-              {{ page }}
-            </button>
-          </div>
-    
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-          >
-          {{ t('next')}} <i class="bx bx-chevron-right"></i>
-          </button>
-        </div>
+      <div class="flex justify-end">
+        <NuxtLink
+          to="/tasks/create"
+          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+        >
+          <i class="bx bx-plus text-lg"></i> {{ t("btnaddtask") }}
+        </NuxtLink>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  definePageMeta({ layout: 'dashboard' })
-  import { ref, computed, onMounted, watch } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { API_URL } from '~/config'
 
-  import { useLanguageStore } from '~/stores/language'
-  import { translate } from '~/utils/translate'
+    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
+      <table class="min-w-full text-left border-collapse">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-2 border-b">{{ t("taskname") }}</th>
+            <th class="px-6 py-2 border-b">{{ t("due") }}</th>
+            <th class="px-6 py-2 border-b">{{ t("parcelcrop") }}</th>
+            <th class="px-6 py-2 border-b text-center">{{ t("priority") }}</th>
+            <th class="px-6 py-2 border-b text-center">{{ t("status") }}</th>
+            <th class="px-6 py-2 border-b text-center">{{ t("thactions") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="task in paginatedTasks"
+            :key="task.id"
+            class="hover:bg-gray-50"
+          >
+            <td class="px-6 py-2 border-b">{{ task.name }}</td>
+            <td class="px-6 py-2 border-b">
+              {{ new Date(task.due_date).toLocaleDateString() }}
+            </td>
+            <td class="px-6 py-2 border-b">{{ task.parcelCropFull || "-" }}</td>
+            <td class="px-6 py-2 border-b text-center">
+              <span
+                v-if="priorities[task.priority]"
+                :class="[
+                  'px-3 py-1 rounded-full text-xs font-medium border',
+                  priorities[task.priority] === 'High'
+                    ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
+                    : priorities[task.priority] === 'Medium'
+                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+                    : 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50',
+                ]"
+              >
+                {{ t(priorityKeyMap[priorities[task.priority]]) }}
+              </span>
+              <span v-else>-</span>
+            </td>
 
-  const languageStore = useLanguageStore()
+            <td class="px-6 py-2 border-b text-center">
+              <span
+                v-if="statuses[task.status]"
+                :class="[
+                  'px-3 py-1 rounded-full text-xs font-medium border',
+                  statuses[task.status] === 'Pending'
+                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+                    : statuses[task.status] === 'In Progress'
+                    ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
+                    : statuses[task.status] === 'Done'
+                    ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+                    : statuses[task.status] === 'Canceled'
+                    ? 'bg-gray-100 text-gray-600 border-gray-500'
+                    : 'bg-gray-200 text-gray-700',
+                ]"
+              >
+                {{ t(statusKeyMap[statuses[task.status]]) }}
+              </span>
+              <span v-else>-</span>
+            </td>
 
-  const t = (key: string) => translate[languageStore.lang][key] || key
+            <td class="p-3 border-b text-center flex justify-center gap-2">
+              <button
+                @click="showTask(task.id)"
+                class="p-2 rounded-full hover:bg-[#10b481]/20"
+              >
+                <i class="bx bx-show text-[#10b481] text-xl"></i>
+              </button>
+              <button
+                @click="editTask(task.id)"
+                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              >
+                <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+              </button>
+              <button
+                @click="deleteTask(task.id)"
+                class="p-2 rounded-full hover:bg-[#e63946]/10"
+              >
+                <i class="bx bx-trash text-[#e63946] text-xl"></i>
+              </button>
+            </td>
+          </tr>
+          <tr v-if="paginatedTasks.length === 0">
+            <td colspan="7" class="p-6 text-center text-gray-500">
+              {{ t("notaskfound") }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-  const currentLocale = computed(() => languageStore.lang)
+      <div class="flex justify-between items-center mt-4 mb-2">
+        <button
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
+        </button>
 
-  const priorityKeyMap = {
-    Low: 'priorityLow',
-    Medium: 'priorityMedium',
-    High: 'priorityHigh'
+        <div class="flex items-center space-x-2">
+          <button
+            v-for="page in visiblePages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1 rounded',
+              currentPage === page
+                ? 'bg-[#10b481] text-white'
+                : 'bg-gray-100 hover:bg-gray-200',
+            ]"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        >
+          {{ t("next") }} <i class="bx bx-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+definePageMeta({ layout: "dashboard" });
+import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { API_URL } from "~/config";
+
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
+
+const languageStore = useLanguageStore();
+
+const t = (key: string) => translate[languageStore.lang][key] || key;
+
+const currentLocale = computed(() => languageStore.lang);
+
+const priorityKeyMap = {
+  Low: "priorityLow",
+  Medium: "priorityMedium",
+  High: "priorityHigh",
+};
+
+const statusKeyMap = {
+  Pending: "statusPending",
+  "In Progress": "statusInProgress",
+  Done: "statusDone",
+  Cancelled: "statusCancelled",
+};
+
+const router = useRouter();
+const tasks = ref<any[]>([]);
+
+const activeTab = ref<"historique" | "upcoming">("historique");
+
+const itemsPerPage = 4;
+const currentPage = ref(1);
+const paginatedTasks = ref<any[]>([]);
+
+const priorities = ref<Record<number, string>>({});
+const statuses = ref<Record<number, string>>({});
+
+const loadLookups = async () => {
+  const token = sessionStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const [priorityRes, statusRes] = await Promise.all([
+      fetch(`${API_URL}/api/task-priority/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+      fetch(`${API_URL}/api/task-status/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+    ]);
+
+    if (!priorityRes.ok || !statusRes.ok)
+      throw new Error("Failed to load lookups");
+
+    const priorityData = await priorityRes.json();
+    const statusData = await statusRes.json();
+
+    priorities.value = Object.fromEntries(
+      priorityData.map((p: any) => [p.id, p.name])
+    );
+    statuses.value = Object.fromEntries(
+      statusData.map((s: any) => [s.id, s.name])
+    );
+  } catch (err) {
+    console.error("Lookup load error:", err);
   }
+};
 
-  const statusKeyMap = {
-    Pending: 'statusPending',
-    "In Progress": 'statusInProgress',
-    Done: 'statusDone',
-    Cancelled: 'statusCancelled'
+const totalPages = computed(() =>
+  Math.ceil(filteredTasks.value.length / itemsPerPage)
+);
+const visiblePages = computed(() => {
+  const pages = [];
+  for (let i = 1; i <= totalPages.value; i++) pages.push(i);
+  return pages;
+});
+
+const updatePaginated = () => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  paginatedTasks.value = filteredTasks.value.slice(start, start + itemsPerPage);
+};
+
+watch(activeTab, () => {
+  currentPage.value = 1;
+  updatePaginated();
+});
+
+onMounted(async () => {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+    return;
   }
-
-  const router = useRouter()
-  const tasks = ref<any[]>([])
-
-  const activeTab = ref<'historique' | 'upcoming'>('historique')
-
-  
-  // Pagination
-  const itemsPerPage = 4
-  const currentPage = ref(1)
-  const paginatedTasks = ref<any[]>([])
-
-  const priorities = ref<Record<number, string>>({})
-  const statuses = ref<Record<number, string>>({})
-
-  const loadLookups = async () => {
-    const token = sessionStorage.getItem('token')
-    if (!token) return
-
-    try {
-      const [priorityRes, statusRes] = await Promise.all([
-        fetch(`${API_URL}/api/task-priority/`, {
-          headers: { Authorization: `Token ${token}` }
-        }),
-        fetch(`${API_URL}/api/task-status/`, {
-          headers: { Authorization: `Token ${token}` }
-        })
-      ])
-
-      if (!priorityRes.ok || !statusRes.ok) throw new Error("Failed to load lookups")
-
-      const priorityData = await priorityRes.json()
-      const statusData = await statusRes.json()
-
-      // Transformer en dictionnaire {id: name}
-      priorities.value = Object.fromEntries(priorityData.map((p: any) => [p.id, p.name]))
-      statuses.value = Object.fromEntries(statusData.map((s: any) => [s.id, s.name]))
-    } catch (err) {
-      console.error("Lookup load error:", err)
-    }
-  }
-
-  
-  const totalPages = computed(() => Math.ceil(filteredTasks.value.length / itemsPerPage))
-  const visiblePages = computed(() => {
-    const pages = []
-    for (let i = 1; i <= totalPages.value; i++) pages.push(i)
-    return pages
-  })
-  
-  const updatePaginated = () => {
-    const start = (currentPage.value - 1) * itemsPerPage
-    paginatedTasks.value = filteredTasks.value.slice(start, start + itemsPerPage)
-  }
-
-  
-  watch(activeTab, () => {
-    currentPage.value = 1
-    updatePaginated()
-  })
-
-  
-  onMounted(async () => {
-  const token = sessionStorage.getItem('token')
-  if (!token) { router.push('/login'); return }
 
   try {
     const res = await fetch(`${API_URL}/api/tasks/`, {
-      headers: { Authorization: `Token ${token}` }
-    })
-    if (!res.ok) throw new Error(`API error: ${res.status}`)
-    tasks.value = await res.json()
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    tasks.value = await res.json();
 
-    await loadLookups()
+    await loadLookups();
 
-    await Promise.all(tasks.value.map(async (task: any) => {
-      if (task.parcelCrop) {
-        try {
-          const resParcelCrop = await fetch(`${API_URL}/api/parcel-crops/${task.parcelCrop}/`, {
-            headers: { Authorization: `Token ${token}` }
-          });
-          if (!resParcelCrop.ok) throw new Error('ParcelCrop fetch error');
-          const parcelCropData = await resParcelCrop.json();
+    await Promise.all(
+      tasks.value.map(async (task: any) => {
+        if (task.parcelCrop) {
+          try {
+            const resParcelCrop = await fetch(
+              `${API_URL}/api/parcel-crops/${task.parcelCrop}/`,
+              {
+                headers: { Authorization: `Token ${token}` },
+              }
+            );
+            if (!resParcelCrop.ok) throw new Error("ParcelCrop fetch error");
+            const parcelCropData = await resParcelCrop.json();
 
-          const resParcel = await fetch(`${API_URL}/api/parcels/${parcelCropData.parcel}/`, {
-            headers: { Authorization: `Token ${token}` }
-          });
-          if (!resParcel.ok) throw new Error('Parcel fetch error');
-          const parcelData = await resParcel.json();
+            const resParcel = await fetch(
+              `${API_URL}/api/parcels/${parcelCropData.parcel}/`,
+              {
+                headers: { Authorization: `Token ${token}` },
+              }
+            );
+            if (!resParcel.ok) throw new Error("Parcel fetch error");
+            const parcelData = await resParcel.json();
 
-          task.parcelCropFull = `${parcelData.parcel_name} - ${parcelCropData.crop.name}`;
-        } catch (err) {
-          console.error(err);
-          task.parcelCropFull = '-';
+            task.parcelCropFull = `${parcelData.parcel_name} - ${parcelCropData.crop.name}`;
+          } catch (err) {
+            console.error(err);
+            task.parcelCropFull = "-";
+          }
+        } else {
+          task.parcelCropFull = "-";
         }
-      } else {
-        task.parcelCropFull = '-';
-      }
-    }));
+      })
+    );
 
     updatePaginated();
-
   } catch (err) {
-    console.error("Failed to load tasks:", err)
+    console.error("Failed to load tasks:", err);
   }
-})
+});
 
 const filteredTasks = computed(() => {
-  if (activeTab.value === 'historique') {
-    return tasks.value
-  } else if (activeTab.value === 'upcoming') {
-    const now = new Date()
-    const threeMonthsLater = new Date()
-    threeMonthsLater.setMonth(now.getMonth() + 3)
+  if (activeTab.value === "historique") {
+    return tasks.value;
+  } else if (activeTab.value === "upcoming") {
+    const now = new Date();
+    const threeMonthsLater = new Date();
+    threeMonthsLater.setMonth(now.getMonth() + 3);
 
-    return tasks.value.filter(task => {
-      const dueDate = new Date(task.due_date)
-      const statusName = statuses.value[task.status] || ''
-      return statusName !== 'Done' && dueDate >= now && dueDate <= threeMonthsLater
-    })
+    return tasks.value.filter((task) => {
+      const dueDate = new Date(task.due_date);
+      const statusName = statuses.value[task.status] || "";
+      return (
+        statusName !== "Done" && dueDate >= now && dueDate <= threeMonthsLater
+      );
+    });
   }
-  return tasks.value
-})
+  return tasks.value;
+});
 
-  const deleteTask = async (id: number) => {
-    const token = sessionStorage.getItem('token')
-    if (!token) { router.push('/login'); return }
-  
-    if (!confirm("Are you sure you want to delete this task?")) return
-  
-    try {
-      const res = await fetch(`${API_URL}/api/tasks/${id}/`, {
-        method: 'DELETE',
-        headers: { Authorization: `Token ${token}` }
-      })
-      if (!res.ok) throw new Error(`API error: ${res.status}`)
-      tasks.value = tasks.value.filter(t => t.id !== id)
-      updatePaginated()
-      alert("Task deleted successfully")
-    } catch (err) {
-      console.error(err)
-      alert("Failed to delete task")
-    }
+const deleteTask = async (id: number) => {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+    return;
   }
-  
-  watch(currentPage, () => {
-  updatePaginated()
-})
 
-  const editTask = (id: number) => router.push(`/tasks/edit/${id}`)
-  const showTask = (id: number) => router.push(`/tasks/show/${id}`)
-  const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }
-  const prevPage = () => { if (currentPage.value > 1) currentPage.value-- }
-  const goToPage = (page: number) => { currentPage.value = page }
-  </script>
-  
+  if (!confirm("Are you sure you want to delete this task?")) return;
+
+  try {
+    const res = await fetch(`${API_URL}/api/tasks/${id}/`, {
+      method: "DELETE",
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    tasks.value = tasks.value.filter((t) => t.id !== id);
+    updatePaginated();
+    alert("Task deleted successfully");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete task");
+  }
+};
+
+watch(currentPage, () => {
+  updatePaginated();
+});
+
+const editTask = (id: number) => router.push(`/tasks/edit/${id}`);
+const showTask = (id: number) => router.push(`/tasks/show/${id}`);
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+const goToPage = (page: number) => {
+  currentPage.value = page;
+};
+</script>

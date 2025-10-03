@@ -1,13 +1,11 @@
 <template>
   <div class="p-6 flex flex-col h-full space-y-6">
-    <!-- Title -->
     <h2 class="text-3xl font-extrabold text-[#222831]">Contact</h2>
 
-    <!-- Container iframe -->
     <div class="flex-1 border rounded-2xl overflow-hidden shadow-sm">
-      <iframe 
-        :src="formUrl" 
-        class="w-full h-full min-h-[600px]" 
+      <iframe
+        :src="formUrl"
+        class="w-full h-full min-h-[600px]"
         frameborder="0"
         scrolling="yes"
       ></iframe>
@@ -17,14 +15,14 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'dashboard' 
-})
+  layout: "dashboard",
+});
 
-const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSenvw7yEIAhICjvzzaxT9DGoipfVE5acYNFFQM9xog_ZNTZgg/viewform?usp=sf_link'
+const formUrl =
+  "https://docs.google.com/forms/d/e/1FAIpQLSenvw7yEIAhICjvzzaxT9DGoipfVE5acYNFFQM9xog_ZNTZgg/viewform?usp=sf_link";
 </script>
 
 <style scoped>
-/* Custom scrollbar for iframe container */
 div::-webkit-scrollbar {
   width: 6px;
 }
@@ -34,7 +32,6 @@ div::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
-/* Optional: smooth transition on hover for scrollbar */
 div::-webkit-scrollbar-thumb:hover {
   background-color: #a0a0a0;
 }
