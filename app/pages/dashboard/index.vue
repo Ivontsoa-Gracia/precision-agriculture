@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6">
+  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <div
         class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
