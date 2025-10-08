@@ -67,10 +67,10 @@
     </div>
 
     <div
-    ref="footer"
-    class="fixed left-0 right-0 flex items-center p-2 sm:p-4 chat-footer mb-12 sm:mb-1 bg-white z-10"
-    style="bottom: 0"
-  >
+      ref="footer"
+      class="fixed left-0 right-0 flex items-center p-2 sm:p-4 chat-footer mb-12 sm:mb-1 bg-white absolute"
+      style="bottom: 0"
+    >
       <input
         v-model="inputMessage"
         @keyup.enter="sendMessage"
@@ -105,8 +105,8 @@ const footer = ref<HTMLElement | null>(null);
 const isLoading = ref(false);
 const showWelcome = ref(true);
 const suggestedQuestions = ref(t("suggestedQuestions"));
-const footerHeight = ref(80); 
-const isMounted = ref(false); 
+const footerHeight = ref(80);
+const isMounted = ref(false);
 
 onMounted(() => {
   isMounted.value = true;

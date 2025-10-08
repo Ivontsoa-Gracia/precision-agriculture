@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[100vw]">
+  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[100vw] mb-10 sm:mb-1">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="fixed bottom-6 right-6 z-50 hidden">
         <NuxtLink
