@@ -1,14 +1,14 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class="bx bx-edit text-3xl text-[#212121]"></i>
-      {{ toRaw("edittask") }}
+  <div class="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg mb-10 sm:mb-1">
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+      <i class="bx bx-edit text-xl sm:text-3xl text-[#10b481]"></i>
+      {{ t("edittask") }}
     </h2>
 
     <form @submit.prevent="submitTask" class="space-y-4">
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ toRaw("taskname") }} *</label>
+          <label class="font-semibold mb-1">{{ t("taskname") }} *</label>
           <input
             v-model="form.name"
             type="text"
@@ -37,7 +37,7 @@
         ></textarea>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex flex-col">
           <label class="font-semibold mb-1">{{ t("parcelcrop") }}</label>
           <select

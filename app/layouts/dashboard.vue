@@ -22,7 +22,7 @@
       </div>
 
       <div class="flex items-center space-x-2 sm:space-x-6">
-        <button class="sm:hidden p-2 text-gray-800">
+        <button class="sm:hidden p-2 text-gray-800" @click="toggleMobileMenu">
           <i class="bx bx-menu text-2xl"></i>
         </button>
 
@@ -44,7 +44,7 @@
           </NuxtLink>
         </div>
 
-        <div class="ml-4 flex items-center gap-2">
+        <div class="ml-4 hidden sm:flex items-center gap-2">
           <div
             class="relative inline-flex bg-gray-100 rounded-xl p-1 px-4 shadow-inner gap-4"
           >
@@ -85,6 +85,74 @@
               {{ user?.username }}
             </p>
             <p class="text-xs text-gray-500">{{ user?.email }}</p>
+          </div>
+        </div>
+
+        <div
+          v-if="isMobileMenuOpen"
+          class="sm:hidden fixed top-20 left-0 right-0 bg-[#222831] text-white flex flex-col py-4 shadow-lg z-40"
+        >
+          <NuxtLink
+            to="/assistant"
+            class="px-4 py-2 hover:bg-[#10b481]/20 flex items-center gap-2"
+          >
+            <i class="bx bx-brain text-lg"></i>
+            <span>Agronomist IA</span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/contact"
+            class="px-4 py-2 hover:bg-[#10b481]/20 flex items-center gap-2"
+          >
+            <i class="bx bx-envelope text-lg"></i>
+            <span>Contact</span>
+          </NuxtLink>
+
+          <div class="px-4 py-2">
+            <div
+              class="relative inline-flex bg-gray-100 rounded-xl p-1 shadow-inner w-full"
+            >
+              <div
+                class="absolute top-0 left-0 h-full w-1/2 bg-[#10b481] rounded-xl transition-all duration-300"
+                :style="{
+                  transform:
+                    currentLocale.code === 'en'
+                      ? 'translateX(0%)'
+                      : 'translateX(100%)',
+                }"
+              ></div>
+
+              <button
+                v-for="(loc, index) in locales"
+                :key="loc.code"
+                @click="switchLocale(loc.code)"
+                class="relative z-10 flex-1 text-center py-2 text-xs font-medium transition-colors duration-200"
+                :class="
+                  currentLocale.code === loc.code
+                    ? 'text-white'
+                    : 'text-gray-700'
+                "
+              >
+                {{ loc.name }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="px-4 py-2 flex items-center justify-between border-t border-gray-600 mt-2"
+          >
+            <div class="flex items-center gap-2">
+              <div
+                class="h-8 w-8 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center"
+              >
+                <i class="bx bx-user text-white"></i>
+              </div>
+              <div class="text-left">
+                <p class="font-semibold text-xs">{{ user?.username }}</p>
+                <p class="text-[10px] text-gray-300">{{ user?.email }}</p>
+              </div>
+            </div>
+            <button @click="logout" class="text-red-500 text-sm">Logout</button>
           </div>
         </div>
       </div>
@@ -184,7 +252,7 @@
       </aside>
 
       <nav
-        class="fixed bottom-0 left-0 right-0 sm:hidden bg-[#222831] flex justify-around py-2 shadow-lg"
+        class="fixed bottom-0 left-0 right-0 sm:hidden bg-[#222831] flex justify-between px-4 py-2 shadow-lg z-50"
       >
         <NuxtLink to="/dashboard" class="text-white text-2xl"
           ><i class="bx bx-grid-alt"></i
@@ -204,7 +272,7 @@
       </nav>
 
       <main
-        class="flex-1 p-6 ml-20 transition-all duration-300 peer-hover:ml-56"
+        class="flex-1 p-6 sm:ml-20 transition-all duration-300 peer-hover:ml-56"
       >
         <slot />
       </main>
@@ -268,6 +336,11 @@ const logout = () => {
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("uuid");
   router.push("/");
+};
+
+const isMobileMenuOpen = ref(false);
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
 };
 </script>
 

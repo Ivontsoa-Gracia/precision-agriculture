@@ -1,11 +1,12 @@
 <template>
-  <div class="flex h-full">
-    <div class="w-2/5 p-4 rounded-lg space-y-4">
+  <div class="p-1 sm:p-6 flex flex-col lg:flex-row gap-6 relative mb-10 sm:mb-1">
+    <div
+      class="w-full lg:w-2/5 space-y-4"
+    >
       <div
-        class="p-4 border rounded-xl bg-[#f4a261]/10 text-[#5a3210] border-[#f4a261]/40 flex items-start gap-3 shadow-sm -mt-2"
+        class="p-2 sm:p-4 border rounded-xl bg-[#f4a261]/10 text-[#5a3210] border-[#f4a261]/40 flex items-start gap-3 shadow-sm"
       >
-        <i class="bx bx-info-circle text-2xl text-[#f4a261] -mt-0"></i>
-
+        <i class="bx bx-info-circle text-2xl text-[#f4a261] -mt-0.5"></i>
         <div>
           <h3 class="font-semibold text-[#f4a261] mb-2 text-lg">
             {{ t("instructions") }}
@@ -20,9 +21,10 @@
         </div>
       </div>
 
+      <!-- Formulaire -->
       <form class="space-y-4">
         <div class="bg-[#f9f9f9] shadow p-6 space-y-4 rounded-lg">
-          <h2 class="text-3xl font-extrabold text-[#222831] mb-4">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-[#222831] mb-4">
             {{ t("titlesaveparcel") }}
           </h2>
 
@@ -37,24 +39,24 @@
           </div>
 
           <p class="text-xs text-gray-500 mt-1">{{ t("searchintruction") }}</p>
-          <div class="flex flex-col relative w-full">
-            <i
-              class="bx bx-search absolute left-3 top-6 -translate-y-1/2 text-gray-400 pointer-events-none text-lg"
-            ></i>
 
+          <div class="relative">
+            <i
+              class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"
+            ></i>
             <input
               v-model="form.search"
               type="text"
-              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
               :placeholder="t('searchonmap')"
               @input="onSearchInput"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">{{
-              t("parcelarea")
-            }}</label>
+            <label class="block text-sm font-medium mb-1">
+              {{ t("parcelarea") }}
+            </label>
             <input
               :value="formatM2(form.area)"
               type="text"
@@ -64,9 +66,9 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">{{
-              t("thparcelname")
-            }}</label>
+            <label class="block text-sm font-medium mb-1">
+              {{ t("thparcelname") }}
+            </label>
             <input
               v-model="form.parcel"
               type="text"
@@ -77,7 +79,7 @@
 
           <button
             type="button"
-            class="bg-[#10b481] text-white px-4 py-2 rounded shadow hover:bg-[#0da06a] w-full"
+            class="bg-[#10b481] text-white px-4 py-3 rounded-lg shadow hover:bg-[#0da06a] w-full transition"
             @click="submitForm"
           >
             {{ t("btnsaveparcel") }}
@@ -86,30 +88,36 @@
       </form>
     </div>
 
-    <div class="flex-1 ml-4 bg-gray-200 rounded-lg shadow z-40">
+    <!-- Carte (toujours visible) -->
+    <div
+      class="w-full lg:flex-1 bg-gray-200 rounded-lg shadow-md h-[350px] sm:h-[400px] lg:h-auto overflow-hidden z-40"
+    >
       <div id="map" class="h-full w-full rounded-lg"></div>
     </div>
-  </div>
 
-  <div
-    v-if="isLoading"
-    class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl z-50"
-  >
+    <!-- Loader -->
     <div
-      class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-    ></div>
-  </div>
-  <transition name="fade">
-    <div
-      v-if="notification.visible"
-      :class="[
-        'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold z-50',
-        notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
-      ]"
+      v-if="isLoading"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl z-50"
     >
-      {{ notification.message }}
+      <div
+        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
+      ></div>
     </div>
-  </transition>
+
+    <!-- Notification -->
+    <transition name="fade">
+      <div
+        v-if="notification.visible"
+        :class="[ 
+          'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold z-50',
+          notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
+        ]"
+      >
+        {{ notification.message }}
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script setup lang="ts">

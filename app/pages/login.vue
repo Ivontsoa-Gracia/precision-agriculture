@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-[#212121] flex flex-col items-center justify-center"
+    class="min-h-screen bg-[#212121] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-10 sm:py-12"
   >
     <AuthForm
       class="mt-6"
@@ -43,7 +43,7 @@
       <div
         v-if="notification.visible"
         :class="[
-          'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold',
+          'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold z-50',
           notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
         ]"
       >

@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 bg-white rounded-xl shadow-md max-w-3xl mx-auto">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
-      <i class="bx bx-bar-chart text-4xl text-[#10b481] animate-pulse"></i>
+  <div class="p-4 sm:p-6 bg-white rounded-xl shadow-md max-w-3xl mx-auto mb-10 sm:mb-1">
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
+      <i class="bx bx-bar-chart text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
       {{ t("newyield") }}
     </h2>
 
@@ -76,7 +76,7 @@
       <div class="text-right">
         <button
           type="submit"
-          class="bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white px-6 py-2 rounded-lg font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5"
+          class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white px-6 py-2 rounded-lg font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5"
         >
           {{ t("btnsaveyield") }}
         </button>

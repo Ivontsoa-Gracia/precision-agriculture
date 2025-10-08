@@ -8,9 +8,7 @@
       />
     </div>
 
-    <div
-      class="bg-[#101010] p-8 pt-20 rounded-3xl shadow-xl w-full relative z-0"
-    >
+    <div class="bg-[#101010] p-8 pt-20 rounded-3xl shadow-xl w-full relative z-0">
       <h2 class="text-3xl font-bold mb-6 text-center text-white">
         {{ title }}
       </h2>
@@ -18,29 +16,36 @@
       <form @submit.prevent="submit" class="space-y-4">
         <div v-for="field in fields" :key="field" class="relative">
           <i
-            :class="
-              icons[field] +
-              ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'
-            "
+            :class="icons[field] + ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'"
           ></i>
+
           <input
             v-model="formData[field]"
-            :type="field === 'password' ? 'password' : 'text'"
+            :type="getInputType(field)"
             placeholder=" "
-            class="peer w-full p-3 pl-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481]"
+            class="peer w-full p-3 pl-10 pr-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481]"
           />
+
           <label
             :for="field"
-            class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#10b481] peer-focus:bg-[#101010] px-2 rounded"
+            class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200"
             :class="[
-              'absolute left-10 px-2 rounded transition-all duration-200 pointer-events-none',
               formData[field] || fieldHasFocus[field]
-                ? '-top-3 text-sm text-[#10b481] bg-[#101010]'
-                : 'top-3 text-base text-[#10b481]',
+                ? '-top-3 text-sm text-[#10b481] bg-[#101010] px-2 rounded'
+                : 'top-3 text-base text-[#10b481]'
             ]"
           >
             {{ labels[field] || passwordLabel }}
           </label>
+
+          <i
+            v-if="field === 'password'"
+            :class="[
+              showPassword ? 'bx bx-hide' : 'bx bx-show',
+              'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg cursor-pointer hover:text-[#10b481] transition'
+            ]"
+            @click="togglePassword"
+          ></i>
         </div>
 
         <div
@@ -59,28 +64,20 @@
             />
             <span>
               I agree to the
-              <NuxtLink
-                to="/privacy-policy"
-                class="underline hover:text-[#10b481]"
-                >Privacy Policy</NuxtLink
-              >
+              <NuxtLink to="/privacy-policy" class="underline hover:text-[#10b481]">
+                Privacy Policy
+              </NuxtLink>
               and
-              <NuxtLink
-                to="/terms-of-service"
-                class="underline hover:text-[#10b481]"
-                >Terms of Service</NuxtLink
-              >
+              <NuxtLink to="/terms-of-service" class="underline hover:text-[#10b481]">
+                Terms of Service
+              </NuxtLink>
             </span>
           </label>
         </div>
 
         <button
           type="submit"
-          :disabled="
-            (buttonText.toLowerCase().includes('sign') ||
-              buttonText === 'S\'inscrire') &&
-            !acceptedPolicy
-          "
+          :disabled="(buttonText.toLowerCase().includes('sign') || buttonText === 'S\'inscrire') && !acceptedPolicy"
           class="w-full py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-bold rounded-lg hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {{ buttonText }}
@@ -95,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 
 const props = defineProps<{
   title: string;
@@ -129,6 +126,14 @@ const labels: Record<string, string> = {
   last_name: "Last name",
   email: "Email",
 };
+
+const showPassword = ref(false);
+function togglePassword() {
+  showPassword.value = !showPassword.value;
+}
+function getInputType(field: string) {
+  return field === "password" ? (showPassword.value ? "text" : "password") : "text";
+}
 
 function submit() {
   emit("submit", { ...formData });

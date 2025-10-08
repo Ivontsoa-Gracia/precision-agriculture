@@ -1,12 +1,12 @@
 <template>
-  <div class="p-6 flex justify-center items-start">
+  <div class="p-1 sm:p-6 flex justify-center items-start">
     <div
       class="w-full max-w-5xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mt-2"
     >
       <div class="flex items-center gap-3 mb-8">
-        <i class="bx bx-show text-4xl text-[#10b481] animate-pulse"></i>
+        <i class="bx bx-show text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
         <h2
-          class="text-3xl font-extrabold text-gray-800 tracking-tight relative"
+          class="text-xl sm:text-3xl font-extrabold text-gray-800 tracking-tight relative"
         >
           {{ t("detailtask") }}
           <span

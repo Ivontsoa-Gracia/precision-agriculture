@@ -1,10 +1,10 @@
 <template>
-  <div class="p-6">
+  <div class="p-4 sm:p-6">
     <div class="mb-6">
       <h2
-        class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+        class="text-2xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-map text-3xl text-[#10b481]"></i>
+        <i class="bx bx-map text-2xl sm:text-3xl text-[#10b481]"></i>
         {{ t("titleparcellist") }}
       </h2>
 
@@ -22,19 +22,32 @@
             <option :value="16">16</option>
           </select>
         </div>
+        <div class="flex items-center sm:hidden">
+          <button
+            @click="showFilters = !showFilters"
+            class="p-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            <i class="bx bx-filter-alt text-xl"></i>
+          </button>
+        </div>
 
-        <div class="flex space-x-4 items-center flex-wrap">
+        <div
+          :class="[
+            'flex space-x-4 items-center flex-wrap mt-2 sm:mt-0',
+            showFilters ? 'block w-full' : 'hidden sm:flex',
+          ]"
+        >
           <input
             v-model="filters.owner"
             type="text"
             :placeholder="t('filterbyowner')"
-            class="p-2 border border-gray-300 rounded w-60"
+            class="p-2 border border-gray-300 rounded w-full sm:w-60"
           />
           <input
             v-model="filters.parcel_name"
             type="text"
             :placeholder="t('filterbyparcel')"
-            class="p-2 border border-gray-300 rounded w-60"
+            class="p-2 border border-gray-300 rounded w-full sm:w-60"
           />
           <button
             @click="resetFilters"
@@ -44,7 +57,7 @@
           </button>
         </div>
 
-        <div class="flex space-x-3 flex-wrap">
+        <div class="flex space-x-3 flex-nowrap mt-2 sm:mt-0 ">
           <div class="relative inline-block group">
             <button
               class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
@@ -72,7 +85,7 @@
 
           <NuxtLink
             to="/parcels/create"
-            class="flex items-center bg-[#10b481] text-white px-12 py-2 rounded-xl shadow hover:bg-[#0da06a]"
+            class="flex items-center bg-[#10b481] text-white px-6 py-2 rounded-xl shadow hover:bg-[#0da06a]"
           >
             <i class="bx bx-plus mr-2 text-xl"></i> {{ t("addparcel") }}
           </NuxtLink>
@@ -87,8 +100,12 @@
             <tr>
               <th class="px-6 py-2 border-b hidden">Owner</th>
               <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
-              <th class="px-6 py-2 border-b">{{ t("thlatitude") }}</th>
-              <th class="px-6 py-2 border-b">{{ t("thlongitude") }}</th>
+              <th class="px-6 py-2 border-b hidden sm:table-cell">
+                {{ t("thlatitude") }}
+              </th>
+              <th class="px-6 py-2 border-b hidden sm:table-cell">
+                {{ t("thlongitude") }}
+              </th>
               <th class="px-6 py-2 border-b text-center">
                 {{ t("thactions") }}
               </th>
@@ -111,12 +128,13 @@
                 </NuxtLink>
               </td>
 
-              <td class="px-6 py-2 border-b">
+              <td class="px-6 py-2 border-b hidden sm:table-cell">
                 {{ field.latitude.toFixed(6) }}
               </td>
-              <td class="px-6 py-2 border-b">
+              <td class="px-6 py-2 border-b hidden sm:table-cell">
                 {{ field.longitude.toFixed(6) }}
               </td>
+
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
@@ -185,6 +203,7 @@
       </div>
     </div>
   </div>
+
   <div
     v-if="showDeleteModal"
     class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
@@ -217,6 +236,7 @@ import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
+const showFilters = ref(false);
 
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
@@ -278,10 +298,23 @@ const currentPage = ref(1);
 const activeMenu = ref<string | null>(null);
 const menuPosition = reactive({ top: 0, right: 0 });
 
+const fieldsState = useState("fieldsData", () => ({
+  data: [] as any[],
+  timestamp: 0,
+}));
+
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
   if (!token) {
     alert("Vous devez être connecté");
+    return;
+  }
+
+  const now = Date.now();
+  const THIRTY_MIN = 30 * 60 * 1000;
+
+  if (fieldsState.value.data.length && now - fieldsState.value.timestamp < THIRTY_MIN) {
+    fields.value = fieldsState.value.data;
     return;
   }
 
@@ -324,6 +357,11 @@ onMounted(async () => {
       latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
       longitude: parcel.parcel_points?.[0]?.longitude ?? "-",
     }));
+
+    fieldsState.value = {
+      data: fields.value,
+      timestamp: Date.now(),
+    };
   } catch (err) {
     console.error("Erreur réseau:", err);
   }

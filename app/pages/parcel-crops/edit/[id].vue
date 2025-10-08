@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg mt-10">
+  <div class="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg mt-1 sm:mt-10 mb-10 sm:mb-1">
     <div class="flex items-center gap-3 mb-6">
-      <i class="bx bx-edit text-4xl text-[#10b481] animate-pulse"></i>
-      <h2 class="text-3xl font-extrabold text-gray-800 tracking-tight relative">
+      <i class="bx bx-edit text-xl text-3xl text-[#10b481] animate-pulse"></i>
+      <h2 class="text-xl text-3xl font-extrabold text-gray-800 tracking-tight relative">
         {{ t("editparcelcrop") }}
       </h2>
     </div>

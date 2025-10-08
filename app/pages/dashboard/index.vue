@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <div
         class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
@@ -80,23 +80,27 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-6">
-      <div class="col-span-2 bg-white rounded-2xl shadow-md p-1 z-40">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div
+        class="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-1 z-40"
+      >
         <client-only>
-          <div id="map" class="h-[450px] rounded-xl"></div>
+          <div
+            id="map"
+            class="h-64 sm:h-80 md:h-[450px] rounded-xl w-full"
+          ></div>
         </client-only>
       </div>
 
       <div class="col-span-1">
         <div
-          class="p-6 bg-white rounded-2xl shadow-md flex flex-col hover:shadow-xl transition duration-300 h-[500px]"
+          class="p-6 bg-white rounded-2xl shadow-md flex flex-col hover:shadow-xl transition duration-300 h-[400px] sm:h-[500px] md:h-[500px]"
         >
           <div class="flex items-center justify-between mb-5">
             <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
               <i class="bx bx-fullscreen text-[#10b481] text-xl"></i>
               {{ t("zoomonparcel") }}
             </h3>
-
             <span class="text-sm text-gray-500"
               >{{ totalParcels }} {{ t("parcel") }}(s)</span
             >
@@ -166,9 +170,9 @@
             <li
               v-for="p in sortedParcels"
               :key="p.id"
-              class="flex justify-between items-center p-3 border border-gray-100 rounded-xl hover:bg-[#f0fdf4] transition shadow-sm"
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-gray-100 rounded-xl hover:bg-[#f0fdf4] transition shadow-sm"
             >
-              <div class="flex flex-col">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                 <span class="text-gray-800 font-semibold">{{ p.name }}</span>
                 <span class="text-xs text-gray-500">
                   Yield: <strong>{{ getParcelYield(p) }} kg</strong>
@@ -176,7 +180,7 @@
               </div>
               <button
                 @click="zoomParcel(p)"
-                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded-lg bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30"
+                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded-lg bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30 mt-2 sm:mt-0"
               >
                 <i class="bx bx-zoom-in text-base"></i>
                 <span>Zoom</span>
@@ -187,58 +191,22 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-6 hidden">
-      <div class="col-span-2 bg-white rounded-2xl shadow-md p-4 z-40">
-        <h3 class="font-bold text-lg mb-4 text-gray-900 mb-12">
-          Yield per parcel (kg)
-        </h3>
-        <client-only>
-          <canvas id="yieldChart" class="h-96 w-full"></canvas>
-        </client-only>
-      </div>
-
-      <div
-        class="col-span-1 bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition flex-1 min-w-[200px]"
-      >
-        <h3 class="font-bold text-lg mb-4 text-gray-900">Soil Summary (%)</h3>
-        <div class="space-y-4">
-          <div v-for="(value, key) in soilSummary" :key="key">
-            <div class="flex justify-between mb-1">
-              <span class="text-gray-600 capitalize">{{ key }}</span>
-              <span class="text-gray-700 font-semibold">{{ value }}%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div
-                class="h-2 rounded-full transition-all duration-500"
-                :class="soilColors[key]"
-                :style="{ width: value + '%' }"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="bg-white p-5 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition flex-1 min-w-[200px] hidden"
-      >
-        <h3 class="font-bold text-lg mb-4 text-gray-900">Crop distribution</h3>
-        <client-only>
-          <canvas id="cropChart" class="h-48 w-full"></canvas>
-        </client-only>
-      </div>
-    </div>
-
     <div class="space-y-6">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-6">
         {{ t("titleanalytics") }}
       </h2>
 
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2 bg-white rounded-2xl shadow-md p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          class="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-6"
+        >
           <h3 class="font-bold text-lg mb-4 text-gray-900">
             {{ t("charttitleyield") }}
           </h3>
-          <canvas id="parcelYieldChart" class="h-96 w-full rounded-xl"></canvas>
+          <canvas
+            id="parcelYieldChart"
+            class="h-64 sm:h-80 md:h-96 w-full rounded-xl"
+          ></canvas>
         </div>
 
         <div
@@ -275,7 +243,7 @@
               v-if="parcel.open"
               class="p-4 border-t border-gray-200 bg-gray-50 space-y-3"
             >
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
                   <span class="text-gray-500 text-sm">{{
                     t("meanyield")
@@ -298,7 +266,7 @@
                 <div
                   v-for="(date, i) in parcel.dates"
                   :key="i"
-                  class="bg-white p-3 rounded-md shadow-sm flex justify-between items-center hover:shadow-md transition"
+                  class="bg-white p-3 rounded-md shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center hover:shadow-md transition"
                 >
                   <div class="flex flex-col">
                     <span class="text-gray-500 text-sm"
@@ -308,13 +276,13 @@
                       >{{ parcel.yield_amount[i].toFixed(2) }} kg</span
                     >
                   </div>
-                  <div class="flex flex-col text-right">
+                  <div class="flex flex-col text-right mt-2 sm:mt-0">
                     <span class="text-gray-400 text-xs mb-1">{{
                       t("yieldperarea")
                     }}</span>
-                    <span class="text-[#10b481] font-medium text-lg">
-                      {{ parcel.yield_per_area[i].toFixed(2) }} kg/ha
-                    </span>
+                    <span class="text-[#10b481] font-medium text-lg"
+                      >{{ parcel.yield_per_area[i].toFixed(2) }} kg/ha</span
+                    >
                   </div>
                 </div>
               </div>
@@ -348,13 +316,13 @@ const currentLocale = computed(() => languageStore.lang);
 const showSortMenu = ref(false);
 
 const router = useRouter();
-const dashboard = ref<any>({
-  parcels: [],
-  task_summary: [],
-  yield_summary: [],
-  soil_summary: [],
-});
-const analyticsData = ref<any>();
+// const dashboard = ref<any>({
+//   parcels: [],
+//   task_summary: [],
+//   yield_summary: [],
+//   soil_summary: [],
+// });
+// const analyticsData = ref<any>();
 
 let cropChart: Chart | null = null;
 let yieldChart: Chart | null = null;
@@ -464,6 +432,19 @@ function getParcelYield(parcel: any) {
     .reduce((sum: number, y: any) => sum + (y.summary?.total_yield || 0), 0);
 }
 
+// --- useState pour dashboard et analytics ---
+const dashboardState = useState("dashboardData", () => ({
+  parcels: [],
+  task_summary: [],
+  yield_summary: [],
+  soil_summary: [],
+}));
+const analyticsState = useState("analyticsData", () => null);
+
+// ref locales qui pointent vers le state
+const dashboard = ref(dashboardState.value);
+const analyticsData = ref(analyticsState.value);
+
 async function fetchDashboard() {
   const token = sessionStorage.getItem("token");
   if (!token) return router.push("/login");
@@ -473,6 +454,7 @@ async function fetchDashboard() {
       headers: { Authorization: `Token ${token}` },
     });
     dashboard.value = res.data;
+    dashboardState.value = res.data; 
 
     const resanalytics = await fetch(`${API_URL}/analytics/yields/`, {
       headers: { Authorization: `Token ${token}` },
@@ -480,10 +462,15 @@ async function fetchDashboard() {
 
     if (!resanalytics.ok) throw new Error("Failed to load forecast");
     analyticsData.value = await resanalytics.json();
+    analyticsState.value = analyticsData.value; 
   } catch (err) {
     console.error(err);
   }
 }
+
+watch(dashboard, (val) => (dashboardState.value = val), { deep: true });
+watch(analyticsData, (val) => (analyticsState.value = val), { deep: true });
+
 
 function addLegend(L: any) {
   const legendControl = L.control({ position: "topright" });

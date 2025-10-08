@@ -1,16 +1,17 @@
 <template>
-  <div class="p-6 flex flex-col items-center gap-8">
+  <div class="p-1 sm:p-6 flex flex-col items-center gap-8 mb-10 sm:mb-1">
     <div
       v-if="forecastData"
       class="relative w-full max-w-3xl bg-white backdrop-blur-md bg-opacity-80 rounded-3xl shadow-2xl p-6 flex flex-col md:flex-row items-center gap-6 hover:shadow-xl transition"
     >
       <div
-        class="flex-shrink-0 text-5xl p-5 rounded-full bg-[#f4a261]/20 text-[#f4a261]"
+        class="flex-shrink-0 text-3xl sm:text-5xl p-5 rounded-full bg-[#f4a261]/20 text-[#f4a261]"
       >
         <i class="bx bx-bar-chart-alt-2"></i>
       </div>
-      <div class="flex-1 items-center">
-        <h3 class="text-2xl font-bold text-gray-800 mb-2">
+
+      <div class="flex-1 items-center text-center md:text-left">
+        <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
           {{ t("titleyieldforcast") }}
         </h3>
         <div
@@ -18,16 +19,20 @@
         >
           <p class="text-gray-500 text-sm md:text-base">
             {{ t("forecastdate") }}:
-            <span class="font-medium text-gray-800">{{
-              forecastData.forecast_date
-            }}</span>
+            <span class="font-medium text-gray-800">
+              {{ forecastData.forecast_date }}
+            </span>
           </p>
         </div>
       </div>
+
       <div
-        class="absolute right-0 top-6 bottom-6 border-r-4 border-[#f4a261]"
+        class="absolute right-0 top-6 bottom-6 border-r-4 border-[#f4a261] hidden md:block"
       ></div>
-      <p class="text-3xl font-extrabold text-[#f4a261] md:ml-4 mr-16">
+
+      <p
+        class="text-xl sm:text-3xl font-extrabold text-[#f4a261] md:ml-4 md:mr-16 mx-auto text-center"
+      >
         {{ forecastData.predicted_yield.toFixed(2) }} kg
       </p>
     </div>
@@ -36,9 +41,9 @@
       class="w-full max-w-3xl bg-white backdrop-blur-md rounded-3xl shadow-2xl p-8"
     >
       <div class="flex items-center gap-3 mb-6">
-        <i class="bx bx-box text-5xl text-[#10b481] animate-pulse"></i>
+        <i class="bx bx-box text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
         <h2
-          class="text-3xl font-extrabold text-gray-800 tracking-tight relative"
+          class="text-xl sm:text-3xl font-extrabold text-gray-800 tracking-tight relative"
         >
           {{ t("pareclcropdetail") }}
           <span
@@ -79,6 +84,7 @@
         <DetailItem :label="t('createdat')" :value="parcelCrop.created_at" />
       </div>
 
+      <!-- Action Buttons -->
       <div class="mt-8 flex flex-col md:flex-row justify-end gap-4">
         <NuxtLink
           :to="`/parcel-crops/edit/${parcelCrop.id}`"
