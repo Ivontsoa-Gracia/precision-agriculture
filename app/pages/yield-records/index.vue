@@ -1,6 +1,8 @@
 <template>
-  <div class="p-6 mx-auto">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+  <div class="p-1 sm:p-6">
+    <h2
+      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+    >
       <i class="bx bx-bar-chart text-3xl text-[#10b481]"></i>
       {{ t("yieldlist") }}
     </h2>
@@ -14,7 +16,7 @@
       </button>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
+    <div class="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
       <table class="min-w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
@@ -29,9 +31,7 @@
         <tbody>
           <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
             <td class="px-6 py-2 border-b">{{ y.date }}</td>
-            <td class="px-6 py-2 border-b">
-              {{ y.parcel_name || "-" }}
-            </td>
+            <td class="px-6 py-2 border-b">{{ y.parcel_name || "-" }}</td>
             <td class="px-6 py-2 border-b">{{ y.area }}</td>
             <td class="px-6 py-2 border-b">
               {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : "-" }}
@@ -67,42 +67,92 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <div class="flex justify-between items-center mt-4 mb-2">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-        >
-          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
-        </button>
-
-        <div class="flex items-center space-x-2">
-          <button
-            v-for="page in visiblePages"
-            :key="page"
-            @click="goToPage(page)"
-            :class="[
-              'px-3 py-1 rounded',
-              currentPage === page
-                ? 'bg-[#10b481] text-white'
-                : 'bg-gray-100 hover:bg-gray-200',
-            ]"
-            v-if="page !== '...'"
-          >
-            {{ page }}
-          </button>
-          <span v-else class="px-2">...</span>
+    <div class="md:hidden space-y-4 text-md">
+      <div
+        v-for="y in yields"
+        :key="y.id"
+        class="bg-white p-4 rounded-xl shadow flex flex-col gap-3 hover:shadow-lg transition"
+      >
+        <div class="flex justify-between items-start">
+          <h3 class="font-bold text-[#212121] text-lg">
+            {{ y.parcel_name || "-" }}
+          </h3>
+          <div class="flex gap-1">
+            <button
+              @click="goToShow(y.id)"
+              class="p-2 rounded-full hover:bg-[#10b481]/20"
+            >
+              <i class="bx bx-show text-[#10b481] text-md"></i>
+            </button>
+            <button
+              @click="goToEdit(y.id)"
+              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+            >
+              <i class="bx bx-edit text-[#f4a261] text-md"></i>
+            </button>
+            <button
+              @click="deleteYield(y.id)"
+              class="p-2 rounded-full hover:bg-[#e63946]/10"
+            >
+              <i class="bx bx-trash text-[#e63946] text-md"></i>
+            </button>
+          </div>
         </div>
-
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-        >
-          {{ t("next") }} <i class="bx bx-chevron-right"></i>
-        </button>
+        <p>
+          <span class="font-semibold">{{ t("thdate") }}:</span> {{ y.date }}
+        </p>
+        <p>
+          <span class="font-semibold">{{ t("area") }}:</span> {{ y.area }}
+        </p>
+        <p>
+          <span class="font-semibold">{{ t("crop") }}:</span>
+          {{ y.parcelCrop ? y.parcelCrop.crop.name : "-" }}
+        </p>
+        <p>
+          <span class="font-semibold">{{ t("thyield") }}:</span>
+          {{ y.yield_amount }}
+        </p>
       </div>
+      <p v-if="yields.length === 0" class="text-center text-gray-500">
+        {{ t("noyieldfound") }}
+      </p>
+    </div>
+    <div class="flex justify-between items-center mt-4 mb-2 text-sm sm:text-md">
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+      >
+        <i class="bx bx-chevron-left"></i> {{ t("prev") }}
+      </button>
+
+      <div class="flex items-center space-x-2">
+        <button
+          v-for="page in visiblePages"
+          :key="page"
+          @click="goToPage(page)"
+          :class="[
+            'px-3 py-1 rounded',
+            currentPage === page
+              ? 'bg-[#10b481] text-white'
+              : 'bg-gray-100 hover:bg-gray-200',
+          ]"
+          v-if="page !== '...'"
+        >
+          {{ page }}
+        </button>
+        <span v-else class="px-2">...</span>
+      </div>
+
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+      >
+        {{ t("next") }} <i class="bx bx-chevron-right"></i>
+      </button>
     </div>
   </div>
 </template>
@@ -118,15 +168,16 @@ import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key) => translate[languageStore.lang][key] || key;
-
 const currentLocale = computed(() => languageStore.lang);
 
-const yields = ref([]);
+const router = useRouter();
 const currentPage = ref(1);
 const perPage = 4;
-const router = useRouter();
+
+const yieldsState = useState("yieldsData", () => ({ data: [], timestamp: 0 }));
+
+const yields = ref(yieldsState.value.data);
 
 const parcelCache = {};
 
@@ -169,6 +220,15 @@ async function fetchYields() {
     return;
   }
 
+  const now = Date.now();
+  if (
+    yieldsState.value.data.length &&
+    now - yieldsState.value.timestamp < 30 * 60 * 1000
+  ) {
+    yields.value = yieldsState.value.data;
+    return;
+  }
+
   try {
     const res = await axios.get(`${API_URL}/api/yield-records/`, {
       headers: { Authorization: `Token ${token}` },
@@ -185,6 +245,8 @@ async function fetchYields() {
     );
 
     yields.value = yieldsWithParcelCrop;
+
+    yieldsState.value = { data: yields.value, timestamp: Date.now() };
   } catch (err) {
     console.error(err);
   }
@@ -208,7 +270,11 @@ async function deleteYield(id) {
     await axios.delete(`${API_URL}/api/yield-records/${id}/`, {
       headers: { Authorization: `Token ${token}` },
     });
+
     yields.value = yields.value.filter((y) => y.id !== id);
+
+    yieldsState.value.data = yields.value;
+
     alert("Yield Record deleted successfully.");
   } catch (err) {
     console.error("Error deleting YieldRecord:", err);
@@ -221,7 +287,6 @@ const paginatedYields = computed(() => {
   const start = (currentPage.value - 1) * perPage;
   return yields.value.slice(start, start + perPage);
 });
-
 function goToPage(page) {
   currentPage.value = page;
 }
@@ -232,11 +297,9 @@ function nextPage() {
   if (currentPage.value < totalPages.value) currentPage.value++;
 }
 
-const visiblePages = computed(() => {
-  const pages = [];
-  for (let i = 1; i <= totalPages.value; i++) pages.push(i);
-  return pages;
-});
+const visiblePages = computed(() =>
+  Array.from({ length: totalPages.value }, (_, i) => i + 1)
+);
 
 onMounted(fetchYields);
 </script>

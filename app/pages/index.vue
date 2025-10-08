@@ -43,7 +43,7 @@ onMounted(() => {
     } else {
       router.push("/login");
     }
-  }, 4000);
+  }, 3000);
 });
 </script>
 

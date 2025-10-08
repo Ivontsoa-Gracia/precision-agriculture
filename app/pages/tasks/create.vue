@@ -1,12 +1,12 @@
 <template>
-  <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
-    <h2 class="text-3xl font-bold mb-6 text-[#10b481] flex items-center gap-2">
-      <i class="bx bx-task text-3xl text-[#212121]"></i>
+  <div class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 sm:mb-1">
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+      <i class="bx bx-task text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("titlenewtask") }}
     </h2>
 
     <form @submit.prevent="submitTask" class="space-y-4">
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
           <label class="block font-medium">{{ t("taskname") }} *</label>
           <input
@@ -37,7 +37,7 @@
         ></textarea>
       </div>
 
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
           <label class="block font-medium">{{ t("parcelcrop") }}</label>
           <select

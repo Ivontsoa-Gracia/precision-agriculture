@@ -1,7 +1,9 @@
 <template>
-  <div class="p-6">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class="bx bx-box text-3xl text-[#10b481]"></i>
+  <div class="p-1 sm:p-6">
+    <h2
+      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+    >
+      <i class="bx bx-box text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("parcelcroplist") }}
     </h2>
 
@@ -14,8 +16,8 @@
       </NuxtLink>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
-      <table class="min-w-full text-left border-collapse">
+    <div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+      <table class="min-w-[600px] w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
             <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
@@ -50,10 +52,8 @@
               >
                 {{ t(cropStatusKeyMap[pc.status.name]) }}
               </span>
-
               <span v-else>-</span>
             </td>
-
             <td class="p-3 border-b text-center flex justify-center gap-2">
               <button
                 @click="showParcelCrop(pc.id)"
@@ -75,49 +75,101 @@
               </button>
             </td>
           </tr>
-          <tr v-if="paginatedParcelCrops.length === 0">
-            <td colspan="8" class="p-6 text-center text-gray-500">
-              {{ t("noparcelcropfound") }}
-            </td>
-          </tr>
         </tbody>
       </table>
+    </div>
 
-      <div class="flex justify-between items-center mt-4 mb-2">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-        >
-          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
-        </button>
-
-        <div class="flex items-center space-x-2">
-          <button
-            v-for="page in visiblePages"
-            :key="page"
-            @click="goToPage(page)"
-            :class="[
-              'px-3 py-1 rounded',
-              currentPage === page
-                ? 'bg-[#10b481] text-white'
-                : 'bg-gray-100 hover:bg-gray-200',
-            ]"
-            v-if="page !== '...'"
-          >
-            {{ page }}
-          </button>
-          <span v-else class="px-2">...</span>
+    <div class="md:hidden space-y-4 text-md">
+      <div
+        v-for="pc in paginatedParcelCrops"
+        :key="pc.id"
+        class="bg-white p-4 rounded-xl shadow flex flex-col gap-2"
+      >
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-[#212121]">{{
+            pc.parcel_name || pc.parcel
+          }}</span>
+          <div class="flex gap-2">
+            <button
+              @click="showParcelCrop(pc.id)"
+              class="p-2 rounded-full hover:bg-[#10b481]/20"
+            >
+              <i class="bx bx-show text-[#10b481] text-md"></i>
+            </button>
+            <button
+              @click="editParcelCrop(pc.id)"
+              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+            >
+              <i class="bx bx-edit text-[#f4a261] text-md"></i>
+            </button>
+            <button
+              @click="deleteParcelCrop(pc.id)"
+              class="p-2 rounded-full hover:bg-[#e63946]/10"
+            >
+              <i class="bx bx-trash text-[#e63946] text-md"></i>
+            </button>
+          </div>
         </div>
-
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-        >
-          {{ t("next") }} <i class="bx bx-chevron-right"></i>
-        </button>
+        <p>
+          <span class="font-semibold">{{ t("crop") }}:</span>
+          {{ pc.crop?.name || "-" }}
+        </p>
+        <p v-if="pc.status?.name">
+          <span class="font-semibold"></span>
+          <span
+            :class="[
+              'px-2 py-1 rounded-full text-xs font-semibold',
+              statusClasses(pc.status.name),
+            ]"
+          >
+            {{ t(cropStatusKeyMap[pc.status.name]) }}
+          </span>
+        </p>
+        <p v-else>
+          <span class="font-semibold">{{ t("status") }}:</span> -
+        </p>
       </div>
+      <p
+        v-if="paginatedParcelCrops.length === 0"
+        class="text-center text-gray-500"
+      >
+        {{ t("noparcelcropfound") }}
+      </p>
+    </div>
+    <div class="flex justify-between items-center mt-4 mb-2text-sm sm:text-md">
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+      >
+        <i class="bx bx-chevron-left"></i> {{ t("prev") }}
+      </button>
+
+      <div class="flex items-center space-x-2">
+        <button
+          v-for="page in visiblePages"
+          :key="page"
+          @click="goToPage(page)"
+          :class="[
+            'px-3 py-1 rounded',
+            currentPage === page
+              ? 'bg-[#10b481] text-white'
+              : 'bg-gray-100 hover:bg-gray-200',
+          ]"
+          v-if="page !== '...'"
+        >
+          {{ page }}
+        </button>
+        <span v-else class="px-2">...</span>
+      </div>
+
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+      >
+        {{ t("next") }} <i class="bx bx-chevron-right"></i>
+      </button>
     </div>
   </div>
 </template>
@@ -132,9 +184,7 @@ import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key: string) => translate[languageStore.lang][key] || key;
-
 const currentLocale = computed(() => languageStore.lang);
 
 const cropStatusKeyMap: Record<string, string> = {
@@ -151,7 +201,14 @@ const cropStatusKeyMap: Record<string, string> = {
 };
 
 const router = useRouter();
-const parcelCrops = ref<any[]>([]);
+
+const parcelCropsState = useState("parcelCropsData", () => ({
+  data: [],
+  timestamp: 0,
+}));
+
+const parcelCrops = ref(parcelCropsState.value.data);
+
 const parcelCache: Record<string, string> = {};
 
 async function parcelName(id: string): Promise<string> {
@@ -207,11 +264,9 @@ const paginatedParcelCrops = ref<any[]>([]);
 const totalPages = computed(() =>
   Math.ceil(parcelCrops.value.length / itemsPerPage)
 );
-const visiblePages = computed(() => {
-  const pages = [];
-  for (let i = 1; i <= totalPages.value; i++) pages.push(i);
-  return pages;
-});
+const visiblePages = computed(() =>
+  Array.from({ length: totalPages.value }, (_, i) => i + 1)
+);
 const updatePaginated = () => {
   const start = (currentPage.value - 1) * itemsPerPage;
   paginatedParcelCrops.value = parcelCrops.value.slice(
@@ -227,17 +282,32 @@ onMounted(async () => {
     router.push("/login");
     return;
   }
+
+  const now = Date.now();
+  if (
+    parcelCropsState.value.data.length &&
+    now - parcelCropsState.value.timestamp < 30 * 60 * 1000
+  ) {
+    parcelCrops.value = parcelCropsState.value.data;
+    return;
+  }
+
   try {
     const res = await fetch(`${API_URL}/api/parcel-crops/`, {
       headers: { Authorization: `Token ${token}` },
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
-    parcelCrops.value = await res.json();
-    for (const crop of parcelCrops.value) {
+    const data = await res.json();
+
+    for (const crop of data) {
       if (crop.parcel) {
         crop.parcel_name = await parcelName(crop.parcel);
       }
     }
+
+    parcelCrops.value = data;
+
+    parcelCropsState.value = { data: data, timestamp: Date.now() };
   } catch (err) {
     console.error(err);
   }
@@ -253,6 +323,9 @@ const deleteParcelCrop = async (id: number) => {
     });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     parcelCrops.value = parcelCrops.value.filter((pc) => pc.id !== id);
+
+    parcelCropsState.value.data = parcelCrops.value;
+
     updatePaginated();
     alert("Parcel crop deleted");
   } catch (err) {

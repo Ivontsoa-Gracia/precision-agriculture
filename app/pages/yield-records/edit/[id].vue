@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
-      <i class="bx bx-edit text-3xl text-[#10b481]"></i>
+  <div class="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl mb-10 sm:mb1">
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
+      <i class="bx bx-edit text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("edityield") }}
     </h2>
 

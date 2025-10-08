@@ -1,6 +1,6 @@
 <template>
-  <div class="p-6 flex flex-col space-y-6">
-    <div class="flex gap-6">
+  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[100vw]">
+    <div class="flex flex-col lg:flex-row gap-6">
       <div class="fixed bottom-6 right-6 z-50 hidden">
         <NuxtLink
           :to="`/assistant/p/${parcelData.uuid}`"
@@ -17,12 +17,12 @@
         </NuxtLink>
       </div>
 
-      <div class="flex-[2] flex flex-col space-y-6 w-2/3">
+      <div class="flex-1 lg:flex-[2] flex flex-col space-y-6 w-full lg:w-2/3">
         <div
-          class="relative bg-gradient-to-r from-[#10b481]/10 to-white rounded-2xl shadow-md p-6 border-l-[4px] border-[#10b481] flex gap-6 text-gray-800"
+          class="relative bg-gradient-to-r from-[#10b481]/10 to-white rounded-2xl shadow-md p-6 border-l-[4px] border-[#10b481] flex flex-col lg:flex-row gap-6 text-gray-800"
         >
           <div class="flex-1 space-y-2">
-            <h3 class="text-lg font-semibold">
+            <h3 class="text-lg font-semibold flex items-center gap-2">
               <i class="bx bx-map text-lg text-gray-800"></i>
               {{ t("parceldetail") }}
             </h3>
@@ -50,7 +50,7 @@
           </div>
 
           <div
-            class="w-1/3 bg-[#10b481]/10 rounded-xl p-4 flex flex-col justify-center items-center shadow-inner text-center"
+            class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 flex flex-col justify-center items-center shadow-inner text-center"
           >
             <h3 class="text-gray-700 mb-2">{{ t("croptype") }}</h3>
             <div v-for="(c, i) in cropsInfo" :key="i" class="p-2">
@@ -64,7 +64,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-white rounded-2xl shadow p-4">
             <h3 class="font-semibold text-gray-800 mb-2">
               {{ t("charttitleweather") }}
@@ -88,7 +88,7 @@
         </div>
       </div>
 
-      <div class="flex-1 flex flex-col space-y-6 w-1/3 text-gray-800">
+      <div class="flex-1 flex flex-col space-y-6 w-full lg:w-1/3 text-gray-800">
         <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
           <h3 class="text-lg font-semibold">{{ t("soilinfo") }}</h3>
           <div class="mt-4 space-y-3">
@@ -151,10 +151,11 @@
             </div>
             <div class="flex flex-col text-left">
               <p class="text-3xl font-bold text-[#6d4c41]">
-                {{
-                  selectedParcel.mean_yield_per_area?.toFixed(2) ?? "-"
-                }}
+                {{ selectedParcel.mean_yield_per_area?.toFixed(2) ?? "-" }}
                 kg/ha
+              </p>
+              <p class="text-sm font-medium text-[#6d4c41]">
+                {{ t("meanyieldperarea") }}
               </p>
               <p class="text-sm font-medium text-[#6d4c41]">
                 {{ t("meanyieldperarea") }}
@@ -177,9 +178,11 @@
       </div>
     </div>
 
-    <div class="flex flex-col space-y-6">
-      <div class="flex gap-6">
-        <div class="bg-white rounded-2xl shadow-lg p-6 w-2/3 space-y-4">
+    <div class="flex flex-col space-y-6 mt-6">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div
+          class="bg-white rounded-2xl shadow-lg p-6 w-full lg:w-2/3 space-y-4"
+        >
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-xl font-bold text-gray-800">
@@ -223,9 +226,9 @@
                 </p>
                 <p class="text-gray-500 text-sm">
                   {{ t("priority") }}:
-                  <span class="capitalize">
-                    {{ t("priority" + task.priority) }}
-                  </span>
+                  <span class="capitalize">{{
+                    t("priority" + task.priority)
+                  }}</span>
                 </p>
                 <p class="text-gray-500 text-sm">
                   {{ t("due") }}: {{ formatDate(task.due_date) }}
@@ -278,7 +281,9 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow p-6 w-1/3 flex flex-col">
+        <div
+          class="bg-white rounded-2xl shadow p-6 w-full lg:w-1/3 flex flex-col"
+        >
           <h3 class="text-lg font-semibold text-gray-800 mb-4">
             {{ t("charttitletask") }}
           </h3>
@@ -308,9 +313,13 @@
               <tr>
                 <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
                 <th class="px-6 py-2 border-b">{{ t("thyield") }}</th>
-                <th class="px-6 py-2 border-b">{{ t("thobservation") }}</th>
-                <th class="px-6 py-2 border-b">{{ t("thtendance") }}</th>
-                <th class="px-6 py-2 border-b text-center">
+                <th class="px-6 py-2 border-b hidden sm:table-cell">
+                  {{ t("thobservation") }}
+                </th>
+                <th class="px-6 py-2 border-b hidden sm:table-cell">
+                  {{ t("thtendance") }}
+                </th>
+                <th class="px-6 py-2 border-b text-center hidden sm:table-cell">
                   {{ t("thactions") }}
                 </th>
               </tr>
@@ -323,8 +332,10 @@
               >
                 <td class="px-6 py-2 border-b">{{ record.date }}</td>
                 <td class="px-6 py-2 border-b">{{ record.quantity }}</td>
-                <td class="px-6 py-2 border-b">{{ record.observation }}</td>
-                <td class="px-6 py-2 border-b">
+                <td class="px-6 py-2 border-b hidden sm:table-cell">
+                  {{ record.observation }}
+                </td>
+                <td class="px-6 py-2 border-b hidden sm:table-cell">
                   <i
                     v-if="record.trend === 'up'"
                     class="bx bx-trending-up text-[#10b481] text-xl"
@@ -346,8 +357,7 @@
                     }}{{ record.trendValue }} kg
                   </span>
                 </td>
-
-                <td class="p-3 border-b text-center">
+                <td class="p-3 border-b text-center hidden sm:table-cell">
                   <button
                     @click="deleteRecord(record.id)"
                     class="p-2 rounded-full hover:bg-red-100"

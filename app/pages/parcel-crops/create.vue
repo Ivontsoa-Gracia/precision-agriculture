@@ -1,23 +1,25 @@
 <template>
-  <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md mt-10">
-    <div class="flex justify-between items-center mb-6">
+  <div class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mt-1 sm:mt-10 mb-10 sm:mb-1">
+    <div
+      class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4"
+    >
       <h2
-        class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+        class="text-xl sm:text-3xl font-bold text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-box text-3xl text-[#10b481]"></i>
+        <i class="bx bx-box text-xl sm:text-3xl text-[#10b481]"></i>
         {{ t("newparcelcrop") }}
       </h2>
 
       <NuxtLink
         to="/crops/create"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition w-full md:w-auto justify-center"
       >
         <i class="bx bx-plus text-lg"></i> {{ t("btnaddcrop") }}
       </NuxtLink>
     </div>
 
     <form @submit.prevent="submitParcelCrop" class="space-y-5">
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
           <label class="block font-medium">{{ t("parcel") }} *</label>
           <select
@@ -45,7 +47,7 @@
         </div>
       </div>
 
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
           <label class="block font-medium">{{ t("plantingdate") }} *</label>
           <input
@@ -66,7 +68,7 @@
         </div>
       </div>
 
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
           <label class="block font-medium">{{ t("area") }} (m²) *</label>
           <input

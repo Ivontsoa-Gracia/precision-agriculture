@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-cover bg-center flex items-center justify-center"
+    class="min-h-screen bg-cover bg-center flex items-center justify-center px-4 sm:px-6 md:px-8 py-10 sm:py-12"
     style="background: #212121"
   >
     <AuthForm

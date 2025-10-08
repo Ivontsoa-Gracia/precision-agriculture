@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md mt-10">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
-      <i class="bx bx-leaf text-3xl text-[#10b481]"></i>
+  <div class="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mt-10">
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
+      <i class="bx bx-leaf text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("newcrop") }}
     </h2>
 
@@ -63,24 +63,31 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
 
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key: string) => translate[languageStore.lang][key] || key;
-
 const currentLocale = computed(() => languageStore.lang);
-const isLoading = ref(false);
 
-const notification = ref({
+const router = useRouter();
+
+const formState = useState("formData", () => ({ name: "", variety_id: null }));
+const varietiesState = useState("varietiesData", () => [] as any[]);
+const notificationState = useState("notificationData", () => ({
   visible: false,
   message: "",
   type: "success",
-});
+}));
+const loadingState = useState("isLoading", () => false);
+
+const form = ref(formState.value);
+const varieties = ref(varietiesState.value);
+const notification = ref(notificationState.value);
+const isLoading = ref(loadingState.value);
 
 const showNotification = (
   message: string,
@@ -93,27 +100,24 @@ const showNotification = (
   setTimeout(() => (notification.value.visible = false), duration);
 };
 
-const router = useRouter();
-
-const form = ref({
-  name: "",
-  variety_id: null,
-});
-
-const varieties = ref<any[]>([]);
-
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
   if (!token) {
     router.push("/login");
     return;
   }
+
   try {
-    const res = await fetch(`${API_URL}/api/varieties/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    varieties.value = await res.json();
+    if (!varietiesState.value.length) {
+      const res = await fetch(`${API_URL}/api/varieties/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+      varieties.value = await res.json();
+      varietiesState.value = varieties.value; 
+    } else {
+      varieties.value = varietiesState.value; 
+    }
   } catch (err) {
     console.error("Failed to load varieties:", err);
   }
@@ -127,6 +131,7 @@ const submitCrop = async () => {
   }
 
   isLoading.value = true;
+  loadingState.value = true; 
   try {
     const res = await fetch(`${API_URL}/api/crops/`, {
       method: "POST",
@@ -147,8 +152,14 @@ const submitCrop = async () => {
     showNotification("Network error, please check your server", "error");
   } finally {
     isLoading.value = false;
+    loadingState.value = false; 
   }
 };
+
+watch(form, (val) => (formState.value = val), { deep: true });
+watch(varieties, (val) => (varietiesState.value = val), { deep: true });
+watch(notification, (val) => (notificationState.value = val), { deep: true });
+watch(isLoading, (val) => (loadingState.value = val));
 </script>
 
 <style scoped>
