@@ -620,9 +620,9 @@ function updateClimateCharts(data) {
 
   const today = new Date();
   const dates = [];
-  for (let i = 5; i >= 0; i--) {
+  for (let i = 0; i <= 5; i++) {
     const d = new Date();
-    d.setDate(today.getDate() - i);
+    d.setDate(today.getDate() + i); 
     dates.push(d.toISOString().split("T")[0]);
   }
 
