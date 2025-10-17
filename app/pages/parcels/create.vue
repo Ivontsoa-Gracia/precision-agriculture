@@ -54,6 +54,10 @@
           </div>
 
           <div>
+            <label class="block text-sm font-medium mb-2">{{
+              t("points")
+            }}</label>
+
             <div
               v-if="form.points.length"
               class="max-h-56 overflow-y-auto border rounded-lg bg-gray-50"
@@ -93,7 +97,7 @@
             </div>
 
             <p v-else class="text-xs text-gray-400 italic mt-2">
-              Aucun point sélectionné sur la carte
+              {{ t("nopoinntsfound") }}
             </p>
           </div>
 
@@ -132,14 +136,12 @@
       </form>
     </div>
 
-    <!-- Carte (toujours visible) -->
     <div
       class="w-full lg:flex-1 bg-gray-200 rounded-lg shadow-md h-[350px] sm:h-[400px] lg:h-auto overflow-hidden z-40"
     >
       <div id="map" class="h-full w-full rounded-lg"></div>
     </div>
 
-    <!-- Loader -->
     <div
       v-if="isLoading"
       class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl z-50"
@@ -149,7 +151,6 @@
       ></div>
     </div>
 
-    <!-- Notification -->
     <transition name="fade">
       <div
         v-if="notification.visible"
