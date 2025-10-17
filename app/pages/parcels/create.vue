@@ -1,8 +1,8 @@
 <template>
-  <div class="p-1 sm:p-6 flex flex-col lg:flex-row gap-6 relative mb-10 sm:mb-1">
-    <div
-      class="w-full lg:w-2/5 space-y-4"
-    >
+  <div
+    class="p-1 sm:p-6 flex flex-col lg:flex-row gap-6 relative mb-10 sm:mb-1"
+  >
+    <div class="w-full lg:w-2/5 space-y-4">
       <div
         class="p-2 sm:p-4 border rounded-xl bg-[#f4a261]/10 text-[#5a3210] border-[#f4a261]/40 flex items-start gap-3 shadow-sm"
       >
@@ -51,6 +51,50 @@
               :placeholder="t('searchonmap')"
               @input="onSearchInput"
             />
+          </div>
+
+          <div>
+            <div
+              v-if="form.points.length"
+              class="max-h-56 overflow-y-auto border rounded-lg bg-gray-50"
+            >
+              <table class="w-full text-sm text-left">
+                <thead class="bg-gray-100 sticky top-0">
+                  <tr>
+                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
+                      #
+                    </th>
+                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
+                      Latitude
+                    </th>
+                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
+                      Longitude
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(p, index) in form.points"
+                    :key="index"
+                    class="hover:bg-white transition"
+                  >
+                    <td class="px-3 py-2 text-[#10b481] font-semibold">
+                      Point {{ index + 1 }}
+                    </td>
+                    <td class="px-3 py-2 border-t">
+                      {{ p.lat.toFixed(6) }}
+                    </td>
+                    <td class="px-3 py-2 border-t">
+                      {{ p.lng.toFixed(6) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p v-else class="text-xs text-gray-400 italic mt-2">
+              Aucun point sélectionné sur la carte
+            </p>
           </div>
 
           <div>
@@ -109,7 +153,7 @@
     <transition name="fade">
       <div
         v-if="notification.visible"
-        :class="[ 
+        :class="[
           'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold z-50',
           notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
         ]"
@@ -124,6 +168,10 @@
 import { reactive, ref, onMounted } from "vue";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 const languageStore = useLanguageStore();
 
@@ -275,6 +323,13 @@ onMounted(async () => {
   await import("leaflet/dist/leaflet.css");
   turf = await import("@turf/turf");
 
+  delete (L.Icon.Default.prototype as any)._getIconUrl;
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+  });
+
   const satellite = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     { attribution: "Tiles &copy; Esri" }
@@ -283,23 +338,14 @@ onMounted(async () => {
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     { attribution: "&copy; OpenStreetMap contributors" }
   );
-  const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-    attribution:
-      "Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap",
-  });
 
   map = L.map("map", {
     center: [-18.8792, 47.5079],
     zoom: 6,
     layers: [satellite],
   });
-  L.control
-    .layers({
-      Satellite: satellite,
-      "Street Map": streets,
-      "Topographic Map": topo,
-    })
-    .addTo(map);
+
+  L.control.layers({ Satellite: satellite, "Street Map": streets }).addTo(map);
 
   map.on("click", (e: any) => {
     const order = form.points.length + 1;
