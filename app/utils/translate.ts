@@ -177,6 +177,9 @@ export const translate = {
     cropStatusHarvested: "Harvested",
     cropStatusPostHarvest: "Post-Harvest",
     cropStatusFailed: "Failed",
+    points: "Added Points",
+    nopoinntsfound: "No points selected on the map",
+
   },
   fr: {
     dashboard: "Tableau",
@@ -356,5 +359,7 @@ export const translate = {
     cropStatusHarvested: "Récoltée",
     cropStatusPostHarvest: "Post-récolte",
     cropStatusFailed: "Échouée",
+    points: "Points ajoutés",
+    nopoinntsfound: "Aucun point sélectionné sur la carte",
   },
 };
