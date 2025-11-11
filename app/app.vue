@@ -88,12 +88,20 @@ useHead({
     },
     {
       rel: "stylesheet",
+      href: "https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
+    },
+    {
+      rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;700;800&display=swap"
     },
     {
       rel: "icon",
       type: "image/png",
-      href: "/favicon.png"
+      href: "/favicon.ico"
+    },
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     }
   ],
   htmlAttrs: {
