@@ -366,8 +366,6 @@ async function deleteSelectedPoints() {
   }
 }
 
-
-
 let cropChart: Chart | null = null;
 let yieldChart: Chart | null = null;
 let map: any = null;
@@ -636,18 +634,18 @@ function updateMap(L: any) {
   dashboard.value.parcels?.forEach((p: any) => {
     if (!p.points?.length) return;
 
-    // --- DESSIN DU POLYGONE ---
+    // --- POLYGONE ---
     const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
-    const polygon = L.polygon(latlngs, {
+    L.polygon(latlngs, {
       color: "#219ebc",
       fillColor: "#219ebc",
       fillOpacity: 0.3,
       weight: 2,
     }).addTo(parcelLayer);
 
-    // --- DESSIN DES POINTS + NUMÉROS ---
+    // --- POINTS + NUMÉROS ---
     p.points.forEach((pt: any, i: number) => {
-      const marker = L.circleMarker([pt.lat, pt.lng], {
+      L.circleMarker([pt.lat, pt.lng], {
         radius: 5,
         color: "#1d4ed8",
         fillColor: "#3b82f6",
@@ -655,148 +653,36 @@ function updateMap(L: any) {
         weight: 2,
       }).addTo(parcelLayer);
 
-      // pastille avec numéro
       const label = L.divIcon({
         className: "point-label",
-        html: `<div style="
-          background:#1d4ed8;
-          color:white;
-          font-size:11px;
-          font-weight:bold;
-          border-radius:50%;
-          width:18px;
-          height:18px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          border:1px solid white;
-          box-shadow:0 1px 3px rgba(0,0,0,0.3);
-        ">${i + 1}</div>`,
-      });
-      const labelMarker = L.marker([pt.lat, pt.lng], { icon: label }).addTo(parcelLayer);
-
-      // --- SURVOL : afficher icône de suppression ---
-      let deleteMarker: any = null;
-
-      labelMarker.on("mouseover", () => {
-        if (deleteMarker) return;
-        const deleteIcon = L.divIcon({
-          html: `<div style="
-            background:#e74c3c;
+        html: `
+          <div style="
+            background:#1d4ed8;
             color:white;
-            font-size:12px;
-            padding:2px 6px;
-            border-radius:4px;
-            cursor:pointer;
-            box-shadow:0 2px 6px rgba(0,0,0,0.2);
-          ">🗑️</div>`,
-        });
-        deleteMarker = L.marker([pt.lat, pt.lng], { icon: deleteIcon }).addTo(map);
-
-        deleteMarker.on("click", () => showConfirmPopup(p, i));
+            font-size:11px;
+            font-weight:bold;
+            border-radius:50%;
+            width:18px;
+            height:18px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border:1px solid white;
+            box-shadow:0 1px 3px rgba(0,0,0,0.3);
+          ">
+            ${i + 1}
+          </div>
+        `,
       });
-
-      labelMarker.on("mouseout", () => {
-        if (deleteMarker) {
-          map.removeLayer(deleteMarker);
-          deleteMarker = null;
-        }
-      });
+      L.marker([pt.lat, pt.lng], { icon: label }).addTo(parcelLayer);
     });
   });
 
   const allLayers: any[] = [];
   parcelLayer.eachLayer((layer: any) => allLayers.push(layer));
+
   if (allLayers.length)
     map.fitBounds(L.featureGroup(allLayers).getBounds().pad(0.2));
-}
-
-// --- POPUP DE CONFIRMATION + NOTIFICATIONS ---
-
-function showConfirmPopup(parcel: any, pointIndex: number) {
-  const container = document.createElement("div");
-  container.innerHTML = `
-    <div style="
-      background:white;
-      padding:14px;
-      border-radius:10px;
-      box-shadow:0 3px 10px rgba(0,0,0,0.2);
-      font-family:system-ui;
-      width:240px;
-      text-align:center;
-    ">
-      <p style="margin-bottom:10px;">Supprimer le point <strong>${pointIndex + 1}</strong> ?</p>
-      <button id="yesDel" style="background:#e74c3c;color:white;padding:5px 12px;border:none;border-radius:5px;cursor:pointer;margin-right:6px;">Oui</button>
-      <button id="noDel" style="background:#ccc;color:black;padding:5px 12px;border:none;border-radius:5px;cursor:pointer;">Non</button>
-    </div>
-  `;
-
-  const popup = L.popup()
-    .setLatLng(parcel.points[pointIndex])
-    .setContent(container)
-    .openOn(map);
-
-  container.querySelector("#yesDel")?.addEventListener("click", async () => {
-    await deletePoint(parcel, pointIndex);
-    map.closePopup();
-  });
-  container.querySelector("#noDel")?.addEventListener("click", () => map.closePopup());
-}
-
-async function deletePoint(parcel: any, pointIndex: number) {
-  const updatedPoints = parcel.points.filter((_: any, i: number) => i !== pointIndex);
-
-  try {
-    const token = sessionStorage.getItem("token");
-    const uuid = sessionStorage.getItem("uuid");
-
-    await axios.put(
-      `${API_URL}/api/parcels/${parcel.id}/`,
-      {
-        owner: uuid,
-        parcel_name: parcel.parcel_name,
-        parcel_points: updatedPoints.map((pt: any, index: number) => ({
-          latitude: Number(pt.lat),
-          longitude: Number(pt.lng),
-          order: index + 1,
-        })),
-      },
-      { headers: { Authorization: `Token ${token}` } }
-    );
-
-    parcel.points = updatedPoints;
-    updateMap(L);
-    showToast("Point supprimé avec succès ✅", "success");
-  } catch (err: any) {
-    console.error(err);
-    showToast("Erreur lors de la suppression ❌", "error");
-  }
-}
-
-function showToast(message: string, type: "success" | "error") {
-  const color = type === "success" ? "#16a34a" : "#e74c3c";
-  const toast = document.createElement("div");
-  toast.textContent = message;
-  toast.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: ${color};
-    color: white;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => (toast.style.opacity = "1"), 50);
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => toast.remove(), 300);
-  }, 2500);
 }
 
 function zoomParcel(parcel: any) {
