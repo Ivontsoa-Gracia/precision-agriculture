@@ -316,13 +316,55 @@ const currentLocale = computed(() => languageStore.lang);
 const showSortMenu = ref(false);
 
 const router = useRouter();
-// const dashboard = ref<any>({
-//   parcels: [],
-//   task_summary: [],
-//   yield_summary: [],
-//   soil_summary: [],
-// });
-// const analyticsData = ref<any>();
+// --- nouvelles refs ---
+const selectedPoints = ref<number[]>([]);
+const activeParcel = ref<any>(null);
+
+// --- fonction pour supprimer les points sélectionnés ---
+async function deleteSelectedPoints() {
+  if (!activeParcel.value) return;
+  if (selectedPoints.value.length === 0) return alert("Aucun point sélectionné.");
+
+  // const confirmDelete = confirm("Voulez-vous vraiment supprimer les points sélectionnés ?");
+  if (!confirmDelete) return;
+
+  // On garde uniquement les points non supprimés
+  const updatedPoints = activeParcel.value.points.filter(
+    (pt: any, idx: number) => !selectedPoints.value.includes(idx)
+  );
+
+  try {
+    const token = sessionStorage.getItem("token");
+    const uuid = sessionStorage.getItem("uuid"); // UUID de l'utilisateur
+
+    await axios.put(
+      `${API_URL}/api/parcels/${activeParcel.value.id}/`,
+      {
+        owner: uuid,
+        parcel_name: activeParcel.value.name, 
+        parcel_points: updatedPoints.map((pt: any, index: number) => ({
+          latitude: Number(pt.lat),
+          longitude: Number(pt.lng),
+          order: index + 1, 
+        })),
+      },
+      { headers: { Authorization: `Token ${token}` } }
+    );
+
+    // alert("Points supprimés avec succès !");
+    activeParcel.value.points = updatedPoints;
+    selectedPoints.value = [];
+    updateMap((window as any).L);
+  } catch (err: any) {
+    if (err.response) {
+      console.error(err.response.data); // Voir exactement l'erreur renvoyée par l'API
+      // alert("Erreur : " + JSON.stringify(err.response.data));
+    } else {
+      console.error(err);
+      // alert("Erreur inconnue lors de la suppression des points.");
+    }
+  }
+}
 
 let cropChart: Chart | null = null;
 let yieldChart: Chart | null = null;
@@ -592,35 +634,48 @@ function updateMap(L: any) {
   dashboard.value.parcels?.forEach((p: any) => {
     if (!p.points?.length) return;
 
-    if (p.points.length === 1) {
-      const pt = p.points[0];
-      L.circleMarker([pt.lat, pt.lng], {
-        radius: 1,
-        color: "#219ebc",
-        fillColor: "#219ebc",
-        fillOpacity: 0.9,
-      })
-        .bindPopup(`<strong>${p.name}</strong>`)
-        .addTo(parcelLayer);
-    } else {
-      const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
-      L.polygon(latlngs, {
-        color: "#219ebc",
-        fillColor: "#219ebc",
-        fillOpacity: 0.3,
-      })
-        .bindPopup(`<strong>${p.name}</strong>`)
-        .addTo(parcelLayer);
+    // --- POLYGONE ---
+    const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
+    L.polygon(latlngs, {
+      color: "#219ebc",
+      fillColor: "#219ebc",
+      fillOpacity: 0.3,
+      weight: 2,
+    }).addTo(parcelLayer);
 
-      p.points.forEach((pt: any) => {
-        L.circleMarker([pt.lat, pt.lng], {
-          radius: 3,
-          color: "#219ebc",
-          fillColor: "#219ebc",
-          fillOpacity: 1,
-        }).addTo(parcelLayer);
+    // --- POINTS + NUMÉROS ---
+    p.points.forEach((pt: any, i: number) => {
+      L.circleMarker([pt.lat, pt.lng], {
+        radius: 5,
+        color: "#1d4ed8",
+        fillColor: "#3b82f6",
+        fillOpacity: 1,
+        weight: 2,
+      }).addTo(parcelLayer);
+
+      const label = L.divIcon({
+        className: "point-label",
+        html: `
+          <div style="
+            background:#1d4ed8;
+            color:white;
+            font-size:11px;
+            font-weight:bold;
+            border-radius:50%;
+            width:18px;
+            height:18px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border:1px solid white;
+            box-shadow:0 1px 3px rgba(0,0,0,0.3);
+          ">
+            ${i + 1}
+          </div>
+        `,
       });
-    }
+      L.marker([pt.lat, pt.lng], { icon: label }).addTo(parcelLayer);
+    });
   });
 
   const allLayers: any[] = [];
@@ -632,26 +687,122 @@ function updateMap(L: any) {
 
 function zoomParcel(parcel: any) {
   if (!map || !parcelLayer) return;
+  activeParcel.value = parcel;
+
+  selectedPoints.value = [];
 
   parcelLayer.eachLayer((layer: any) => {
-    if (layer.getLatLng) {
-      const latlng = layer.getLatLng();
-      if (
-        parcel.points.some(
-          (p: any) => p.lat === latlng.lat && p.lng === latlng.lng
-        )
-      ) {
-        map.setView([latlng.lat, latlng.lng], 15);
-        layer.openPopup();
-      }
-    } else if (layer.getBounds) {
-      const bounds = layer.getBounds();
-      if (parcel.points.every((pt: any) => bounds.contains([pt.lat, pt.lng]))) {
-        map.fitBounds(bounds.pad(0.3));
-        layer.openPopup();
-      }
-    }
+    if (!layer.getBounds) return;
+
+    const bounds = layer.getBounds();
+    if (!parcel.points.every((pt: any) => bounds.contains([pt.lat, pt.lng]))) return;
+
+    map.fitBounds(bounds.pad(0.3));
+
+    // Création du contenu du popup
+    const pointsHTML = parcel.points
+      .map(
+        (pt: any, i: number) => `
+        <div class="point-item" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center; padding:2px 0;">
+          <span style="font-size:12px;">Point ${i + 1}: (${pt.lat.toFixed(5)}, ${pt.lng.toFixed(5)})</span>
+          <input type="checkbox" style="cursor:pointer;">
+        </div>`
+      )
+      .join("");
+
+    const popupHTML = `
+      <div class="parcel-popup" style="font-size:13px; max-width:280px;">
+        <strong style="display:block; margin-bottom:6px;">${parcel.name}</strong>
+        <div style="max-height:120px; overflow-y:auto; margin-bottom:6px;">${pointsHTML}</div>
+        <button id="deletePointsBtn" style="
+          display:none;
+          margin-top:6px;
+          background:#e74c3c;
+          color:white;
+          padding:6px 10px;
+          border:none;
+          border-radius:6px;
+          cursor:pointer;
+        ">Supprimer sélectionnés</button>
+        <div id="confirmDelete" style="
+          display:none; 
+          margin-top:6px; 
+          font-size:12px; 
+          color:#e74c3c;
+        ">
+          Confirmer la suppression ?
+          <button id="confirmYes" style="margin-left:4px; background:#c0392b; color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">Oui</button>
+          <button id="confirmNo" style="margin-left:4px; background:#95a5a6; color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">Non</button>
+        </div>
+      </div>
+    `;
+
+    const popup = L.popup()
+      .setLatLng(bounds.getCenter())
+      .setContent(popupHTML)
+      .openOn(map);
+
+    setTimeout(() => {
+      const checkboxes = document.querySelectorAll(".point-item input");
+      const deleteBtn = document.getElementById("deletePointsBtn");
+      const confirmDiv = document.getElementById("confirmDelete");
+      const confirmYes = document.getElementById("confirmYes");
+      const confirmNo = document.getElementById("confirmNo");
+
+      const updateDeleteBtn = () => {
+        deleteBtn!.style.display = selectedPoints.value.length ? "block" : "none";
+      };
+
+      checkboxes.forEach((cb: any, idx) => {
+        cb.addEventListener("change", (e: any) => {
+          if (e.target.checked) selectedPoints.value.push(idx);
+          else selectedPoints.value = selectedPoints.value.filter((id) => id !== idx);
+          updateDeleteBtn();
+        });
+      });
+
+      deleteBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        confirmDiv!.style.display = "block";
+      });
+
+      confirmYes?.addEventListener("click", async () => {
+        try {
+          await deleteSelectedPoints();
+          showNotification("Points supprimés avec succès !", "success");
+        } catch {
+          showNotification("Erreur lors de la suppression des points.", "error");
+        }
+        confirmDiv!.style.display = "none";
+      });
+
+      confirmNo?.addEventListener("click", () => {
+        confirmDiv!.style.display = "none";
+      });
+    }, 50);
   });
+}
+
+// Fonction simple pour les notifications
+function showNotification(message: string, type: "success" | "error") {
+  const notif = document.createElement("div");
+  notif.textContent = message;
+  notif.style.position = "fixed";
+  notif.style.top = "20px";
+  notif.style.right = "20px";
+  notif.style.padding = "10px 15px";
+  notif.style.background = type === "success" ? "#2ecc71" : "#e74c3c";
+  notif.style.color = "white";
+  notif.style.borderRadius = "6px";
+  notif.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  notif.style.zIndex = "10000";
+  notif.style.fontSize = "13px";
+  document.body.appendChild(notif);
+
+  setTimeout(() => {
+    notif.remove();
+  }, 3000);
 }
 
 watch(dashboard, async () => {

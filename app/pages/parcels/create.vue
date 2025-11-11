@@ -74,6 +74,9 @@
                     <th class="px-3 py-2 font-semibold text-gray-700 border-b">
                       Longitude
                     </th>
+                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -85,11 +88,17 @@
                     <td class="px-3 py-2 text-[#10b481] font-semibold">
                       Point {{ index + 1 }}
                     </td>
-                    <td class="px-3 py-2 border-t">
-                      {{ p.lat.toFixed(6) }}
-                    </td>
-                    <td class="px-3 py-2 border-t">
-                      {{ p.lng.toFixed(6) }}
+                    <td class="px-3 py-2 border-t">{{ p.lat.toFixed(6) }}</td>
+                    <td class="px-3 py-2 border-t">{{ p.lng.toFixed(6) }}</td>
+                    <td class="px-3 py-2 border-t text-center">
+                      <button
+                        type="button"
+                        @click="removePoint(index)"
+                        class="text-red-500 hover:text-red-700 transition"
+                        title="Supprimer le point"
+                      >
+                        <i class="bx bx-trash text-lg"></i>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -173,6 +182,9 @@ import { translate } from "~/utils/translate";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const languageStore = useLanguageStore();
 
@@ -309,6 +321,7 @@ async function submitForm() {
       return;
     }
     showNotification("Parcel saved successfully!", "success");
+    router.push("/parcels");
   } catch (err) {
     console.error(err);
     showNotification("Network error", "error");
@@ -316,6 +329,55 @@ async function submitForm() {
     isLoading.value = false;
   }
 }
+
+function removePoint(index: number) {
+  const removedPoint = form.points[index];
+  if (!removedPoint) return;
+
+  form.points.splice(index, 1);
+
+  form.points.forEach((p, i) => (p.order = i + 1));
+
+  map.eachLayer((layer: any) => {
+    if (
+      layer instanceof L.CircleMarker ||
+      layer instanceof L.Tooltip ||
+      layer instanceof L.Polygon
+    ) {
+      map.removeLayer(layer);
+    }
+  });
+
+  form.points.forEach((p) => {
+    const circle = L.circleMarker([p.lat, p.lng], {
+      radius: 6,
+      color: "#1d4ed8",
+      fillColor: "#3b82f6",
+      fillOpacity: 0.8,
+      weight: 2,
+    }).addTo(map);
+
+    L.tooltip({
+      permanent: true,
+      direction: "top",
+      className: "custom-label",
+      offset: [0, -5],
+    })
+      .setContent(`Point ${p.order}`)
+      .setLatLng([p.lat, p.lng])
+      .addTo(map);
+  });
+
+  if (form.points.length >= 3) {
+    drawnPolygon = L.polygon(
+      form.points.map((p) => [p.lat, p.lng]),
+      { color: "blue" }
+    ).addTo(map);
+  }
+
+  updatePolygon();
+}
+
 
 onMounted(async () => {
   if (!process.client) return;
@@ -349,10 +411,52 @@ onMounted(async () => {
   L.control.layers({ Satellite: satellite, "Street Map": streets }).addTo(map);
 
   map.on("click", (e: any) => {
-    const order = form.points.length + 1;
-    form.points.push({ lat: e.latlng.lat, lng: e.latlng.lng, order });
-    updatePolygon();
+  form.points.push({
+    lat: e.latlng.lat,
+    lng: e.latlng.lng,
+    order: form.points.length + 1,
   });
+
+  map.eachLayer((layer: any) => {
+    if (
+      layer instanceof L.CircleMarker ||
+      layer instanceof L.Tooltip ||
+      layer instanceof L.Polygon
+    ) {
+      map.removeLayer(layer);
+    }
+  });
+
+  form.points.forEach((p) => {
+    const circle = L.circleMarker([p.lat, p.lng], {
+      radius: 6,
+      color: "#1d4ed8",
+      fillColor: "#3b82f6",
+      fillOpacity: 0.8,
+      weight: 2,
+    }).addTo(map);
+
+    L.tooltip({
+      permanent: true,
+      direction: "top",
+      className: "custom-label",
+      offset: [0, -5],
+    })
+      .setContent(`Point ${p.order}`)
+      .setLatLng([p.lat, p.lng])
+      .addTo(map);
+  });
+
+  if (form.points.length >= 3) {
+    drawnPolygon = L.polygon(
+      form.points.map((p) => [p.lat, p.lng]),
+      { color: "blue" }
+    ).addTo(map);
+  }
+
+  updatePolygon();
+});
+
 });
 
 const formatM2 = (areaInHa) => {

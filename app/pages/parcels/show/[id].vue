@@ -39,14 +39,14 @@
               <span class="font-medium">{{ t("Area") }}:</span>
               {{ formatM2(parcelAreaHa) }}
             </p>
-            <p>
+            <!-- <p>
               <span class="font-medium">{{ t("thlatitude") }}:</span>
               {{ parcelData.parcel_points?.[0]?.latitude ?? "-" }}
             </p>
             <p>
               <span class="font-medium">{{ t("thlongitude") }}:</span>
               {{ parcelData.parcel_points?.[0]?.longitude ?? "-" }}
-            </p>
+            </p> -->
           </div>
 
           <div
