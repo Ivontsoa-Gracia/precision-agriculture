@@ -32,7 +32,7 @@
 
     <div
       v-if="isLoading"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center"
     >
       <div
         class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
@@ -42,12 +42,50 @@
     <transition name="fade">
       <div
         v-if="notification.visible"
-        :class="[
-          'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold z-50',
-          notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
-        ]"
+        class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
       >
-        {{ notification.message }}
+        <div
+          :class="[
+            'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+            notification.type === 'success'
+              ? 'border-t-4 border-[#10b481]'
+              : 'border-t-4 border-red-500',
+          ]"
+        >
+          <!-- Icône -->
+          <div
+            v-if="notification.type === 'success'"
+            class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+          >
+            <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+          </div>
+          <div
+            v-else
+            class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+          >
+            <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+          </div>
+
+          <p
+            :class="[
+              'text-lg font-semibold',
+              notification.type === 'success'
+                ? 'text-[#10b481]'
+                : 'text-red-500',
+            ]"
+          >
+            {{ notification.message }}
+          </p>
+
+          <!-- Message secondaire -->
+          <p class="text-gray-500 text-sm">
+            {{
+              notification.type === "success"
+                ? "Redirecting to your dashboard..."
+                : "Please try again."
+            }}
+          </p>
+        </div>
       </div>
     </transition>
   </div>
@@ -57,7 +95,9 @@
 import { ref, onMounted } from "vue";
 import AuthForm from "~/components/AuthForm.vue";
 import { API_URL } from "~/config";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const isLoading = ref(false);
 const notification = ref({ visible: false, message: "", type: "success" });
 const googleLoaded = ref(false);
@@ -89,15 +129,19 @@ const handleLogin = async (formData: {
     const data = await res.json();
     if (!res.ok) {
       showNotification(data.detail || JSON.stringify(data), "error");
+      setTimeout(() => {}, 3000);
       return;
     }
     sessionStorage.setItem("token", data.token);
     sessionStorage.setItem("uuid", data.user.uuid);
-    showNotification("Login successful!", "success");
-    window.location.href = "/dashboard";
+    showNotification("You're signed in successfully.", "success");
+    setTimeout(() => {
+      router.push(`/dashboard/s/${data.user.uuid}`);
+    }, 3000);
   } catch (error) {
     console.error(error);
     showNotification("Network error", "error");
+    setTimeout(() => {}, 3000);
   } finally {
     isLoading.value = false;
   }
@@ -137,15 +181,19 @@ const renderGoogleButton = () => {
         const data = await res.json();
         if (!res.ok) {
           showNotification(JSON.stringify(data), "error");
+          setTimeout(() => {}, 3000);
           return;
         }
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("uuid", data.user.uuid);
-        showNotification("Google login successful!", "success");
-        window.location.href = "/dashboard";
+        showNotification("You're signed in successfully.", "success");
+        setTimeout(() => {
+          router.push(`/dashboard/s/${data.user.uuid}`);
+        }, 3000);
       } catch (err) {
         console.error(err);
         showNotification("Google login failed", "error");
+        setTimeout(() => {}, 3000);
       } finally {
         isLoading.value = false;
       }

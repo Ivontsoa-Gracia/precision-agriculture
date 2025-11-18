@@ -313,6 +313,12 @@ onMounted(async () => {
   }
 });
 
+onMounted(async () => {
+  if (router.currentRoute.value.query.refresh) {
+    await loadParcelCrops(); // fonction qui recharge les tasks depuis l'API
+  }
+});
+
 const deleteParcelCrop = async (id: number) => {
   if (!confirm("Are you sure you want to delete this parcel crop?")) return;
   const token = sessionStorage.getItem("token");
@@ -346,4 +352,33 @@ const prevPage = () => {
 const goToPage = (page: number) => {
   currentPage.value = page;
 };
+
+async function loadParcelCrops() {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/parcel-crops/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+
+    for (const crop of data) {
+      if (crop.parcel) {
+        crop.parcel_name = await parcelName(crop.parcel);
+      }
+    }
+
+    parcelCrops.value = data;
+    parcelCropsState.value = { data: data, timestamp: Date.now() };
+    updatePaginated();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 </script>

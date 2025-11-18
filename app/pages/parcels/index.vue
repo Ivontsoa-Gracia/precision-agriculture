@@ -4,7 +4,7 @@
       <h2
         class="text-2xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-map text-2xl sm:text-3xl text-[#10b481]"></i>
+        <i class="bx bx-location-alt-2 text-2xl sm:text-3xl text-[#10b481]"></i>
         {{ t("titleparcellist") }}
       </h2>
 
