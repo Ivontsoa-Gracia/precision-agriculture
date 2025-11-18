@@ -1,6 +1,6 @@
 <template>
   <div class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
       <div
         class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
       >
@@ -323,7 +323,8 @@ const activeParcel = ref<any>(null);
 // --- fonction pour supprimer les points sélectionnés ---
 async function deleteSelectedPoints() {
   if (!activeParcel.value) return;
-  if (selectedPoints.value.length === 0) return alert("Aucun point sélectionné.");
+  if (selectedPoints.value.length === 0)
+    return alert("Aucun point sélectionné.");
 
   // const confirmDelete = confirm("Voulez-vous vraiment supprimer les points sélectionnés ?");
   if (!confirmDelete) return;
@@ -341,11 +342,11 @@ async function deleteSelectedPoints() {
       `${API_URL}/api/parcels/${activeParcel.value.id}/`,
       {
         owner: uuid,
-        parcel_name: activeParcel.value.name, 
+        parcel_name: activeParcel.value.name,
         parcel_points: updatedPoints.map((pt: any, index: number) => ({
           latitude: Number(pt.lat),
           longitude: Number(pt.lng),
-          order: index + 1, 
+          order: index + 1,
         })),
       },
       { headers: { Authorization: `Token ${token}` } }
@@ -496,7 +497,7 @@ async function fetchDashboard() {
       headers: { Authorization: `Token ${token}` },
     });
     dashboard.value = res.data;
-    dashboardState.value = res.data; 
+    dashboardState.value = res.data;
 
     const resanalytics = await fetch(`${API_URL}/analytics/yields/`, {
       headers: { Authorization: `Token ${token}` },
@@ -504,7 +505,7 @@ async function fetchDashboard() {
 
     if (!resanalytics.ok) throw new Error("Failed to load forecast");
     analyticsData.value = await resanalytics.json();
-    analyticsState.value = analyticsData.value; 
+    analyticsState.value = analyticsData.value;
   } catch (err) {
     console.error(err);
   }
@@ -512,7 +513,6 @@ async function fetchDashboard() {
 
 watch(dashboard, (val) => (dashboardState.value = val), { deep: true });
 watch(analyticsData, (val) => (analyticsState.value = val), { deep: true });
-
 
 function addLegend(L: any) {
   const legendControl = L.control({ position: "topright" });
@@ -695,16 +695,18 @@ function zoomParcel(parcel: any) {
     if (!layer.getBounds) return;
 
     const bounds = layer.getBounds();
-    if (!parcel.points.every((pt: any) => bounds.contains([pt.lat, pt.lng]))) return;
+    if (!parcel.points.every((pt: any) => bounds.contains([pt.lat, pt.lng])))
+      return;
 
     map.fitBounds(bounds.pad(0.3));
 
-    // Création du contenu du popup
     const pointsHTML = parcel.points
       .map(
         (pt: any, i: number) => `
         <div class="point-item" data-index="${i}" style="display:flex; justify-content:space-between; align-items:center; padding:2px 0;">
-          <span style="font-size:12px;">Point ${i + 1}: (${pt.lat.toFixed(5)}, ${pt.lng.toFixed(5)})</span>
+          <span style="font-size:12px;">Point ${i + 1}: (${pt.lat.toFixed(
+          5
+        )}, ${pt.lng.toFixed(5)})</span>
           <input type="checkbox" style="cursor:pointer;">
         </div>`
       )
@@ -750,13 +752,18 @@ function zoomParcel(parcel: any) {
       const confirmNo = document.getElementById("confirmNo");
 
       const updateDeleteBtn = () => {
-        deleteBtn!.style.display = selectedPoints.value.length ? "block" : "none";
+        deleteBtn!.style.display = selectedPoints.value.length
+          ? "block"
+          : "none";
       };
 
       checkboxes.forEach((cb: any, idx) => {
         cb.addEventListener("change", (e: any) => {
           if (e.target.checked) selectedPoints.value.push(idx);
-          else selectedPoints.value = selectedPoints.value.filter((id) => id !== idx);
+          else
+            selectedPoints.value = selectedPoints.value.filter(
+              (id) => id !== idx
+            );
           updateDeleteBtn();
         });
       });
@@ -772,7 +779,10 @@ function zoomParcel(parcel: any) {
           await deleteSelectedPoints();
           showNotification("Points supprimés avec succès !", "success");
         } catch {
-          showNotification("Erreur lors de la suppression des points.", "error");
+          showNotification(
+            "Erreur lors de la suppression des points.",
+            "error"
+          );
         }
         confirmDiv!.style.display = "none";
       });
@@ -784,7 +794,6 @@ function zoomParcel(parcel: any) {
   });
 }
 
-// Fonction simple pour les notifications
 function showNotification(message: string, type: "success" | "error") {
   const notif = document.createElement("div");
   notif.textContent = message;

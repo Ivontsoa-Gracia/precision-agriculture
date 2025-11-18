@@ -302,4 +302,15 @@ const visiblePages = computed(() =>
 );
 
 onMounted(fetchYields);
+
+onMounted(() => {
+  if (router.currentRoute.value.query.refresh) {
+  yields.value = yieldsState.value.data; // toujours synchroniser avec le store
+  if (!yields.value.length || Date.now() - yieldsState.value.timestamp > 30 * 60 * 1000) {
+    fetchYields();
+  }
+}
+});
+
+
 </script>

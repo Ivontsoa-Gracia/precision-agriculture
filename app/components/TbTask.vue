@@ -1,7 +1,7 @@
 <template>
   <div class="p-1 sm:p-6 mb-10 sm:mb-1">
     <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class="bx bx-task text-3xl text-[#10b481]"></i>
+      <i class="bxr bx-list-ul text-2xl sm:text-3xl"></i>
       {{ t("titiletaskslist") }}
     </h2>
 
@@ -34,22 +34,20 @@
           {{ t("upcoming") }}
         </a>
       </nav>
-
-      <div class="flex justify-end">
-        <NuxtLink
-          to="/tasks/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
-        >
-          <i class="bx bx-plus text-lg"></i> {{ t("btnaddtask") }}
-        </NuxtLink>
-      </div>
+      <button
+        @click="markTasksDone"
+        :disabled="selectedTasks.length === 0"
+        class="px-4 py-2 bg-[#10b481] text-white rounded disabled:opacity-0"
+      >
+        Mark as Done
+      </button>
     </div>
 
-    <div class="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
+    <div class="hidden md:block overflow-x-auto bg-white rounded-sm shadow">
       <table class="min-w-[700px] w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-6 py-2 border-b">{{ t("taskname") }}</th>
+            <th class="px-14 py-2 border-b">{{ t("taskname") }}</th>
             <th class="px-6 py-2 border-b">{{ t("due") }}</th>
             <th class="px-6 py-2 border-b">{{ t("parcelcrop") }}</th>
             <th class="px-6 py-2 border-b text-center">{{ t("priority") }}</th>
@@ -63,11 +61,78 @@
             :key="task.id"
             class="hover:bg-gray-50"
           >
-            <td class="px-6 py-2 border-b">{{ task.name }}</td>
-            <td class="px-6 py-2 border-b">
+<!-- Checkbox + Name -->
+<td class="px-6 py-2 border-b">
+  <div class="flex items-center gap-3">
+    <label 
+  v-if="statuses[task.status] !== 'Done'"
+  class="relative flex items-center gap-3 cursor-pointer select-none"
+>
+  <div class="relative">
+    <input
+      type="checkbox"
+      v-model="selectedTasks"
+      :value="task.id"
+      class="appearance-none w-5 h-5 border border-gray-300 rounded-md
+             flex items-center justify-center
+             transition-all duration-200
+             checked:bg-[#10b481] checked:border-[#10b481]
+             cursor-pointer"
+    />
+    <svg
+      v-if="selectedTasks.includes(task.id)"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="white"
+      stroke-width="3"
+      class="absolute inset-0 m-auto w-3 h-3 pointer-events-none"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  </div>
+</label>
+
+
+    <span
+      v-else
+      class="flex items-center justify-center w-5 h-5 border border-[#10b481] rounded-md"
+    >
+      <svg
+        class="w-3 h-3 text-[#10b481]"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="3"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </span>
+
+    <!-- Nom de la tâche -->
+    <span
+      :class="statuses[task.status] === 'Done' ? 'line-through text-gray-500' : ''"
+    >
+      {{ task.name }}
+    </span>
+  </div>
+</td>
+
+
+      <!-- Due Date -->
+      <td class="px-6 py-2 border-b" :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''">
+        {{ new Date(task.due_date).toLocaleDateString() }}
+      </td>
+
+      <!-- ParcelCrop -->
+      <td class="px-6 py-2 border-b" :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''">
+        {{ task.parcelCropFull || "-" }}
+      </td>
+            <!-- <td class="px-6 py-2 border-b">
               {{ new Date(task.due_date).toLocaleDateString() }}
-            </td>
-            <td class="px-6 py-2 border-b">{{ task.parcelCropFull || "-" }}</td>
+            </td> -->
+            <!-- <td class="px-6 py-2 border-b">{{ task.parcelCropFull || "-" }}</td> -->
             <td class="px-6 py-2 border-b text-center">
               <span
                 v-if="priorities[task.priority]"
@@ -104,7 +169,8 @@
               </span>
               <span v-else>-</span>
             </td>
-            <td class="p-3 border-b text-center flex justify-center gap-2">
+            <td class="p-3 border-b text-center">
+                <div class="flex justify-center gap-2">
               <button
                 @click="showTask(task.id)"
                 class="p-2 rounded-full hover:bg-[#10b481]/20"
@@ -123,6 +189,7 @@
               >
                 <i class="bx bx-trash text-[#e63946] text-xl"></i>
               </button>
+            </div>
             </td>
           </tr>
           <tr v-if="paginatedTasks.length === 0">
@@ -258,6 +325,8 @@ import { API_URL } from "~/config";
 
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+
+const selectedTasks = ref<number[]>([]);
 
 const languageStore = useLanguageStore();
 const t = (key: string) => translate[languageStore.lang][key] || key;
@@ -426,13 +495,6 @@ onMounted(async () => {
   }
 });
 
-onMounted(async () => {
-  if (router.currentRoute.value.query.refresh) {
-    await fetchTasks(); // fonction qui recharge les tasks depuis l'API
-  }
-});
-
-
 const filteredTasks = computed(() => {
   if (activeTab.value === "historique") return tasks.value;
   const now = new Date();
@@ -463,7 +525,7 @@ const deleteTask = async (id: number) => {
     if (!res.ok) throw new Error(`API error: ${res.status}`);
 
     tasks.value = tasks.value.filter((t) => t.id !== id);
-    tasksState.value.data = tasks.value; 
+    tasksState.value.data = tasks.value;
     updatePaginated();
     alert("Task deleted successfully");
   } catch (err) {
@@ -484,55 +546,53 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 };
 
-const fetchTasks = async () => {
+const markTasksDone = async () => {
   const token = sessionStorage.getItem("token");
-  if (!token) {
-    router.push("/login");
-    return;
-  }
+  if (!token) return;
 
   try {
-    const res = await fetch(`${API_URL}/api/tasks/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
-    tasks.value = await res.json();
-
-    await loadLookups();
-
     await Promise.all(
-      tasks.value.map(async (task: any) => {
-        if (task.parcelCrop) {
-          try {
-            const resParcelCrop = await fetch(
-              `${API_URL}/api/parcel-crops/${task.parcelCrop}/`,
-              { headers: { Authorization: `Token ${token}` } }
-            );
-            if (!resParcelCrop.ok) throw new Error("ParcelCrop fetch error");
-            const parcelCropData = await resParcelCrop.json();
+      selectedTasks.value.map(async (taskId) => {
+        const task = tasks.value.find((t) => t.id === taskId);
+        if (!task) return;
 
-            const resParcel = await fetch(
-              `${API_URL}/api/parcels/${parcelCropData.parcel}/`,
-              { headers: { Authorization: `Token ${token}` } }
-            );
-            if (!resParcel.ok) throw new Error("Parcel fetch error");
-            const parcelData = await resParcel.json();
+        const updatedTask = {
+          ...task,
+          status: Object.keys(statuses.value).find(
+            (id) => statuses.value[Number(id)] === "Done"
+          ),
+        };
 
-            task.parcelCropFull = `${parcelData.parcel_name} - ${parcelCropData.crop.name}`;
-          } catch {
-            task.parcelCropFull = "-";
-          }
-        } else {
-          task.parcelCropFull = "-";
-        }
+        const res = await fetch(`${API_URL}/api/tasks/${taskId}/mark_done/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify(updatedTask),
+        });
+
+        if (!res.ok) throw new Error(`Failed to update task ${taskId}`);
       })
     );
 
+    // Mettre à jour localement
+    tasks.value.forEach((task) => {
+      if (selectedTasks.value.includes(task.id)) {
+        task.status = Number(
+          Object.keys(statuses.value).find(
+            (id) => statuses.value[Number(id)] === "Done"
+          )
+        );
+      }
+    });
+
+    selectedTasks.value = [];
     updatePaginated();
-    tasksState.value = { data: tasks.value, timestamp: Date.now() };
+    alert("Selected tasks marked as Done!");
   } catch (err) {
-    console.error("Failed to fetch tasks:", err);
+    console.error(err);
+    alert("Failed to update selected tasks");
   }
 };
-
 </script>
