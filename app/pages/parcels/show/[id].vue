@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[100vw] mb-10 sm:mb-1">
+  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[95vw] mb-10 sm:mb-1">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="fixed bottom-6 right-6 z-50 hidden">
         <NuxtLink
@@ -23,7 +23,7 @@
         >
           <div class="flex-1 space-y-2">
             <h3 class="text-lg font-semibold flex items-center gap-2">
-              <i class="bx bx-map text-lg text-gray-800"></i>
+              <i class="bx bx-location-alt-2 text-lg text-gray-800"></i>
               {{ t("parceldetail") }}
             </h3>
             <p>
@@ -35,36 +35,56 @@
               <span class="font-medium">{{ t("thparcelname") }}:</span>
               {{ parcelData.parcel_name || "N/A" }}
             </p>
+            <div v-if="locationInfo">
+              <p>
+                {{ locationInfo.name }}, {{ locationInfo.region }},
+                {{ locationInfo.country }}
+              </p>
+              <p class="text-sm text-gray-600">
+                Fuseau : {{ locationInfo.tz_id }}
+              </p>
+              <p class="text-sm text-gray-600">
+                <!-- Heure locale : {{ locationInfo.localtime }} -->
+              </p>
+            </div>
             <p>
               <span class="font-medium">{{ t("Area") }}:</span>
               {{ formatM2(parcelAreaHa) }}
             </p>
-            <!-- <p>
-              <span class="font-medium">{{ t("thlatitude") }}:</span>
-              {{ parcelData.parcel_points?.[0]?.latitude ?? "-" }}
-            </p>
-            <p>
-              <span class="font-medium">{{ t("thlongitude") }}:</span>
-              {{ parcelData.parcel_points?.[0]?.longitude ?? "-" }}
-            </p> -->
           </div>
 
-          <div
-            class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 flex flex-col justify-center items-center shadow-inner text-center"
-          >
-            <h3 class="text-gray-700 mb-2">{{ t("croptype") }}</h3>
-            <div v-for="(c, i) in cropsInfo" :key="i" class="p-2">
-              <p>
-                <strong class="text-[#10b481] font-bold text-3xl">{{
-                  c.type
-                }}</strong>
-              </p>
-              <p class="text-gray-700 mb-2 text-sm hidden">{{ c.variety }}</p>
-            </div>
-          </div>
+          <!-- Partie droite : points de la parcelle -->
+<div
+  class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 shadow-inner"
+  v-if="parcelPoints.length"
+>
+  <!-- Titre -->
+  <h3 class="text-gray-800 font-bold mb-4 text-center text-lg">
+    {{ t("Parcel Points") }}
+  </h3>
+
+  <div class="flex flex-col gap-4">
+    <!-- Scroll horizontal subtil si trop de points -->
+    <div class="flex gap-4 overflow-x-auto scrollbar-hidden py-2 px-1">
+      <div
+        v-for="(point, i) in parcelPoints"
+        :key="i"
+        class="flex-shrink-0 w-44 p-4 bg-white/20 rounded-xl shadow hover:shadow-sm transition-transform hover:-translate-y-1 hover:scale-101 cursor-pointer"
+      >
+        <p class="text-gray-500 text-xs mb-1 font-semibold">Point {{ i + 1 }}</p>
+        <p class="text-[#10b481] font-semibold text-sm">
+          Lat: {{ point.lat?.toFixed(6) ?? "N/A" }}
+        </p>
+        <p class="text-[#10b481] font-semibold text-sm">
+          Lng: {{ point.lng?.toFixed(6) ?? "N/A" }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
           <div class="bg-white rounded-2xl shadow p-4">
             <h3 class="font-semibold text-gray-800 mb-2">
               {{ t("charttitleweather") }}
@@ -80,6 +100,78 @@
           </div>
         </div>
 
+        <div v-if="currentWeather" class="relative p-6 text-gray-800">
+          <h3 class="mt-4 font-bold text-3xl">{{ t('today') }}</h3>
+
+          <div class="flex justify-between items-center mt-2">
+            <div class="flex items-center gap-4">
+              <img :src="currentWeather.condition.icon" alt="weather" />
+              <div>
+                <p class="text-2xl font-semibold">
+                  {{ currentWeather.temp_c }}°C
+                </p>
+                <p class="text-gray-600">{{ currentWeather.condition.text }}</p>
+              </div>
+            </div>
+
+            <div class="text-sm text-gray-700 text-right">
+              <p>{{ t('humidity') }} : {{ currentWeather.humidity }}%</p>
+              <p>
+                {{ t('vent') }} : {{ currentWeather.wind_kph }} km/h ({{
+                  currentWeather.wind_dir
+                }})
+              </p>
+            </div>
+          </div>
+
+          <div v-if="todayForecast" class="max-w-2xl">
+            <div class="flex gap-2 mt-2 overflow-x-auto py-2">
+              <div
+                v-for="hour in todayForecast.hour"
+                :key="hour.time_epoch"
+                class="flex-shrink-0 w-24 p-2 bg-gray-100 rounded text-center"
+              >
+                <p class="text-xs font-semibold">{{ formatHour(hour.time) }}</p>
+                <img
+                  :src="hour.condition.icon"
+                  alt="icon"
+                  class="mx-auto w-8 h-8"
+                />
+                <p class="text-sm">{{ hour.temp_c }}°C</p>
+                <p class="text-xs">{{ t('pluie') }}: {{ hour.chance_of_rain }}%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br />
+
+        <div v-if="forecastDays.length">
+          <h2 class="text-xl font-bold mb-2">{{ t('prevision') }}</h2>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div
+              v-for="day in forecastDays"
+              :key="day.date"
+              class="p-3 bg-white shadow rounded-lg flex flex-col items-center"
+            >
+              <p class="font-semibold">{{ day.date }}</p>
+
+              <img :src="day.day.condition.icon" class="w-12" />
+
+              <p class="text-sm text-gray-700">
+                {{ day.day.condition.text }}
+              </p>
+
+              <p class="text-sm">
+                {{ day.day.mintemp_c }}°C - {{ day.day.maxtemp_c }}°C
+              </p>
+
+              <p class="text-sm">{{ day.day.daily_chance_of_rain }}% {{ t('pluie') }}</p>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow p-4">
           <h3 class="font-semibold text-gray-800 mb-2">
             {{ t("charttitleyield") }}
@@ -89,6 +181,50 @@
       </div>
 
       <div class="flex-1 flex flex-col space-y-6 w-full lg:w-1/3 text-gray-800">
+        <div class="max-w-full">
+          <div
+            v-for="crop in filteredParcelCrops"
+            :key="crop.id"
+            class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 duration-300"
+          >
+            <div class="mb-3">
+              <h3 class="text-lg font-semibold">{{ t("croptype") }}</h3>
+              <h2 class="text-2xl font-bold text-[#10b481] truncate">
+                {{ crop.crop.name }}
+              </h2>
+            </div>
+
+            <div class="space-y-1 text-gray-600 text-sm">
+              <p>
+                <span class="font-semibold">{{ t("variety") }}: </span
+                >{{ crop.crop.variety?.name ?? "N/A" }}
+              </p>
+              <p>
+                <span class="font-semibold">{{ t("plantingdate") }}: </span
+                >{{ crop.planting_date }}
+              </p>
+              <p>
+                <span class="font-semibold">{{ t("harvestdate") }}: </span
+                >{{ crop.harvest_date }}
+              </p>
+              <p>
+                <span class="font-semibold">{{ t("area") }}: </span
+                >{{ crop.area }} m²
+              </p>
+            </div>
+
+            <div class="mt-3">
+              <span
+                :class="`inline-block text-xs font-semibold px-3 py-1 rounded-full ${statusClasses(
+                  crop.status.name
+                )}`"
+              >
+                {{ crop.status.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
           <h3 class="text-lg font-semibold">{{ t("soilinfo") }}</h3>
           <div class="mt-4 space-y-3">
@@ -116,8 +252,8 @@
           </div>
         </div>
 
-        <div v-if="selectedParcel" class="grid grid-cols-1 gap-6">
-          <h3 class="text-gray-800 mb-2 text-lg font-semibold">
+        <div v-if="selectedParcel" class="grid grid-cols-1 gap-6 mt-10">
+          <h3 class="text-gray-800 mb-2 text-3xl font-semibold">
             {{ t("titleanalytics") }}
           </h3>
           <div
@@ -157,9 +293,6 @@
               <p class="text-sm font-medium text-[#6d4c41]">
                 {{ t("meanyieldperarea") }}
               </p>
-              <p class="text-sm font-medium text-[#6d4c41]">
-                {{ t("meanyieldperarea") }}
-              </p>
             </div>
             <div
               class="absolute right-0 top-6 bottom-6 border-r-4 border-[#6d4c41]"
@@ -179,7 +312,7 @@
     </div>
 
     <div class="flex flex-col space-y-6 mt-6">
-      <div class="flex flex-col lg:flex-row gap-6">
+      <div class="flex flex-col lg:flex-row gap-6 hidden">
         <div
           class="bg-white rounded-2xl shadow-lg p-6 w-full lg:w-2/3 space-y-4"
         >
@@ -314,9 +447,6 @@
                 <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
                 <th class="px-6 py-2 border-b">{{ t("thyield") }}</th>
                 <th class="px-6 py-2 border-b hidden sm:table-cell">
-                  {{ t("thobservation") }}
-                </th>
-                <th class="px-6 py-2 border-b hidden sm:table-cell">
                   {{ t("thtendance") }}
                 </th>
                 <th class="px-6 py-2 border-b text-center hidden sm:table-cell">
@@ -332,9 +462,6 @@
               >
                 <td class="px-6 py-2 border-b">{{ record.date }}</td>
                 <td class="px-6 py-2 border-b">{{ record.quantity }}</td>
-                <td class="px-6 py-2 border-b hidden sm:table-cell">
-                  {{ record.observation }}
-                </td>
                 <td class="px-6 py-2 border-b hidden sm:table-cell">
                   <i
                     v-if="record.trend === 'up'"
@@ -413,6 +540,13 @@
       </div>
     </div>
   </div>
+
+  <div class="bg-gray-100 rounded-lg p-4 mt-4 hidden">
+    <h3 class="font-semibold text-gray-800 mb-2">Parcel Full Data (JSON)</h3>
+    <pre class="text-sm text-gray-700 overflow-x-auto">
+    {{ parcelFullDataJSON }}
+  </pre>
+  </div>
 </template>
 
 <script setup>
@@ -426,12 +560,63 @@ import { API_URL } from "~/config";
 
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const currentWeather = ref(null);
+const locationInfo = ref(null);
+const forecastDays = ref([]);
+const climate = ref(null);
+const parcelPoints = ref([]); // tableau vide par défaut
+
+function updateWeatherForecast(data) {
+  climate.value = data?.climate_data;
+  if (!climate.value) return;
+
+  // Climat actuel
+  currentWeather.value = climate.value.current;
+
+  // Localisation
+  locationInfo.value = climate.value.location;
+
+  // Forecast (8 jours)
+  forecastDays.value = climate.value.forecast?.forecastday ?? [];
+
+  // Récupérer les points de la parcelle
+  parcelPoints.value = data?.parcel?.points ?? [];
+}
+
+const todayForecast = computed(() => {
+  if (!climate.value) return null; // protection si pas encore chargé
+  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+  return climate.value.forecast.forecastday.find((day) => day.date === today);
+});
+
+const formatHour = (time) => {
+  return time.split(" ")[1].slice(0, 5); // extrait "HH:MM"
+};
 
 const languageStore = useLanguageStore();
 
 const t = (key) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
+
+async function translateText(text) {
+  const targetLang = currentLocale.value; // récupère la langue active (fr, en, mg)
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
+  
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.responseData.translatedText;
+  } catch (error) {
+    console.error("Erreur de traduction :", error);
+    return text; // retourne le texte original en cas d'erreur
+  }
+}
+
+const parcelFullDataJSON = ref(null); // pour afficher le JSON dans le HTML
 
 const route = useRoute();
 const fieldIdParam = route.params.id ?? null;
@@ -559,7 +744,7 @@ function updateYieldEvolutionChart() {
       year: "numeric",
     });
     if (!grouped[monthYear]) grouped[monthYear] = 0;
-    grouped[monthYear] += r.yield ?? 0;
+    grouped[monthYear] += r.yield_amount ?? 0;
   });
 
   const labels = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
@@ -622,7 +807,7 @@ function updateClimateCharts(data) {
   const dates = [];
   for (let i = 0; i <= 5; i++) {
     const d = new Date();
-    d.setDate(today.getDate() + i); 
+    d.setDate(today.getDate() + i);
     dates.push(d.toISOString().split("T")[0]);
   }
 
@@ -717,8 +902,8 @@ function calculateTrends() {
         records[i].trend = "neutral";
         records[i].trendValue = 0;
       } else {
-        const prev = records[i - 1].yield;
-        const current = records[i].yield;
+        const prev = records[i - 1].yield_amount;
+        const current = records[i].yield_amount;
 
         if (current > prev) {
           records[i].trend = "up";
@@ -761,9 +946,10 @@ async function fetchParcelData() {
       { headers: { Authorization: `Token ${token}` } }
     );
     Object.assign(parcelFullData, fullDataResponse.data);
+    parcelFullDataJSON.value = JSON.stringify(fullDataResponse.data, null, 2); // formaté joliment
 
     if (parcelFullData.climate_data) {
-      updateClimateCharts(parcelFullData);
+      updateWeatherForecast(parcelFullData);
     }
 
     updateSoilQualities(parcelFullData.soil_data?.properties?.layers);
@@ -797,9 +983,9 @@ async function fetchParcelData() {
 onMounted(() => {
   fetchParcelData();
   fetchAnalyticsData();
-
+  fetchParcelData();
   if (parcelFullData.climate_data) {
-    updateClimateCharts(parcelFullData);
+    updateWeatherForecast(parcelFullData);
   }
 });
 
@@ -829,7 +1015,7 @@ const updatePaginatedHarvest = () => {
     .map((r) => ({
       id: r.id ?? `${r.parcel_crop_id}-${r.date}`,
       date: r.date,
-      quantity: r.yield,
+      quantity: r.yield_amount,
       observation: r.notes,
       trend: r.trend ?? "neutral",
       trendValue: r.trendValue ?? 0,
@@ -1011,4 +1197,87 @@ const formatM2 = (areaInHa) => {
   if (!areaInHa) return "- m²";
   return `${(areaInHa * 10000).toLocaleString()} m²`;
 };
+
+const parcelCrops = ref([]);
+
+const cropStatusKeyMap = {
+  Planned: "cropStatusPlanned",
+  Planted: "cropStatusPlanted",
+  Germinated: "cropStatusGerminated",
+  Growing: "cropStatusGrowing",
+  Flowering: "cropStatusFlowering",
+  Fruiting: "cropStatusFruiting",
+  Mature: "cropStatusMature",
+  Harvested: "cropStatusHarvested",
+  "Post-Harvest": "cropStatusPostHarvest",
+  Failed: "cropStatusFailed",
+};
+
+const statusClasses = (statusName) => {
+  switch (statusName) {
+    case "Planned":
+      return "bg-[#219ebc]/10 text-[#219ebc] border border-[#219ebc]/50";
+    case "Planted":
+      return "bg-[#10b481]/10 text-[#10b481] border border-[#10b481]/50";
+    case "Germinated":
+      return "bg-[#5fd4a2]/10 text-[#0c9069] border border-[#0c9069]/40";
+    case "Growing":
+      return "bg-[#c99383]/10 text-[#c99383] border border-[#c99383]/50";
+    case "Flowering":
+      return "bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]/50";
+    case "Fruiting":
+      return "bg-[#6d4c41]/10 text-[#6d4c41] border border-[#6d4c41]/40";
+    case "Mature":
+      return "bg-[#10b481]/10 text-[#0c9069] border border-[#10b481]/40";
+    case "Harvested":
+      return "bg-[#222831]/10 text-[#222831] border border-[#222831]/40";
+    case "Post-Harvest":
+      return "bg-[#7a7a7a]/10 text-[#7a7a7a] border border-[#7a7a7a]/40";
+    case "Failed":
+      return "bg-[#e63946]/10 text-[#e63946] border border-[#e63946]/50";
+    default:
+      return "bg-gray-100 text-gray-600 border border-gray-300";
+  }
+};
+
+async function fetchParcelCrops() {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+    return;
+  }
+  if (!fieldIdParam) return;
+  try {
+    const response = await fetch(`${API_URL}/api/parcel-crops/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    const data = await response.json();
+    console.log("Données des cultures de parcelle récupérées :", data);
+    parcelCrops.value = Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Erreur lors de la récupération :", error);
+    parcelCrops.value = [];
+  }
+}
+
+// Filtrer par id de parcel
+const filteredParcelCrops = computed(() => {
+  return Array.isArray(parcelCrops.value)
+    ? parcelCrops.value.filter((crop) => crop.parcel === fieldIdParam)
+    : [];
+});
+
+onMounted(() => {
+  fetchParcelCrops();
+});
 </script>
+<style scoped>
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hidden {
+  -ms-overflow-style: none;  /* IE et Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+</style>

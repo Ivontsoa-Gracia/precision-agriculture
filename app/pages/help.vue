@@ -62,16 +62,6 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-    <!-- PHONE -->
-    <div
-      class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
-    >
-      <i class="bx bx-phone text-2xl text-[#10b481]"></i>
-      <a href="tel:03397797000" class="text-gray-800 font-medium">
-        033 977 970 00
-      </a>
-    </div>
-
     <!-- WHATSAPP -->
     <div
       class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
