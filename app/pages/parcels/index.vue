@@ -305,16 +305,9 @@ const fieldsState = useState("fieldsData", () => ({
 
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
-  if (!token) {
+  const userUUID = sessionStorage.getItem("uuid"); // UUID de l'utilisateur connecté
+  if (!token || !userUUID) {
     alert("Vous devez être connecté");
-    return;
-  }
-
-  const now = Date.now();
-  const THIRTY_MIN = 30 * 60 * 1000;
-
-  if (fieldsState.value.data.length && now - fieldsState.value.timestamp < THIRTY_MIN) {
-    fields.value = fieldsState.value.data;
     return;
   }
 
@@ -322,50 +315,33 @@ onMounted(async () => {
     const response = await fetch(`${API_URL}/api/parcels/`, {
       headers: { Authorization: `Token ${token}` },
     });
-    const parcels = await response.json();
     if (!response.ok) {
-      console.error("Erreur API:", parcels);
+      const err = await response.json();
+      console.error("Erreur API:", err);
       return;
     }
 
-    const ownerUUIDs = [...new Set(parcels.map((p: any) => p.owner))];
+    const parcels = await response.json();
+    if (!Array.isArray(parcels)) {
+      console.error("La réponse n'est pas un tableau :", parcels);
+      return;
+    }
 
-    const ownersMap: Record<string, string> = {};
-
-    await Promise.all(
-      ownerUUIDs.map(async (uuid: string) => {
-        try {
-          const ownerRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
-            headers: { Authorization: `Token ${token}` },
-          });
-          if (!ownerRes.ok) throw new Error("Utilisateur non trouvé");
-
-          const ownerData = await ownerRes.json();
-          ownersMap[uuid] = `${ownerData.first_name}`.trim() || "Unknown";
-        } catch (err) {
-          console.error("Erreur récupération user:", err);
-          ownersMap[uuid] = "Unknown";
-        }
-      })
-    );
-
-    fields.value = parcels.map((parcel: any, idx: number) => ({
-      id: idx + 1,
-      fieldId: parcel.uuid,
-      owner: ownersMap[parcel.owner] || "Unknown Owner",
-      parcel_name: parcel.parcel_name,
-      latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
-      longitude: parcel.parcel_points?.[0]?.longitude ?? "-",
-    }));
-
-    fieldsState.value = {
-      data: fields.value,
-      timestamp: Date.now(),
-    };
+    fields.value = parcels
+      .filter((parcel: any) => parcel.owner === userUUID)
+      .map((parcel: any, idx: number) => ({
+        id: idx + 1,
+        fieldId: parcel.uuid,
+        owner: "Moi",
+        parcel_name: parcel.parcel_name,
+        latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
+        longitude: parcel.parcel_points?.[0]?.longitude ?? "-",
+      }));
   } catch (err) {
     console.error("Erreur réseau:", err);
   }
 });
+
 
 const filteredFields = computed(() =>
   fields.value.filter(

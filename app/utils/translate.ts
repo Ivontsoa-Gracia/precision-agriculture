@@ -244,7 +244,12 @@ export const translate = {
     fillAllFields: "Please fill in all fields",
     saveChanges: "Save Changes",
     changePassword: "Change Password",
-    sesily: "Hi! I'm Sesily"
+    sesily: "Hi! I'm Sesily",
+    prevision: "Weather forecast",
+    today: "Today",
+    humidity: "Humidity",
+    pluie: "Rain",
+    vent: "Wind"
   },
   fr: {
     dashboard: "Tableau",
@@ -491,7 +496,12 @@ export const translate = {
     fillAllFields: "Veuillez remplir tous les champs",
     saveChanges: "Enregistrer",
     changePassword: "Modifier le mot de passe",
-    sesily: "Salut! Je suis Sesily"
+    sesily: "Salut! Je suis Sesily",
+    prevision: "Prévision météo",
+    today: "Aujourd'hui",
+    humidity: "Humidité",
+    pluie: "Pluie",
+    vent: "Vent"
   },
   mg: {
     dashboard: "Tabilao",
@@ -738,6 +748,11 @@ export const translate = {
     fillAllFields: "Fenoy daholo ny saha rehetra",
     saveChanges: "Tehirizo ny fanovana",
     changePassword: "Hanova ny tenimiafina",
-    sesily: "Salama! Izaho i Sesily"
+    sesily: "Salama! Izaho i Sesily",
+    prevision: "Vinavinan'ny toetr'andro",
+    today: "Anio",
+    humidity: "Hamandoana",
+    pluie: "Orana",
+    vent: "Rivotra"
   },
 };

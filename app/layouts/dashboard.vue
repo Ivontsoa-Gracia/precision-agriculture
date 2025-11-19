@@ -222,7 +222,7 @@
           ><i class="bx bx-grid-alt"></i
         ></NuxtLink>
         <NuxtLink to="/parcels" class="text-white text-2xl"
-          ><i class="bx bx-map"></i
+          ><i class="bx bx-location-alt-2"></i
         ></NuxtLink>
         <NuxtLink to="/tasks" class="text-white text-2xl"
           ><i class="bx bx-task"></i
