@@ -1,102 +1,105 @@
 <template>
-    <div class="min-h-screen bg-gray-50 py-14 px-6 md:px-20">
-      <div class="max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
-  
-        <!-- Back button -->
-        <div class="mb-6">
-          <button
-            @click="router.push('/profil')"
-            class="text-gray-500 hover:text-gray-700 flex items-center gap-2 font-medium"
-          >
-            <!-- Petite flèche SVG -->
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            {{ t("back") }}
-          </button>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+      <header class="mb-6 text-center">
+        <h1 class="text-2xl font-semibold text-gray-900">Réinitialiser le mot de passe</h1>
+        <p class="mt-2 text-sm text-gray-500">Entrez l'adresse e-mail liée à votre compte. Nous vous enverrons un lien pour créer un nouveau mot de passe.</p>
+      </header>
+
+      <form @submit.prevent="onSubmit" novalidate>
+        <label for="email" class="block text-sm font-medium text-gray-700">Adresse e-mail</label>
+        <div class="mt-1 relative">
+          <input
+            id="email"
+            v-model="email"
+            :aria-invalid="!!errorMessage || !isEmailValid"
+            type="email"
+            placeholder="nom@exemple.com"
+            class="appearance-none block w-full px-4 py-3 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-400 transition disabled:opacity-60"
+            :disabled="loading || success"
+            required
+          />
         </div>
-  
-        <h1 class="text-3xl font-bold text-[#10b481] mb-6">{{ t("changePasswordTitle") }}</h1>
-  
-        <form @submit.prevent="updatePassword" class="space-y-4">
-  
-          <div>
-            <label class="block mb-1 font-semibold">{{ t("currentPassword") }}</label>
-            <input
-              v-model="form.current_password"
-              type="password"
-              placeholder="********"
-              class="w-full p-3 border rounded-lg"
-              required
-            />
-          </div>
-  
-          <div>
-            <label class="block mb-1 font-semibold">{{ t("newPassword") }}</label>
-            <input
-              v-model="form.new_password"
-              type="password"
-              placeholder="********"
-              class="w-full p-3 border rounded-lg"
-              required
-            />
-          </div>
-  
-          <div class="flex justify-end mt-4">
-            <button
-              type="submit"
-              class="px-6 py-2 bg-[#10b481] text-white rounded-xl hover:bg-[#0e9b6c] transition"
-            >
-              {{ t("savePassword") }}
-            </button>
-          </div>
-  
-        </form>
+
+        <p v-if="validationTouched && !isEmailValid" class="mt-2 text-sm text-red-600">Veuillez saisir une adresse e-mail valide.</p>
+        <p v-if="errorMessage" class="mt-2 text-sm text-red-600">{{ errorMessage }}</p>
+
+        <button
+          type="submit"
+          :disabled="!isEmailValid || loading || success"
+          class="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500 disabled:opacity-60"
+        >
+          <svg v-if="loading" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"></circle>
+            <path d="M22 12a10 10 0 00-10-10" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+          </svg>
+
+          <span v-if="!loading && !success">Envoyer le lien de réinitialisation</span>
+          <span v-if="success">Lien envoyé — vérifiez votre boîte e-mail</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <NuxtLink to="/login" class="underline">Retour à la connexion</NuxtLink>
+      </div>
+
+      <div v-if="success" class="mt-6 p-4 rounded-lg bg-green-50 border border-green-100 text-green-800 text-sm">
+        Si l'email existe dans notre système, vous recevrez un message contenant un lien de réinitialisation. Le lien peut prendre quelques minutes pour arriver.
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from "vue";
-  import { useRouter } from "vue-router";
-  import { API_URL } from "~/config";
-  import { useLanguageStore } from "~/stores/language";
-  import { translate } from "~/utils/translate";
-  
-  definePageMeta({ layout: "dashboard" });
-  
-  const router = useRouter();
-  const languageStore = useLanguageStore();
-  const t = (key: string) => translate[languageStore.lang][key] || key;
-  
-  const form = ref({
-    current_password: "",
-    new_password: ""
-  });
-  
-  const updatePassword = async () => {
-    const token = sessionStorage.getItem("token");
-    const uuid = sessionStorage.getItem("uuid");
-  
-    if (!token || !uuid) router.push("/login");
-  
-    if (!form.value.current_password || !form.value.new_password) return;
-  
-    try {
-      const res = await fetch(`${API_URL}/api/users/${uuid}/`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`
-        },
-        body: JSON.stringify(form.value)
-      });
-  
-      if (!res.ok) throw new Error("Erreur lors de la mise à jour");
-      router.push("/profil");
-    } catch (err) {
-      console.error(err);
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { API_URL } from "~/config";
+
+
+const email = ref('')
+const loading = ref(false)
+const success = ref(false)
+const errorMessage = ref('')
+const validationTouched = ref(false)
+
+const isEmailValid = computed(() => {
+  // Simple regex pour validation basique
+  const re = /^\S+@\S+\.\S+$/
+  return re.test(email.value.trim())
+})
+
+const router = useRouter()
+
+const onSubmit = async () => {
+  validationTouched.value = true
+  errorMessage.value = ''
+
+  if (!isEmailValid.value) return
+
+  loading.value = true
+
+  try {
+    await $fetch(`${API_URL}/api/forgot-password/`, {
+      method: 'POST',
+      body: { email: email.value.trim() },
+      credentials: 'include'
+    })
+
+    success.value = true
+  } catch (err: any) {
+    if (err?.data?.error) {
+      errorMessage.value = err.data.error
+    } else if (err?.data?.message) {
+      errorMessage.value = err.data.message
+    } else {
+      errorMessage.value = 'Erreur réseau. Réessaie plus tard.'
     }
-  };
-  </script>
-  
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<style scoped>
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial }
+</style>

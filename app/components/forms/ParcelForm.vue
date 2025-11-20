@@ -123,7 +123,6 @@
           >
             {{ t("btnsaveparcel") }}
           </button>
-
         </div>
       </form>
     </div>
@@ -134,14 +133,14 @@
       <div id="map" class="h-full w-full rounded-lg"></div>
     </div>
 
-    <div
+    <!-- <div
       v-if="isLoading"
       class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl z-50"
     >
       <div
         class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
       ></div>
-    </div>
+    </div> -->
 
     <transition name="fade">
       <div
@@ -362,7 +361,6 @@ function removePoint(index: number) {
   updatePolygon();
 }
 
-
 onMounted(async () => {
   if (!process.client) return;
 
@@ -395,52 +393,51 @@ onMounted(async () => {
   L.control.layers({ Satellite: satellite, "Street Map": streets }).addTo(map);
 
   map.on("click", (e: any) => {
-  form.points.push({
-    lat: e.latlng.lat,
-    lng: e.latlng.lng,
-    order: form.points.length + 1,
-  });
+    form.points.push({
+      lat: e.latlng.lat,
+      lng: e.latlng.lng,
+      order: form.points.length + 1,
+    });
 
-  map.eachLayer((layer: any) => {
-    if (
-      layer instanceof L.CircleMarker ||
-      layer instanceof L.Tooltip ||
-      layer instanceof L.Polygon
-    ) {
-      map.removeLayer(layer);
+    map.eachLayer((layer: any) => {
+      if (
+        layer instanceof L.CircleMarker ||
+        layer instanceof L.Tooltip ||
+        layer instanceof L.Polygon
+      ) {
+        map.removeLayer(layer);
+      }
+    });
+
+    form.points.forEach((p) => {
+      const circle = L.circleMarker([p.lat, p.lng], {
+        radius: 6,
+        color: "#1d4ed8",
+        fillColor: "#3b82f6",
+        fillOpacity: 0.8,
+        weight: 2,
+      }).addTo(map);
+
+      L.tooltip({
+        permanent: true,
+        direction: "top",
+        className: "custom-label",
+        offset: [0, -5],
+      })
+        .setContent(`Point ${p.order}`)
+        .setLatLng([p.lat, p.lng])
+        .addTo(map);
+    });
+
+    if (form.points.length >= 3) {
+      drawnPolygon = L.polygon(
+        form.points.map((p) => [p.lat, p.lng]),
+        { color: "blue" }
+      ).addTo(map);
     }
+
+    updatePolygon();
   });
-
-  form.points.forEach((p) => {
-    const circle = L.circleMarker([p.lat, p.lng], {
-      radius: 6,
-      color: "#1d4ed8",
-      fillColor: "#3b82f6",
-      fillOpacity: 0.8,
-      weight: 2,
-    }).addTo(map);
-
-    L.tooltip({
-      permanent: true,
-      direction: "top",
-      className: "custom-label",
-      offset: [0, -5],
-    })
-      .setContent(`Point ${p.order}`)
-      .setLatLng([p.lat, p.lng])
-      .addTo(map);
-  });
-
-  if (form.points.length >= 3) {
-    drawnPolygon = L.polygon(
-      form.points.map((p) => [p.lat, p.lng]),
-      { color: "blue" }
-    ).addTo(map);
-  }
-
-  updatePolygon();
-});
-
 });
 
 const formatM2 = (areaInHa) => {
@@ -455,9 +452,8 @@ const emit = defineEmits<{
 
 const handleNext = async () => {
   await submitForm(); // Enregistre dans la base de données
-  emit("next");       // Passe à l'étape suivante
+  emit("next"); // Passe à l'étape suivante
 };
-
 </script>
 
 <style scoped>

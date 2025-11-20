@@ -11,6 +11,7 @@
     "start": "nuxt start"
   },
   "dependencies": {
+    "@iconify/vue": "^5.0.0",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/i18n": "^10.1.0",

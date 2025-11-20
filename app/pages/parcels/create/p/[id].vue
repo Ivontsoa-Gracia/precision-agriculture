@@ -1,8 +1,9 @@
 <template>
   <div class="max-w-5xl mx-auto px-4 py-10">
-    <!-- Header -->
     <div class="flex items-center justify-between mb-10">
-      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-800 tracking-tight">
+      <h1
+        class="text-2xl sm:text-3xl font-semibold text-gray-800 tracking-tight"
+      >
         Setup Wizard
       </h1>
       <p class="text-sm text-gray-500">
@@ -10,7 +11,6 @@
       </p>
     </div>
 
-    <!-- Progress Line -->
     <div class="relative mb-12">
       <div class="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200"></div>
       <div
@@ -42,22 +42,35 @@
       </div>
     </div>
 
-    <!-- Content -->
     <div
       class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-10 transition-all duration-500"
     >
       <transition name="fade" mode="out-in">
         <div :key="currentStep">
           <ParcelForm v-if="currentStep === 0" @next="handleNextStep" />
-          <CropForm v-else-if="currentStep === 1" @next="handleNextStep" @skip="skipStep" />
-          <ParcelCropForm v-else-if="currentStep === 2" @next="handleNextStep" />
-          <YieldForm v-else-if="currentStep === 3" @next="handleNextStep" @skip="skipStep" />
-          <TaskForm v-else-if="currentStep === 4" @next="handleNextStep" @skip="skipStep" />
+          <CropForm
+            v-else-if="currentStep === 1"
+            @next="handleNextStep"
+            @skip="skipStep"
+          />
+          <ParcelCropForm
+            v-else-if="currentStep === 2"
+            @next="handleNextStep"
+          />
+          <YieldForm
+            v-else-if="currentStep === 3"
+            @next="handleNextStep"
+            @skip="skipStep"
+          />
+          <TaskForm
+            v-else-if="currentStep === 4"
+            @next="handleNextStep"
+            @skip="skipStep"
+          />
         </div>
       </transition>
     </div>
 
-    <!-- Footer Controls -->
     <div class="mt-10 flex justify-between items-center">
       <button
         @click="prevStep"
@@ -76,7 +89,6 @@
       </button>
     </div>
 
-    <!-- Notification -->
     <transition name="fade">
       <div
         v-if="notification.visible"
@@ -101,13 +113,7 @@ import TaskForm from "~/components/forms/TaskForm.vue";
 
 definePageMeta({ layout: "dashboard" });
 
-const steps = [
-  "Parcel",
-  "Crop",
-  "Parcel Crop",
-  "Yield",
-  "Task",
-];
+const steps = ["Parcel", "Crop", "Parcel Crop", "Yield", "Task"];
 
 const currentStep = ref(0);
 const completedSteps = ref([]);
@@ -123,7 +129,7 @@ const handleNextStep = () => {
     completedSteps.value.push(currentStep.value);
 
   if (currentStep.value < steps.length - 1) currentStep.value++;
-  else showNotification("✅ Setup completed successfully!");
+  else showNotification("Setup completed successfully!");
 };
 
 const skipStep = () => {

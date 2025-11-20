@@ -316,27 +316,23 @@ const currentLocale = computed(() => languageStore.lang);
 const showSortMenu = ref(false);
 
 const router = useRouter();
-// --- nouvelles refs ---
 const selectedPoints = ref<number[]>([]);
 const activeParcel = ref<any>(null);
 
-// --- fonction pour supprimer les points sélectionnés ---
 async function deleteSelectedPoints() {
   if (!activeParcel.value) return;
   if (selectedPoints.value.length === 0)
     return alert("Aucun point sélectionné.");
 
-  // const confirmDelete = confirm("Voulez-vous vraiment supprimer les points sélectionnés ?");
   if (!confirmDelete) return;
 
-  // On garde uniquement les points non supprimés
   const updatedPoints = activeParcel.value.points.filter(
     (pt: any, idx: number) => !selectedPoints.value.includes(idx)
   );
 
   try {
     const token = sessionStorage.getItem("token");
-    const uuid = sessionStorage.getItem("uuid"); // UUID de l'utilisateur
+    const uuid = sessionStorage.getItem("uuid");
 
     await axios.put(
       `${API_URL}/api/parcels/${activeParcel.value.id}/`,
@@ -352,17 +348,14 @@ async function deleteSelectedPoints() {
       { headers: { Authorization: `Token ${token}` } }
     );
 
-    // alert("Points supprimés avec succès !");
     activeParcel.value.points = updatedPoints;
     selectedPoints.value = [];
     updateMap((window as any).L);
   } catch (err: any) {
     if (err.response) {
-      console.error(err.response.data); // Voir exactement l'erreur renvoyée par l'API
-      // alert("Erreur : " + JSON.stringify(err.response.data));
+      console.error(err.response.data);
     } else {
       console.error(err);
-      // alert("Erreur inconnue lors de la suppression des points.");
     }
   }
 }
@@ -475,7 +468,6 @@ function getParcelYield(parcel: any) {
     .reduce((sum: number, y: any) => sum + (y.summary?.total_yield || 0), 0);
 }
 
-// --- useState pour dashboard et analytics ---
 const dashboardState = useState("dashboardData", () => ({
   parcels: [],
   task_summary: [],
@@ -484,7 +476,6 @@ const dashboardState = useState("dashboardData", () => ({
 }));
 const analyticsState = useState("analyticsData", () => null);
 
-// ref locales qui pointent vers le state
 const dashboard = ref(dashboardState.value);
 const analyticsData = ref(analyticsState.value);
 
@@ -634,7 +625,6 @@ function updateMap(L: any) {
   dashboard.value.parcels?.forEach((p: any) => {
     if (!p.points?.length) return;
 
-    // --- POLYGONE ---
     const latlngs = p.points.map((pt: any) => [pt.lat, pt.lng]);
     L.polygon(latlngs, {
       color: "#219ebc",
@@ -643,7 +633,6 @@ function updateMap(L: any) {
       weight: 2,
     }).addTo(parcelLayer);
 
-    // --- POINTS + NUMÉROS ---
     p.points.forEach((pt: any, i: number) => {
       L.circleMarker([pt.lat, pt.lng], {
         radius: 5,

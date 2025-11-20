@@ -1,6 +1,10 @@
 <template>
-  <div class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 sm:mb-1">
-    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+  <div
+    class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 sm:mb-1"
+  >
+    <h2
+      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+    >
       <i class="bx bx-task text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("titlenewtask") }}
     </h2>
@@ -85,63 +89,59 @@
   </div>
 
   <div
-      v-if="isLoading"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center"
+    v-if="isLoading"
+    class="absolute inset-0 bg-black/50 flex items-center justify-center"
+  >
+    <div
+      class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
+    ></div>
+  </div>
+
+  <transition name="fade">
+    <div
+      v-if="notification.visible"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
     >
       <div
-        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-      ></div>
-    </div>
-
-    <transition name="fade">
-      <div
-        v-if="notification.visible"
-        class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
       >
         <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
           :class="[
-            'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
-            notification.type === 'success'
-              ? 'border-t-4 border-[#10b481]'
-              : 'border-t-4 border-red-500',
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
           ]"
         >
-          <!-- Icône -->
-          <div
-            v-if="notification.type === 'success'"
-            class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
-          >
-            <i class="bx bx-check text-4xl font-extrabold text-white"></i>
-          </div>
-          <div
-            v-else
-            class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
-          >
-            <i class="bx bx-x text-4xl font-extrabold text-white"></i>
-          </div>
+          {{ notification.message }}
+        </p>
 
-          <p
-            :class="[
-              'text-lg font-semibold',
-              notification.type === 'success'
-                ? 'text-[#10b481]'
-                : 'text-red-500',
-            ]"
-          >
-            {{ notification.message }}
-          </p>
-
-          <!-- Message secondaire -->
-          <p class="text-gray-500 text-sm">
-            {{
-              notification.type === "success"
-                ? "Redirecting to your dashboard..."
-                : "Please try again."
-            }}
-          </p>
-        </div>
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
       </div>
-    </transition>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -293,7 +293,6 @@ const submitTask = async () => {
     setTimeout(() => {
       router.push({ path: "/tasks", query: { refresh: "1" } });
     }, 3000);
-
   } catch (err) {
     console.error("Erreur création tâche:", err);
     showNotification("Network error, please check your server", "error");
@@ -301,5 +300,4 @@ const submitTask = async () => {
     isLoading.value = false;
   }
 };
-
 </script>

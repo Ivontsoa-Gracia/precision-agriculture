@@ -21,7 +21,6 @@
         </div>
       </div>
 
-      <!-- Formulaire -->
       <form class="space-y-4">
         <div class="bg-[#f9f9f9] shadow p-6 space-y-4 rounded-lg">
           <h2 class="text-2xl sm:text-3xl font-extrabold text-[#222831] mb-4">
@@ -378,7 +377,6 @@ function removePoint(index: number) {
   updatePolygon();
 }
 
-
 onMounted(async () => {
   if (!process.client) return;
 
@@ -411,52 +409,51 @@ onMounted(async () => {
   L.control.layers({ Satellite: satellite, "Street Map": streets }).addTo(map);
 
   map.on("click", (e: any) => {
-  form.points.push({
-    lat: e.latlng.lat,
-    lng: e.latlng.lng,
-    order: form.points.length + 1,
-  });
+    form.points.push({
+      lat: e.latlng.lat,
+      lng: e.latlng.lng,
+      order: form.points.length + 1,
+    });
 
-  map.eachLayer((layer: any) => {
-    if (
-      layer instanceof L.CircleMarker ||
-      layer instanceof L.Tooltip ||
-      layer instanceof L.Polygon
-    ) {
-      map.removeLayer(layer);
+    map.eachLayer((layer: any) => {
+      if (
+        layer instanceof L.CircleMarker ||
+        layer instanceof L.Tooltip ||
+        layer instanceof L.Polygon
+      ) {
+        map.removeLayer(layer);
+      }
+    });
+
+    form.points.forEach((p) => {
+      const circle = L.circleMarker([p.lat, p.lng], {
+        radius: 6,
+        color: "#1d4ed8",
+        fillColor: "#3b82f6",
+        fillOpacity: 0.8,
+        weight: 2,
+      }).addTo(map);
+
+      L.tooltip({
+        permanent: true,
+        direction: "top",
+        className: "custom-label",
+        offset: [0, -5],
+      })
+        .setContent(`Point ${p.order}`)
+        .setLatLng([p.lat, p.lng])
+        .addTo(map);
+    });
+
+    if (form.points.length >= 3) {
+      drawnPolygon = L.polygon(
+        form.points.map((p) => [p.lat, p.lng]),
+        { color: "blue" }
+      ).addTo(map);
     }
+
+    updatePolygon();
   });
-
-  form.points.forEach((p) => {
-    const circle = L.circleMarker([p.lat, p.lng], {
-      radius: 6,
-      color: "#1d4ed8",
-      fillColor: "#3b82f6",
-      fillOpacity: 0.8,
-      weight: 2,
-    }).addTo(map);
-
-    L.tooltip({
-      permanent: true,
-      direction: "top",
-      className: "custom-label",
-      offset: [0, -5],
-    })
-      .setContent(`Point ${p.order}`)
-      .setLatLng([p.lat, p.lng])
-      .addTo(map);
-  });
-
-  if (form.points.length >= 3) {
-    drawnPolygon = L.polygon(
-      form.points.map((p) => [p.lat, p.lng]),
-      { color: "blue" }
-    ).addTo(map);
-  }
-
-  updatePolygon();
-});
-
 });
 
 const formatM2 = (areaInHa) => {

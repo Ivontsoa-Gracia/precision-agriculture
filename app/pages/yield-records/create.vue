@@ -130,7 +130,6 @@
             {{ notification.message }}
           </p>
 
-          <!-- Message secondaire -->
           <p class="text-gray-500 text-sm">
             {{
               notification.type === "success"

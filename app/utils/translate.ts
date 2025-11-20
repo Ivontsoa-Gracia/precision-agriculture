@@ -182,7 +182,8 @@ export const translate = {
     policy: "Privacy Policy",
     policyDate: "Last Updated: September 30, 2025",
     policy1Title: "1. Introduction",
-    policy1Text: "SmartSaha is committed to protecting your privacy and personal data. This policy explains how we collect, use, store, and protect your information in accordance with Malagasy law.",
+    policy1Text:
+      "SmartSaha is committed to protecting your privacy and personal data. This policy explains how we collect, use, store, and protect your information in accordance with Malagasy law.",
     policy2Title: "2. Data We Collect",
     policy2Text: `
       <li><strong>Identification Data:</strong> Name, phone number, email, farm location.</li>
@@ -199,20 +200,26 @@ export const translate = {
       <li>Legal and regulatory compliance.</li>
     `,
     policy4Title: "4. Data Sharing",
-    policy4Text: "We do not sell your data. Sharing may occur with technical providers, anonymized research partners, legal authorities, or commercial partners only with your explicit consent.",
+    policy4Text:
+      "We do not sell your data. Sharing may occur with technical providers, anonymized research partners, legal authorities, or commercial partners only with your explicit consent.",
     policy5Title: "5. Data Security",
-    policy5Text: "We apply industry-standard technical and organizational measures to ensure data protection.",
+    policy5Text:
+      "We apply industry-standard technical and organizational measures to ensure data protection.",
     policy6Title: "6. Your Rights",
-    policy6Text: "You may access, update, or request deletion of your data at any time. Contact us at contact@smart-saha.com.",
+    policy6Text:
+      "You may access, update, or request deletion of your data at any time. Contact us at contact@smart-saha.com.",
     policy7Text: "SmartSaha, Antananarivo, Madagascar",
     terms: "Terms of Service",
     termsDate: "Last Updated: September 30, 2025",
     terms1Title: "1. Preamble",
-    terms1Text: "These Terms of Service govern the use of SmartSaha. Accessing or using the platform implies full acceptance of these terms.",
+    terms1Text:
+      "These Terms of Service govern the use of SmartSaha. Accessing or using the platform implies full acceptance of these terms.",
     terms2Title: "2. Description of Services",
-    terms2Text: "SmartSaha provides digital tools for farmers including precision agriculture services, forecasts, management features, and an MRV system.",
+    terms2Text:
+      "SmartSaha provides digital tools for farmers including precision agriculture services, forecasts, management features, and an MRV system.",
     terms3Title: "3. Account Creation & Responsibility",
-    terms3Text: "Users must provide accurate information and maintain confidentiality of their account credentials.",
+    terms3Text:
+      "Users must provide accurate information and maintain confidentiality of their account credentials.",
     terms4Title: "4. User Obligations",
     terms4Text: `
       <li>Use the platform responsibly and legally.</li>
@@ -220,11 +227,14 @@ export const translate = {
       <li>Refrain from fraudulent or unlawful activities.</li>
     `,
     terms5Title: "5. Intellectual Property",
-    terms5Text: "SmartSaha owns all platform content. Users retain ownership of their data but grant SmartSaha usage rights necessary for service delivery.",
+    terms5Text:
+      "SmartSaha owns all platform content. Users retain ownership of their data but grant SmartSaha usage rights necessary for service delivery.",
     terms6Title: "6. Limitation of Liability",
-    terms6Text: "Recommendations are for decision support only. SmartSaha is not liable for agricultural losses. Liability is limited to reasonable diligence.",
+    terms6Text:
+      "Recommendations are for decision support only. SmartSaha is not liable for agricultural losses. Liability is limited to reasonable diligence.",
     terms7Title: "7. Governing Law",
-    terms7Text: "These Terms are governed by Malagasy law. Disputes fall under the jurisdiction of Antananarivo courts, after attempts at amicable resolution.",
+    terms7Text:
+      "These Terms are governed by Malagasy law. Disputes fall under the jurisdiction of Antananarivo courts, after attempts at amicable resolution.",
     profileTitle: "My Profile",
     username: "Username",
     email: "Email",
@@ -249,7 +259,7 @@ export const translate = {
     today: "Today",
     humidity: "Humidity",
     pluie: "Rain",
-    vent: "Wind"
+    vent: "Wind",
   },
   fr: {
     dashboard: "Tableau",
@@ -434,7 +444,8 @@ export const translate = {
     policy: "Politique de Confidentialité",
     policyDate: "Dernière mise à jour : 30 septembre 2025",
     policy1Title: "1. Introduction",
-    policy1Text: "SmartSaha s'engage à protéger votre vie privée et vos données personnelles. Cette politique explique comment nous collectons, utilisons, stockons et protégeons vos informations conformément à la législation malgache.",
+    policy1Text:
+      "SmartSaha s'engage à protéger votre vie privée et vos données personnelles. Cette politique explique comment nous collectons, utilisons, stockons et protégeons vos informations conformément à la législation malgache.",
     policy2Title: "2. Données Collectées",
     policy2Text: `
       <li><strong>Données d'identification :</strong> Nom, numéro de téléphone, e-mail, localisation de la ferme.</li>
@@ -451,20 +462,26 @@ export const translate = {
       <li>Respect des obligations légales et réglementaires.</li>
     `,
     policy4Title: "4. Partage des données",
-    policy4Text: "Nous ne vendons pas vos données. Le partage peut se faire avec des fournisseurs techniques, des partenaires de recherche anonymisés, les autorités légales ou des partenaires commerciaux uniquement avec votre consentement explicite.",
+    policy4Text:
+      "Nous ne vendons pas vos données. Le partage peut se faire avec des fournisseurs techniques, des partenaires de recherche anonymisés, les autorités légales ou des partenaires commerciaux uniquement avec votre consentement explicite.",
     policy5Title: "5. Sécurité des données",
-    policy5Text: "Nous appliquons des mesures techniques et organisationnelles conformes aux standards du secteur pour garantir la protection des données.",
+    policy5Text:
+      "Nous appliquons des mesures techniques et organisationnelles conformes aux standards du secteur pour garantir la protection des données.",
     policy6Title: "6. Vos droits",
-    policy6Text: "Vous pouvez accéder, mettre à jour ou demander la suppression de vos données à tout moment. Contactez-nous à contact@smart-saha.com.",
+    policy6Text:
+      "Vous pouvez accéder, mettre à jour ou demander la suppression de vos données à tout moment. Contactez-nous à contact@smart-saha.com.",
     policy7Text: "SmartSaha, Antananarivo, Madagascar",
     terms: "Conditions d’Utilisation",
     termsDate: "Dernière mise à jour : 30 septembre 2025",
     terms1Title: "1. Préambule",
-    terms1Text: "Ces Conditions d’Utilisation régissent l'utilisation de SmartSaha. L'accès ou l'utilisation de la plateforme implique l'acceptation totale de ces conditions.",
+    terms1Text:
+      "Ces Conditions d’Utilisation régissent l'utilisation de SmartSaha. L'accès ou l'utilisation de la plateforme implique l'acceptation totale de ces conditions.",
     terms2Title: "2. Description des services",
-    terms2Text: "SmartSaha fournit des outils numériques aux agriculteurs, incluant des services d'agriculture de précision, des prévisions, des outils de gestion et un système MRV.",
+    terms2Text:
+      "SmartSaha fournit des outils numériques aux agriculteurs, incluant des services d'agriculture de précision, des prévisions, des outils de gestion et un système MRV.",
     terms3Title: "3. Création de compte et responsabilité",
-    terms3Text: "Les utilisateurs doivent fournir des informations exactes et garantir la confidentialité de leurs identifiants.",
+    terms3Text:
+      "Les utilisateurs doivent fournir des informations exactes et garantir la confidentialité de leurs identifiants.",
     terms4Title: "4. Obligations de l'utilisateur",
     terms4Text: `
       <li>Utiliser la plateforme de manière responsable et légale.</li>
@@ -472,11 +489,14 @@ export const translate = {
       <li>S'abstenir d'activités frauduleuses ou illégales.</li>
     `,
     terms5Title: "5. Propriété intellectuelle",
-    terms5Text: "SmartSaha possède tout le contenu de la plateforme. Les utilisateurs conservent la propriété de leurs données mais accordent à SmartSaha les droits nécessaires à la fourniture des services.",
+    terms5Text:
+      "SmartSaha possède tout le contenu de la plateforme. Les utilisateurs conservent la propriété de leurs données mais accordent à SmartSaha les droits nécessaires à la fourniture des services.",
     terms6Title: "6. Limitation de responsabilité",
-    terms6Text: "Les recommandations sont uniquement des supports à la décision. SmartSaha n'est pas responsable des pertes agricoles. La responsabilité est limitée à une diligence raisonnable.",
+    terms6Text:
+      "Les recommandations sont uniquement des supports à la décision. SmartSaha n'est pas responsable des pertes agricoles. La responsabilité est limitée à une diligence raisonnable.",
     terms7Title: "7. Droit applicable",
-    terms7Text: "Ces Conditions sont régies par la loi malgache. Les litiges relèvent des tribunaux d'Antananarivo, après tentative de résolution à l'amiable.",
+    terms7Text:
+      "Ces Conditions sont régies par la loi malgache. Les litiges relèvent des tribunaux d'Antananarivo, après tentative de résolution à l'amiable.",
     profileTitle: "Mon Profil",
     username: "Nom d'utilisateur",
     email: "Email",
@@ -501,7 +521,7 @@ export const translate = {
     today: "Aujourd'hui",
     humidity: "Humidité",
     pluie: "Pluie",
-    vent: "Vent"
+    vent: "Vent",
   },
   mg: {
     dashboard: "Tabilao",
@@ -686,7 +706,8 @@ export const translate = {
     policy: "Politika momba ny tsiambaratelo",
     policyDate: "Nohavaozina farany: 30 Septambra 2025",
     policy1Title: "1. Fampidirana",
-    policy1Text: "Ny SmartSaha dia manolo-tena amin'ny fiarovana ny tsiambaratelonao sy ny angon-drakitrao manokana. Ity politika ity dia manazava ny fomba fakàna, fampiasana, fitahirizana, sy fiarovana ny vaovao mifanaraka amin'ny lalàna Malagasy.",
+    policy1Text:
+      "Ny SmartSaha dia manolo-tena amin'ny fiarovana ny tsiambaratelonao sy ny angon-drakitrao manokana. Ity politika ity dia manazava ny fomba fakàna, fampiasana, fitahirizana, sy fiarovana ny vaovao mifanaraka amin'ny lalàna Malagasy.",
     policy2Title: "2. Angon-drakitra Fakàna",
     policy2Text: `
       <li><strong>Angon-drakitra mombam-pahafantarana :</strong> Anarana, laharana finday, mailaka, toerana fambolena.</li>
@@ -703,20 +724,26 @@ export const translate = {
       <li>Fanaraha-maso ny lalàna sy fitsipika.</li>
     `,
     policy4Title: "4. Fizarana angon-drakitra",
-    policy4Text: "Tsy amidinay ny angon-drakitrao. Mety hizara amin'ny mpamatsy teknika, mpiara-miasa amin'ny fikarohana tsy misy anarana, manampahefana ara-dalàna, na mpiara-miombon'antoka ara-barotra amin'ny fankatoavanao mazava ihany.",
+    policy4Text:
+      "Tsy amidinay ny angon-drakitrao. Mety hizara amin'ny mpamatsy teknika, mpiara-miasa amin'ny fikarohana tsy misy anarana, manampahefana ara-dalàna, na mpiara-miombon'antoka ara-barotra amin'ny fankatoavanao mazava ihany.",
     policy5Title: "5. Fiarovana ny angon-drakitra",
-    policy5Text: "Mampihatra fepetra teknika sy fikarakarana araka ny fenitra iraisam-pirenena izahay mba hiantohana ny fiarovana ny angon-drakitra.",
+    policy5Text:
+      "Mampihatra fepetra teknika sy fikarakarana araka ny fenitra iraisam-pirenena izahay mba hiantohana ny fiarovana ny angon-drakitra.",
     policy6Title: "6. Zo azonao",
-    policy6Text: "Azonao atao ny miditra, manavao, na mangataka famafana ny angon-drakitrao amin'ny fotoana rehetra. Mifandraisa aminay: contact@smart-saha.com.",
+    policy6Text:
+      "Azonao atao ny miditra, manavao, na mangataka famafana ny angon-drakitrao amin'ny fotoana rehetra. Mifandraisa aminay: contact@smart-saha.com.",
     policy7Text: "SmartSaha, Antananarivo, Madagascar",
     terms: "Fepetra sy fitsipika amin’ny fampiasana",
     termsDate: "Nohavaozina farany: 30 Septambra 2025",
     terms1Title: "1. Fanambarana",
-    terms1Text: "Ireto Fepetra ireto dia mifehy ny fampiasana ny SmartSaha. Ny fidirana na fampiasana ny sehatra dia midika fankatoavana tanteraka ireo fepetra ireo.",
+    terms1Text:
+      "Ireto Fepetra ireto dia mifehy ny fampiasana ny SmartSaha. Ny fidirana na fampiasana ny sehatra dia midika fankatoavana tanteraka ireo fepetra ireo.",
     terms2Title: "2. Famaritana ny Serivisy",
-    terms2Text: "SmartSaha dia manome fitaovana nomerika ho an'ny mpamboly, anisan'izany ny serivisy fambolena marina, vinavina, fitaovana fitantanana, ary rafitra MRV.",
+    terms2Text:
+      "SmartSaha dia manome fitaovana nomerika ho an'ny mpamboly, anisan'izany ny serivisy fambolena marina, vinavina, fitaovana fitantanana, ary rafitra MRV.",
     terms3Title: "3. Famoronana kaonty & andraikitra",
-    terms3Text: "Ny mpampiasa dia tsy maintsy manome vaovao marina ary miaro ny tsiambaratelon'ny kaontiny.",
+    terms3Text:
+      "Ny mpampiasa dia tsy maintsy manome vaovao marina ary miaro ny tsiambaratelon'ny kaontiny.",
     terms4Title: "4. Adidin'ny mpampiasa",
     terms4Text: `
       <li>Mampiasa ny sehatra amin'ny fomba tompon'andraikitra sy ara-dalàna.</li>
@@ -724,11 +751,14 @@ export const translate = {
       <li>Misoroka asa sandoka na tsy ara-dalàna.</li>
     `,
     terms5Title: "5. Zon'ny fananana ara-tsaina",
-    terms5Text: "Ny SmartSaha no tompon'ny votoaty rehetra ao amin'ny sehatra. Ny mpampiasa dia mitazona ny angon-drakitr’izy ireo fa manome alalana ny SmartSaha hampiasa izany ilaina amin'ny fanomezana serivisy.",
+    terms5Text:
+      "Ny SmartSaha no tompon'ny votoaty rehetra ao amin'ny sehatra. Ny mpampiasa dia mitazona ny angon-drakitr’izy ireo fa manome alalana ny SmartSaha hampiasa izany ilaina amin'ny fanomezana serivisy.",
     terms6Title: "6. Fetra amin'ny andraikitra",
-    terms6Text: "Ny soso-kevitra dia fanohanana fanapahan-kevitra fotsiny. Tsy tompon’andraikitra amin’ny fahaverezan’ny vokatra ny SmartSaha. Ny andraikitra dia voafetra amin'ny fahamailoana antonony.",
+    terms6Text:
+      "Ny soso-kevitra dia fanohanana fanapahan-kevitra fotsiny. Tsy tompon’andraikitra amin’ny fahaverezan’ny vokatra ny SmartSaha. Ny andraikitra dia voafetra amin'ny fahamailoana antonony.",
     terms7Title: "7. Lalàna mifehy",
-    terms7Text: "Ireo Fepetra ireo dia fehezin'ny lalàna Malagasy. Ny fifandirana dia eo ambany fahefan'ny fitsarana Antananarivo, aorian'ny ezaka hamahana ny olana am-pilaminana.",
+    terms7Text:
+      "Ireo Fepetra ireo dia fehezin'ny lalàna Malagasy. Ny fifandirana dia eo ambany fahefan'ny fitsarana Antananarivo, aorian'ny ezaka hamahana ny olana am-pilaminana.",
     username: "Anaran'ny mpampiasa",
     email: "Mailaka",
     firstName: "Anarana",
@@ -753,6 +783,6 @@ export const translate = {
     today: "Anio",
     humidity: "Hamandoana",
     pluie: "Orana",
-    vent: "Rivotra"
+    vent: "Rivotra",
   },
 };

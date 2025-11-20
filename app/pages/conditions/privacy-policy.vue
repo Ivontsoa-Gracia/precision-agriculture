@@ -1,8 +1,6 @@
 <template>
-  <div class="min-h-screen bg-white text-[#141414]/90 py-14 px-6 md:px-20">
+  <div class="min-h-screen text-[#141414]/90 py-14 px-6 md:px-20">
     <div class="max-w-5xl mx-auto p-8 md:p-12 bg-white">
-
-      <!-- Lien retour -->
       <router-link
         to="/help"
         class="inline-block mb-6 text-[#10b481] hover:underline"
@@ -14,10 +12,15 @@
       <p class="text-gray-400 mb-10">{{ t("policyDate") }}</p>
 
       <section class="mb-10" v-for="i in 7" :key="i">
-        <h2 class="text-xl font-semibold text-[#141414] mb-3" v-html="t(`policy${i}Title`)"></h2>
-        <p class="leading-relaxed text-gray-600" v-html="t(`policy${i}Text`)"></p>
+        <h2
+          class="text-xl font-semibold text-[#141414] mb-3"
+          v-html="t(`policy${i}Title`)"
+        ></h2>
+        <p
+          class="leading-relaxed text-gray-600"
+          v-html="t(`policy${i}Text`)"
+        ></p>
       </section>
-
     </div>
   </div>
 </template>

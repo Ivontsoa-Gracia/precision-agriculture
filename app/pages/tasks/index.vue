@@ -42,6 +42,13 @@
         >
           <i class="bx bx-plus text-lg"></i> {{ t("btnaddtask") }}
         </NuxtLink>
+
+        <NuxtLink
+          to="/tasks/d"
+          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+        >
+          <i class="bx bx-plus text-lg"></i> {{ t("TAsk Dashboard") }}
+        </NuxtLink>
       </div>
     </div>
 
@@ -428,10 +435,9 @@ onMounted(async () => {
 
 onMounted(async () => {
   if (router.currentRoute.value.query.refresh) {
-    await fetchTasks(); // fonction qui recharge les tasks depuis l'API
+    await fetchTasks();
   }
 });
-
 
 const filteredTasks = computed(() => {
   if (activeTab.value === "historique") return tasks.value;
@@ -463,7 +469,7 @@ const deleteTask = async (id: number) => {
     if (!res.ok) throw new Error(`API error: ${res.status}`);
 
     tasks.value = tasks.value.filter((t) => t.id !== id);
-    tasksState.value.data = tasks.value; 
+    tasksState.value.data = tasks.value;
     updatePaginated();
     alert("Task deleted successfully");
   } catch (err) {
@@ -534,5 +540,4 @@ const fetchTasks = async () => {
     console.error("Failed to fetch tasks:", err);
   }
 };
-
 </script>

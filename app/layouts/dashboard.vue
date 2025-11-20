@@ -65,40 +65,45 @@
         </div>
 
         <div class="relative">
-    <!-- Bouton utilisateur -->
-    <button
-      @click="userMenuOpen = !userMenuOpen"
-      class="flex items-center gap-3 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
-    >
-      <div class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center">
-        <i class="bx bxs-user text-white text-lg"></i>
-      </div>
-      <div class="ml-3 text-left">
-        <p class="font-semibold text-[#222831] text-sm">{{ user?.username }}</p>
-        <p class="text-xs text-gray-500">{{ user?.email }}</p>
-      </div>
-      <i class="bx bx-chevron-down ml-auto text-sm"></i>
-    </button>
+          <button
+            @click="userMenuOpen = !userMenuOpen"
+            class="flex items-center gap-3 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
+          >
+            <div
+              class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center"
+            >
+              <i class="bx bxs-user text-white text-lg"></i>
+            </div>
+            <div class="ml-3 text-left">
+              <p class="font-semibold text-[#222831] text-sm">
+                {{ user?.username }}
+              </p>
+              <p class="text-xs text-gray-500">{{ user?.email }}</p>
+            </div>
+            <i class="bx bx-chevron-down ml-auto text-sm"></i>
+          </button>
 
-    <!-- Menu déroulant -->
-    <transition name="fade">
-      <ul
-        v-if="userMenuOpen"
-        class="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50"
-      >
-        <li
-          v-for="item in userMenuItems"
-          :key="item.labelKey"
-          @click="handleMenuClick(item)"
-          :class="item.danger ? 'text-red-500 hover:bg-red-500/10' : 'hover:bg-[#10b481]/10'"
-          class="px-4 py-3 cursor-pointer transition-colors"
-        >
-          {{ t(item.labelKey) }}
-        </li>
-      </ul>
-    </transition>
-  </div>
-
+          <transition name="fade">
+            <ul
+              v-if="userMenuOpen"
+              class="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50"
+            >
+              <li
+                v-for="item in userMenuItems"
+                :key="item.labelKey"
+                @click="handleMenuClick(item)"
+                :class="
+                  item.danger
+                    ? 'text-red-500 hover:bg-red-500/10'
+                    : 'hover:bg-[#10b481]/10'
+                "
+                class="px-4 py-3 cursor-pointer transition-colors"
+              >
+                {{ t(item.labelKey) }}
+              </li>
+            </ul>
+          </transition>
+        </div>
 
         <div
           v-if="isMobileMenuOpen"
@@ -285,7 +290,6 @@ import { translate } from "~/utils/translate";
 // import { useUserStore } from "~/stores/userStore";
 const userMenuOpen = ref(false);
 
-
 const languageStore = useLanguageStore();
 const t = (key: string) => {
   const lang = languageStore.lang;
@@ -309,8 +313,14 @@ const logout = () => {
 
 const userMenuItems = [
   { labelKey: "account", action: () => router.push("/profil") },
-  { labelKey: "terms", action: () => router.push("/conditions/terms-of-service") },
-  { labelKey: "policy", action: () => router.push("/conditions/privacy-policy") },
+  {
+    labelKey: "terms",
+    action: () => router.push("/conditions/terms-of-service"),
+  },
+  {
+    labelKey: "policy",
+    action: () => router.push("/conditions/privacy-policy"),
+  },
   { labelKey: "signOut", action: logout, danger: true },
 ];
 
@@ -319,12 +329,10 @@ function handleMenuClick(item: any) {
   userMenuOpen.value = false;
 }
 
-// La langue actuelle
 const currentLocale = computed(
   () => locales.find((l) => l.code === languageStore.lang) || locales[0]
 );
 
-// Sélectionner une langue
 const selectLocale = (code: string) => {
   languageStore.setLang(code);
   open.value = false;
@@ -335,11 +343,9 @@ const uuid = ref<string | null>(null);
 
 onMounted(() => {
   uuid.value = sessionStorage.getItem("uuid");
-  // console.log("uuid:", uuid.value);
 });
 
 const groupInfo = false;
-// console.log("Groupe Info", groupInfo);
 
 const baseMenu = computed(() => [
   {

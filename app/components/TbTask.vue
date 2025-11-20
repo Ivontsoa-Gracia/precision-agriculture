@@ -61,74 +61,86 @@
             :key="task.id"
             class="hover:bg-gray-50"
           >
-<!-- Checkbox + Name -->
-<td class="px-6 py-2 border-b">
-  <div class="flex items-center gap-3">
-    <label 
-  v-if="statuses[task.status] !== 'Done'"
-  class="relative flex items-center gap-3 cursor-pointer select-none"
->
-  <div class="relative">
-    <input
-      type="checkbox"
-      v-model="selectedTasks"
-      :value="task.id"
-      class="appearance-none w-5 h-5 border border-gray-300 rounded-md
-             flex items-center justify-center
-             transition-all duration-200
-             checked:bg-[#10b481] checked:border-[#10b481]
-             cursor-pointer"
-    />
-    <svg
-      v-if="selectedTasks.includes(task.id)"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="white"
-      stroke-width="3"
-      class="absolute inset-0 m-auto w-3 h-3 pointer-events-none"
-    >
-      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  </div>
-</label>
+            <!-- Checkbox + Name -->
+            <td class="px-6 py-2 border-b">
+              <div class="flex items-center gap-3">
+                <label
+                  v-if="statuses[task.status] !== 'Done'"
+                  class="relative flex items-center gap-3 cursor-pointer select-none"
+                >
+                  <div class="relative">
+                    <input
+                      type="checkbox"
+                      v-model="selectedTasks"
+                      :value="task.id"
+                      class="appearance-none w-5 h-5 border border-gray-300 rounded-md flex items-center justify-center transition-all duration-200 checked:bg-[#10b481] checked:border-[#10b481] cursor-pointer"
+                    />
+                    <svg
+                      v-if="selectedTasks.includes(task.id)"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="white"
+                      stroke-width="3"
+                      class="absolute inset-0 m-auto w-3 h-3 pointer-events-none"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                </label>
 
+                <span
+                  v-else
+                  class="flex items-center justify-center w-5 h-5 border border-[#10b481] rounded-md"
+                >
+                  <svg
+                    class="w-3 h-3 text-[#10b481]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="3"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
 
-    <span
-      v-else
-      class="flex items-center justify-center w-5 h-5 border border-[#10b481] rounded-md"
-    >
-      <svg
-        class="w-3 h-3 text-[#10b481]"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="3"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    </span>
+                <!-- Nom de la tâche -->
+                <span
+                  :class="
+                    statuses[task.status] === 'Done'
+                      ? 'line-through text-gray-500'
+                      : ''
+                  "
+                >
+                  {{ task.name }}
+                </span>
+              </div>
+            </td>
 
-    <!-- Nom de la tâche -->
-    <span
-      :class="statuses[task.status] === 'Done' ? 'line-through text-gray-500' : ''"
-    >
-      {{ task.name }}
-    </span>
-  </div>
-</td>
+            <!-- Due Date -->
+            <td
+              class="px-6 py-2 border-b"
+              :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
+            >
+              {{ new Date(task.due_date).toLocaleDateString() }}
+            </td>
 
-
-      <!-- Due Date -->
-      <td class="px-6 py-2 border-b" :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''">
-        {{ new Date(task.due_date).toLocaleDateString() }}
-      </td>
-
-      <!-- ParcelCrop -->
-      <td class="px-6 py-2 border-b" :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''">
-        {{ task.parcelCropFull || "-" }}
-      </td>
+            <!-- ParcelCrop -->
+            <td
+              class="px-6 py-2 border-b"
+              :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
+            >
+              {{ task.parcelCropFull || "-" }}
+            </td>
             <!-- <td class="px-6 py-2 border-b">
               {{ new Date(task.due_date).toLocaleDateString() }}
             </td> -->
@@ -170,26 +182,26 @@
               <span v-else>-</span>
             </td>
             <td class="p-3 border-b text-center">
-                <div class="flex justify-center gap-2">
-              <button
-                @click="showTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#10b481]/20"
-              >
-                <i class="bx bx-show text-[#10b481] text-xl"></i>
-              </button>
-              <button
-                @click="editTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#f4a261]/10"
-              >
-                <i class="bx bx-edit text-[#f4a261] text-xl"></i>
-              </button>
-              <button
-                @click="deleteTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#e63946]/10"
-              >
-                <i class="bx bx-trash text-[#e63946] text-xl"></i>
-              </button>
-            </div>
+              <div class="flex justify-center gap-2">
+                <button
+                  @click="showTask(task.id)"
+                  class="p-2 rounded-full hover:bg-[#10b481]/20"
+                >
+                  <i class="bx bx-show text-[#10b481] text-xl"></i>
+                </button>
+                <button
+                  @click="editTask(task.id)"
+                  class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                >
+                  <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+                </button>
+                <button
+                  @click="deleteTask(task.id)"
+                  class="p-2 rounded-full hover:bg-[#e63946]/10"
+                >
+                  <i class="bx bx-trash text-[#e63946] text-xl"></i>
+                </button>
+              </div>
             </td>
           </tr>
           <tr v-if="paginatedTasks.length === 0">

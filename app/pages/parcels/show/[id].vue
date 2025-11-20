@@ -1,5 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[95vw] mb-10 sm:mb-1">
+  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[90vw] mb-10 sm:mb-1">
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="fixed bottom-6 right-6 z-50 hidden">
         <NuxtLink
@@ -19,6 +19,96 @@
 
       <div class="flex-1 lg:flex-[2] flex flex-col space-y-6 w-full lg:w-2/3">
         <div
+          class="flex flex-col md:flex-row gap-6 w-full max-w-4xl mx-auto mt-6"
+        >
+          <div
+            v-if="currentWeather && todayForecast"
+            class="flex-1 bg-gradient-to-br from-[#219ebc]/40 to-[#219ebc]/60 text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between"
+          >
+            <div class="flex justify-between items-center">
+              <div class="flex flex-col">
+                <div class="flex justify-between items-center w-full mb-2">
+                  <p class="text-xl font-medium opacity-90">
+                    {{ getDayName(todayForecast.date) }}
+                  </p>
+                </div>
+
+                <p class="text-5xl font-bold">
+                  {{ currentWeather.temperature }}°C
+                </p>
+                <p class="text-sm opacity-80 capitalize">
+                  {{ currentWeather.condition }}
+                </p>
+              </div>
+              <div>
+                <p class="text-xl font-medium opacity-90 mb-2">
+                    {{ currentTime }}
+                  </p>
+                  <Icon
+                :icon="getWeatherIcon(currentWeather.condition)"
+                class="text-7xl drop-shadow-lg"
+              />
+              </div>
+            </div>
+
+            <div
+              class="mt-4 flex justify-start items-center gap-4 text-md opacity-90"
+            >
+              <p class="leading-tight">
+                <strong
+                  >{{ todayForecast.min_temp }}°C -
+                  {{ todayForecast.max_temp }}°C</strong
+                >
+              </p>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-2 text-sm opacity-90">
+              <p class="leading-tight">
+                Precipitation:
+                <strong>{{ todayForecast.total_precip }} mm</strong>
+              </p>
+              <p class="leading-tight">
+                Humidity: <strong>{{ currentWeather.humidity }}%</strong>
+              </p>
+              <p class="leading-tight">
+                Wind: <strong>{{ currentWeather.wind_speed }} km/h</strong>
+              </p>
+              <p class="leading-tight">
+                UV Index: <strong>{{ currentWeather.uv_index }}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div v-if="forecastDays.length" class="flex-1 flex flex-col gap-4">
+            <h2 class="text-xl font-bold mb-2 text-gray-700">
+              {{ t("prevision") }}
+            </h2>
+
+            <div class="flex flex-col md:flex-row gap-4">
+              <div
+                v-for="day in forecastDays"
+                :key="day.date"
+                class="flex-1 bg-gradient-to-br from-[#219ebc]/10 to-[#219ebc]/10 text-[#219ebc] rounded-2xl p-4 flex flex-col items-center shadow-md"
+              >
+                <p class="font-semibold">{{ getDayNameShort(day.date) }}</p>
+
+                <Icon
+                  :icon="getWeatherIcon(day.condition)"
+                  class="text-5xl my-2"
+                />
+
+                <p class="text-sm">
+                  {{ day.min_temp }}°C - {{ day.max_temp }}°C
+                </p>
+                <p class="text-sm">
+                  {{ day.chance_of_rain }}% {{ t("pluie") }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
           class="relative bg-gradient-to-r from-[#10b481]/10 to-white rounded-2xl shadow-md p-6 border-l-[4px] border-[#10b481] flex flex-col lg:flex-row gap-6 text-gray-800"
         >
           <div class="flex-1 space-y-2">
@@ -35,53 +125,42 @@
               <span class="font-medium">{{ t("thparcelname") }}:</span>
               {{ parcelData.parcel_name || "N/A" }}
             </p>
-            <div v-if="locationInfo">
-              <p>
-                {{ locationInfo.name }}, {{ locationInfo.region }},
-                {{ locationInfo.country }}
-              </p>
-              <p class="text-sm text-gray-600">
-                Fuseau : {{ locationInfo.tz_id }}
-              </p>
-              <p class="text-sm text-gray-600">
-                <!-- Heure locale : {{ locationInfo.localtime }} -->
-              </p>
-            </div>
             <p>
               <span class="font-medium">{{ t("Area") }}:</span>
               {{ formatM2(parcelAreaHa) }}
             </p>
           </div>
 
-          <!-- Partie droite : points de la parcelle -->
-<div
-  class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 shadow-inner"
-  v-if="parcelPoints.length"
->
-  <!-- Titre -->
-  <h3 class="text-gray-800 font-bold mb-4 text-center text-lg">
-    {{ t("Parcel Points") }}
-  </h3>
+          <div
+            class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 shadow-inner"
+            v-if="parcelPoints.length"
+          >
+            <h3 class="text-gray-800 font-bold mb-4 text-center text-lg">
+              {{ t("Parcel Points") }}
+            </h3>
 
-  <div class="flex flex-col gap-4">
-    <!-- Scroll horizontal subtil si trop de points -->
-    <div class="flex gap-4 overflow-x-auto scrollbar-hidden py-2 px-1">
-      <div
-        v-for="(point, i) in parcelPoints"
-        :key="i"
-        class="flex-shrink-0 w-44 p-4 bg-white/20 rounded-xl shadow hover:shadow-sm transition-transform hover:-translate-y-1 hover:scale-101 cursor-pointer"
-      >
-        <p class="text-gray-500 text-xs mb-1 font-semibold">Point {{ i + 1 }}</p>
-        <p class="text-[#10b481] font-semibold text-sm">
-          Lat: {{ point.lat?.toFixed(6) ?? "N/A" }}
-        </p>
-        <p class="text-[#10b481] font-semibold text-sm">
-          Lng: {{ point.lng?.toFixed(6) ?? "N/A" }}
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="flex flex-col gap-4">
+              <div
+                class="flex gap-4 overflow-x-auto scrollbar-hidden py-2 px-1"
+              >
+                <div
+                  v-for="(point, i) in parcelPoints"
+                  :key="i"
+                  class="flex-shrink-0 w-44 p-4 bg-white/20 rounded-xl shadow hover:shadow-sm transition-transform hover:-translate-y-1 hover:scale-101 cursor-pointer"
+                >
+                  <p class="text-gray-500 text-xs mb-1 font-semibold">
+                    Point {{ i + 1 }}
+                  </p>
+                  <p class="text-[#10b481] font-semibold text-sm">
+                    Lat: {{ point.lat?.toFixed(6) ?? "N/A" }}
+                  </p>
+                  <p class="text-[#10b481] font-semibold text-sm">
+                    Lng: {{ point.lng?.toFixed(6) ?? "N/A" }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
@@ -97,78 +176,6 @@
               {{ t("chartprecipitation") }}
             </h3>
             <canvas id="precipitationChart"></canvas>
-          </div>
-        </div>
-
-        <div v-if="currentWeather" class="relative p-6 text-gray-800">
-          <h3 class="mt-4 font-bold text-3xl">{{ t('today') }}</h3>
-
-          <div class="flex justify-between items-center mt-2">
-            <div class="flex items-center gap-4">
-              <img :src="currentWeather.condition.icon" alt="weather" />
-              <div>
-                <p class="text-2xl font-semibold">
-                  {{ currentWeather.temp_c }}°C
-                </p>
-                <p class="text-gray-600">{{ currentWeather.condition.text }}</p>
-              </div>
-            </div>
-
-            <div class="text-sm text-gray-700 text-right">
-              <p>{{ t('humidity') }} : {{ currentWeather.humidity }}%</p>
-              <p>
-                {{ t('vent') }} : {{ currentWeather.wind_kph }} km/h ({{
-                  currentWeather.wind_dir
-                }})
-              </p>
-            </div>
-          </div>
-
-          <div v-if="todayForecast" class="max-w-2xl">
-            <div class="flex gap-2 mt-2 overflow-x-auto py-2">
-              <div
-                v-for="hour in todayForecast.hour"
-                :key="hour.time_epoch"
-                class="flex-shrink-0 w-24 p-2 bg-gray-100 rounded text-center"
-              >
-                <p class="text-xs font-semibold">{{ formatHour(hour.time) }}</p>
-                <img
-                  :src="hour.condition.icon"
-                  alt="icon"
-                  class="mx-auto w-8 h-8"
-                />
-                <p class="text-sm">{{ hour.temp_c }}°C</p>
-                <p class="text-xs">{{ t('pluie') }}: {{ hour.chance_of_rain }}%</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <br />
-
-        <div v-if="forecastDays.length">
-          <h2 class="text-xl font-bold mb-2">{{ t('prevision') }}</h2>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div
-              v-for="day in forecastDays"
-              :key="day.date"
-              class="p-3 bg-white shadow rounded-lg flex flex-col items-center"
-            >
-              <p class="font-semibold">{{ day.date }}</p>
-
-              <img :src="day.day.condition.icon" class="w-12" />
-
-              <p class="text-sm text-gray-700">
-                {{ day.day.condition.text }}
-              </p>
-
-              <p class="text-sm">
-                {{ day.day.mintemp_c }}°C - {{ day.day.maxtemp_c }}°C
-              </p>
-
-              <p class="text-sm">{{ day.day.daily_chance_of_rain }}% {{ t('pluie') }}</p>
-            </div>
           </div>
         </div>
 
@@ -312,7 +319,7 @@
     </div>
 
     <div class="flex flex-col space-y-6 mt-6">
-      <div class="flex flex-col lg:flex-row gap-6 hidden">
+      <div class="flex flex-col lg:flex-row gap-6">
         <div
           class="bg-white rounded-2xl shadow-lg p-6 w-full lg:w-2/3 space-y-4"
         >
@@ -541,11 +548,12 @@
     </div>
   </div>
 
-  <div class="bg-gray-100 rounded-lg p-4 mt-4 hidden">
+  <div class="bg-gray-100 rounded-lg p-4 mt-4">
     <h3 class="font-semibold text-gray-800 mb-2">Parcel Full Data (JSON)</h3>
     <pre class="text-sm text-gray-700 overflow-x-auto">
     {{ parcelFullDataJSON }}
-  </pre>
+  </pre
+    >
   </div>
 </template>
 
@@ -557,44 +565,94 @@ import { reactive, ref, computed, onMounted, watch } from "vue";
 import axios from "axios";
 import Chart from "chart.js/auto";
 import { API_URL } from "~/config";
-
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 import { useRouter } from "vue-router";
+
+import { Icon } from "@iconify/vue";
+
 const router = useRouter();
 
 const currentWeather = ref(null);
-const locationInfo = ref(null);
 const forecastDays = ref([]);
 const climate = ref(null);
-const parcelPoints = ref([]); // tableau vide par défaut
+const parcelPoints = ref([]);
+const analysis = ref([]);
 
 function updateWeatherForecast(data) {
-  climate.value = data?.climate_data;
-  if (!climate.value) return;
+  const weatherData = data?.weather_data?.data;
+  console.log("Weather Data:", weatherData);
+  if (!weatherData) {
+    climate.value = null;
+    currentWeather.value = null;
+    forecastDays.value = [];
+    parcelPoints.value = [];
+    return;
+  }
 
-  // Climat actuel
-  currentWeather.value = climate.value.current;
-
-  // Localisation
-  locationInfo.value = climate.value.location;
-
-  // Forecast (8 jours)
-  forecastDays.value = climate.value.forecast?.forecastday ?? [];
-
-  // Récupérer les points de la parcelle
+  climate.value = weatherData;
+  currentWeather.value = weatherData.current ?? null;
+  forecastDays.value = weatherData.daily_forecast ?? [];
   parcelPoints.value = data?.parcel?.points ?? [];
 }
 
 const todayForecast = computed(() => {
-  if (!climate.value) return null; // protection si pas encore chargé
-  const today = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
-  return climate.value.forecast.forecastday.find((day) => day.date === today);
+  if (!forecastDays.value.length) return null;
+
+  const today = new Date().toISOString().split("T")[0];
+  return forecastDays.value.find((day) => day.date === today);
 });
 
-const formatHour = (time) => {
-  return time.split(" ")[1].slice(0, 5); // extrait "HH:MM"
+function getDayName(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(currentLocale.value, { weekday: "long" });
+}
+
+function getDayNameShort(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(currentLocale.value, { weekday: "short" });
+}
+
+// Ta map d’icônes selon la météo
+const weatherIcons = {
+  "Patchy rain nearby": "mdi:weather-rainy",
+  "Moderate rain": "mdi:weather-pouring",
+  Sunny: "mdi:weather-sunny",
+  Clear: "mdi:weather-night",
+  "Partly cloudy": "mdi:weather-partly-cloudy",
+  Cloudy: "mdi:weather-cloudy",
+  "Light rain": "mdi:weather-rainy",
+  "Heavy rain": "mdi:weather-heavy-rain",
+  Thunderstorm: "mdi:weather-lightning",
+  Mist: "mdi:weather-fog",
+  Fog: "mdi:weather-fog",
 };
+
+function getWeatherIcon(condition) {
+  return weatherIcons[condition] ?? "mdi:help-circle";
+}
+
+const currentTime = ref("");
+
+// Fonction pour mettre à jour l'heure chaque seconde
+const updateTime = () => {
+  const now = new Date();
+  currentTime.value = `${now.getHours().toString().padStart(2, "0")}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+let intervalId;
+
+onMounted(() => {
+  updateTime();
+  intervalId = setInterval(updateTime, 1000); // toutes les secondes
+});
+
+onUnmounted(() => {
+  clearInterval(intervalId); // nettoyer l'intervalle
+});
 
 const languageStore = useLanguageStore();
 
@@ -603,20 +661,22 @@ const t = (key) => translate[languageStore.lang][key] || key;
 const currentLocale = computed(() => languageStore.lang);
 
 async function translateText(text) {
-  const targetLang = currentLocale.value; // récupère la langue active (fr, en, mg)
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
-  
+  const targetLang = currentLocale.value;
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
+    text
+  )}&langpair=en|${targetLang}`;
+
   try {
     const res = await fetch(url);
     const data = await res.json();
     return data.responseData.translatedText;
   } catch (error) {
     console.error("Erreur de traduction :", error);
-    return text; // retourne le texte original en cas d'erreur
+    return text;
   }
 }
 
-const parcelFullDataJSON = ref(null); // pour afficher le JSON dans le HTML
+const parcelFullDataJSON = ref(null);
 
 const route = useRoute();
 const fieldIdParam = route.params.id ?? null;
@@ -744,7 +804,7 @@ function updateYieldEvolutionChart() {
       year: "numeric",
     });
     if (!grouped[monthYear]) grouped[monthYear] = 0;
-    grouped[monthYear] += r.yield_amount ?? 0;
+    grouped[monthYear] += r.yield ?? 0;
   });
 
   const labels = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
@@ -796,7 +856,7 @@ const climateData = reactive({
 });
 
 function updateClimateCharts(data) {
-  const params = data?.climate_data?.properties?.parameter;
+  const params = data?.weather_data?.properties?.parameter;
 
   if (!params) {
     console.warn("Aucune donnée climatique disponible");
@@ -902,8 +962,8 @@ function calculateTrends() {
         records[i].trend = "neutral";
         records[i].trendValue = 0;
       } else {
-        const prev = records[i - 1].yield_amount;
-        const current = records[i].yield_amount;
+        const prev = records[i - 1].yield;
+        const current = records[i].yield;
 
         if (current > prev) {
           records[i].trend = "up";
@@ -948,11 +1008,11 @@ async function fetchParcelData() {
     Object.assign(parcelFullData, fullDataResponse.data);
     parcelFullDataJSON.value = JSON.stringify(fullDataResponse.data, null, 2); // formaté joliment
 
-    if (parcelFullData.climate_data) {
+    if (parcelFullData.weather_data) {
       updateWeatherForecast(parcelFullData);
     }
 
-    updateSoilQualities(parcelFullData.soil_data?.properties?.layers);
+    updateSoilQualities(parcelFullData.soil_data?.data?.properties?.layers);
 
     updateTasks();
     updateTaskChart();
@@ -983,8 +1043,7 @@ async function fetchParcelData() {
 onMounted(() => {
   fetchParcelData();
   fetchAnalyticsData();
-  fetchParcelData();
-  if (parcelFullData.climate_data) {
+  if (parcelFullData.weather_data) {
     updateWeatherForecast(parcelFullData);
   }
 });
@@ -1015,7 +1074,7 @@ const updatePaginatedHarvest = () => {
     .map((r) => ({
       id: r.id ?? `${r.parcel_crop_id}-${r.date}`,
       date: r.date,
-      quantity: r.yield_amount,
+      quantity: r.yield,
       observation: r.notes,
       trend: r.trend ?? "neutral",
       trendValue: r.trendValue ?? 0,
@@ -1094,7 +1153,7 @@ async function fetchAnalyticsData() {
       ...parcel,
       dates: parcel.dates ?? [],
       years: parcel.years ?? [],
-      yield_amount: parcel.yield_amount ?? [],
+      yield: parcel.yield ?? [],
       yield_per_area: parcel.yield_per_area ?? [],
       mean_yield: parcel.mean_yield ?? 0,
       mean_yield_per_area: parcel.mean_yield_per_area ?? 0,
@@ -1147,7 +1206,7 @@ watch(
         datasets: [
           {
             label: "Yield Amount (kg)",
-            data: parcel.yield_amount,
+            data: parcel.yield,
             backgroundColor: "#10b481",
           },
         ],
@@ -1261,7 +1320,6 @@ async function fetchParcelCrops() {
   }
 }
 
-// Filtrer par id de parcel
 const filteredParcelCrops = computed(() => {
   return Array.isArray(parcelCrops.value)
     ? parcelCrops.value.filter((crop) => crop.parcel === fieldIdParam)
@@ -1277,7 +1335,7 @@ onMounted(() => {
   display: none;
 }
 .scrollbar-hidden {
-  -ms-overflow-style: none;  /* IE et Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>

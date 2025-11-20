@@ -8,7 +8,9 @@
       />
     </div>
 
-    <div class="bg-[#101010] p-8 pt-20 rounded-3xl shadow-xl w-full relative z-0">
+    <div
+      class="bg-[#101010] p-8 pt-20 rounded-3xl shadow-xl w-full relative z-0"
+    >
       <h2 class="text-3xl font-bold mb-6 text-center text-white">
         {{ title }}
       </h2>
@@ -16,7 +18,10 @@
       <form @submit.prevent="submit" class="space-y-4">
         <div v-for="field in fields" :key="field" class="relative">
           <i
-            :class="icons[field] + ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'"
+            :class="
+              icons[field] +
+              ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'
+            "
           ></i>
 
           <input
@@ -32,7 +37,7 @@
             :class="[
               formData[field] || fieldHasFocus[field]
                 ? '-top-3 text-sm text-[#10b481] bg-[#101010] px-2 rounded'
-                : 'top-3 text-base text-[#10b481]'
+                : 'top-3 text-base text-[#10b481]',
             ]"
           >
             {{ labels[field] || passwordLabel }}
@@ -42,7 +47,7 @@
             v-if="field === 'password'"
             :class="[
               showPassword ? 'bx bx-hide' : 'bx bx-show',
-              'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg cursor-pointer hover:text-[#10b481] transition'
+              'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg cursor-pointer hover:text-[#10b481] transition',
             ]"
             @click="togglePassword"
           ></i>
@@ -64,11 +69,17 @@
             />
             <span>
               I agree to the
-              <NuxtLink to="/privacy-policy" class="underline hover:text-[#10b481]">
+              <NuxtLink
+                to="/privacy-policy"
+                class="underline hover:text-[#10b481]"
+              >
                 Privacy Policy
               </NuxtLink>
               and
-              <NuxtLink to="/terms-of-service" class="underline hover:text-[#10b481]">
+              <NuxtLink
+                to="/terms-of-service"
+                class="underline hover:text-[#10b481]"
+              >
                 Terms of Service
               </NuxtLink>
             </span>
@@ -77,7 +88,11 @@
 
         <button
           type="submit"
-          :disabled="(buttonText.toLowerCase().includes('sign') || buttonText === 'S\'inscrire') && !acceptedPolicy"
+          :disabled="
+            (buttonText.toLowerCase().includes('sign') ||
+              buttonText === 'S\'inscrire') &&
+            !acceptedPolicy
+          "
           class="w-full py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-bold rounded-lg hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {{ buttonText }}
@@ -132,7 +147,11 @@ function togglePassword() {
   showPassword.value = !showPassword.value;
 }
 function getInputType(field: string) {
-  return field === "password" ? (showPassword.value ? "text" : "password") : "text";
+  return field === "password"
+    ? showPassword.value
+      ? "text"
+      : "password"
+    : "text";
 }
 
 function submit() {
