@@ -26,7 +26,7 @@
         <div
           class="flex items-center justify-center w-16 h-16 rounded-lg bg-[#c99383]/10"
         >
-          <i class='bxr  bx-calendar-check text-4xl text-[#c99383]'  ></i> 
+          <i class="bxr bx-calendar-check text-4xl text-[#c99383]"></i>
         </div>
         <div class="flex flex-col text-left">
           <p class="text-3xl font-bold text-[#c99383]">
@@ -79,8 +79,8 @@
         ></div>
       </div>
     </div>
-</div>
-<div
+  </div>
+  <div
     class="px-6 flex items-center justify-between border-b border-gray-300 mb-2 mt-8 text-sm sm:text-base"
   >
     <div class="flex gap-6">
@@ -93,7 +93,7 @@
           'relative px-3 py-2 font-medium transition-colors after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-[#10b481] after:transition-all hover:after:w-full focus:after:w-full',
           activeMenu === menu.name
             ? 'text-[#10b481] after:w-full'
-            : 'text-[#212121]'
+            : 'text-[#212121]',
         ]"
       >
         {{ menu.label }}
@@ -105,7 +105,7 @@
       class="flex items-center gap-2 bg-[#212121] hover:bg-[#10b481] focus:bg-[#10b481] text-white px-4 py-2 rounded-lg transition"
     >
       <i class="bx bx-plus text-lg"></i>
-      <span>{{ t('add') }}</span>
+      <span>{{ t("add") }}</span>
     </button>
   </div>
 
@@ -164,8 +164,6 @@ const yieldAvg = computed(() => {
     : 0;
 });
 
-
-// --- useState pour dashboard et analytics ---
 const dashboardState = useState("dashboardData", () => ({
   parcels: [],
   task_summary: [],
@@ -173,7 +171,6 @@ const dashboardState = useState("dashboardData", () => ({
   soil_summary: [],
 }));
 
-// ref locales qui pointent vers le state
 const dashboard = ref(dashboardState.value);
 
 async function fetchDashboard() {
@@ -185,8 +182,7 @@ async function fetchDashboard() {
       headers: { Authorization: `Token ${token}` },
     });
     dashboard.value = res.data;
-    dashboardState.value = res.data; 
-
+    dashboardState.value = res.data;
   } catch (err) {
     console.error(err);
   }
@@ -202,28 +198,39 @@ const userUUID = sessionStorage.getItem("uuid");
 const activeMenu = ref("parcelles");
 
 const menus = computed(() => [
-  { name: "parcelles", label: t("parcels"), component: TbParcel, addPath: `/parcels/create/p/${userUUID}` },
-  { name: "taches",    label: t("tasks"),   component: TbTask,   addPath: "/tasks/create" },
-  { name: "culture",   label: t("yields"),  component: TbYield,  addPath: "/yield-records/create" },
+  {
+    name: "parcelles",
+    label: t("parcels"),
+    component: TbParcel,
+    addPath: `/parcels/create/p/${userUUID}`,
+  },
+  {
+    name: "taches",
+    label: t("tasks"),
+    component: TbTask,
+    addPath: "/tasks/create",
+  },
+  {
+    name: "culture",
+    label: t("yields"),
+    component: TbYield,
+    addPath: "/yield-records/create",
+  },
 ]);
 
-// Composant courant selon le menu actif
 const currentComponent = computed(() => {
-  const menu = menus.value.find(m => m.name === activeMenu.value);
-  return menu ? menu.component : TbParcel; // Default fallback
+  const menu = menus.value.find((m) => m.name === activeMenu.value);
+  return menu ? menu.component : TbParcel;
 });
 
-// Fonction pour changer de menu
 const selectMenu = (name: string) => {
   activeMenu.value = name;
 };
 
-// Aller vers la page de création correspondant au menu actif
 const goToAddPage = () => {
-  const menu = menus.value.find(m => m.name === activeMenu.value);
+  const menu = menus.value.find((m) => m.name === activeMenu.value);
   if (menu) router.push(menu.addPath);
 };
-
 </script>
 
 <style>

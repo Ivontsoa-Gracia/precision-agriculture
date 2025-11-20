@@ -41,7 +41,9 @@
       class="w-full max-w-3xl bg-white backdrop-blur-md rounded-3xl shadow-2xl p-8"
     >
       <div class="flex items-center gap-3 mb-6">
-        <i class="bx bx-box text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
+        <i
+          class="bx bx-box text-xl sm:text-3xl text-[#10b481] animate-pulse"
+        ></i>
         <h2
           class="text-xl sm:text-3xl font-extrabold text-gray-800 tracking-tight relative"
         >
@@ -84,7 +86,6 @@
         <DetailItem :label="t('createdat')" :value="parcelCrop.created_at" />
       </div>
 
-      <!-- Action Buttons -->
       <div class="mt-8 flex flex-col md:flex-row justify-end gap-4">
         <NuxtLink
           :to="`/parcel-crops/edit/${parcelCrop.id}`"

@@ -57,7 +57,7 @@
           </button>
         </div>
 
-        <div class="flex space-x-3 flex-nowrap mt-2 sm:mt-0 ">
+        <div class="flex space-x-3 flex-nowrap mt-2 sm:mt-0">
           <div class="relative inline-block group">
             <button
               class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
@@ -305,7 +305,7 @@ const fieldsState = useState("fieldsData", () => ({
 
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
-  const userUUID = sessionStorage.getItem("uuid"); // UUID de l'utilisateur connecté
+  const userUUID = sessionStorage.getItem("uuid");
   if (!token || !userUUID) {
     alert("Vous devez être connecté");
     return;
@@ -341,7 +341,6 @@ onMounted(async () => {
     console.error("Erreur réseau:", err);
   }
 });
-
 
 const filteredFields = computed(() =>
   fields.value.filter(
