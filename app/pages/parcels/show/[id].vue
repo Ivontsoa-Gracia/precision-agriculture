@@ -548,7 +548,7 @@
     </div>
   </div>
 
-  <div class="bg-gray-100 rounded-lg p-4 mt-4">
+  <div class="bg-gray-100 rounded-lg p-4 mt-4 hidden">
     <h3 class="font-semibold text-gray-800 mb-2">Parcel Full Data (JSON)</h3>
     <pre class="text-sm text-gray-700 overflow-x-auto">
     {{ parcelFullDataJSON }}
