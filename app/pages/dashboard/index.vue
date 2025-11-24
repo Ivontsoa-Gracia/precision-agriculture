@@ -1,8 +1,10 @@
 <template>
-  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1">
+  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 items-center justify-center">
+
+    <br>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
       <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
       >
         <div
           class="flex items-center justify-center w-16 h-16 rounded-full bg-[#10b481]/10"
@@ -21,7 +23,7 @@
       </div>
 
       <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
       >
         <div
           class="flex items-center justify-center w-16 h-16 rounded-full bg-[#c99383]/10"
@@ -42,7 +44,7 @@
       </div>
 
       <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
       >
         <div
           class="flex items-center justify-center w-16 h-16 rounded-full bg-[#222831]/10"
@@ -61,7 +63,7 @@
       </div>
 
       <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
       >
         <div
           class="flex items-center justify-center w-16 h-16 rounded-full bg-[#6d4c41]/10"
@@ -82,23 +84,20 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div
-        class="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-1 z-40"
+        class="col-span-1 md:col-span-2 bg-white rounded border border-gray-100 p-1 z-40"
       >
         <client-only>
-          <div
-            id="map"
-            class="h-64 sm:h-80 md:h-[450px] rounded-xl w-full"
-          ></div>
+          <div id="map" class="h-64 sm:h-80 md:h-[450px] rounded w-full"></div>
         </client-only>
       </div>
 
       <div class="col-span-1">
         <div
-          class="p-6 bg-white rounded-2xl shadow-md flex flex-col hover:shadow-xl transition duration-300 h-[400px] sm:h-[500px] md:h-[500px]"
+          class="p-6 bg-white rounded border border-gray-100 flex flex-col h-[400px] sm:h-[500px] md:h-[500px]"
         >
           <div class="flex items-center justify-between mb-5">
             <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
-              <i class="bx bx-fullscreen text-[#10b481] text-xl"></i>
+              <i class="bx bx-fullscreen text-xl"></i>
               {{ t("zoomonparcel") }}
             </h3>
             <span class="text-sm text-gray-500"
@@ -112,7 +111,7 @@
                 type="text"
                 v-model="parcelSearch"
                 :placeholder="t('search')"
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
               />
               <i
                 class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -122,7 +121,7 @@
             <div class="relative">
               <button
                 @click="showSortMenu = !showSortMenu"
-                class="px-3 py-2 rounded-xl hover:bg-gray-100 transition text-gray-700 font-medium"
+                class="px-3 py-2 rounded hover:bg-gray-100 transition text-gray-700 font-medium"
               >
                 <i class="bx bx-dots-vertical-rounded text-2xl"></i>
               </button>
@@ -130,7 +129,7 @@
               <transition name="fade-scale">
                 <div
                   v-if="showSortMenu"
-                  class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-xl shadow-xl z-50"
+                  class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-xl z-50"
                 >
                   <p
                     class="px-4 py-2 text-gray-500 font-semibold border-b border-gray-200"
@@ -138,7 +137,7 @@
                     {{ t("sortby") }}
                   </p>
                   <label
-                    class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded-lg"
+                    class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded"
                   >
                     <input
                       type="radio"
@@ -150,7 +149,7 @@
                     {{ t("sortname") }}
                   </label>
                   <label
-                    class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded-lg"
+                    class="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 cursor-pointer rounded"
                   >
                     <input
                       type="radio"
@@ -170,20 +169,21 @@
             <li
               v-for="p in sortedParcels"
               :key="p.id"
-              class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-gray-100 rounded-xl hover:bg-[#f0fdf4] transition shadow-sm"
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-gray-100 rounded hover:bg-gray-100 transition shadow-sm"
             >
-              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div class="flex flex-col items-start gap-1">
                 <span class="text-gray-800 font-semibold">{{ p.name }}</span>
+
                 <span class="text-xs text-gray-500">
-                  Yield: <strong>{{ getParcelYield(p) }} kg</strong>
+                  {{ t("yields") }}: <strong>{{ getParcelYield(p) }} kg</strong>
                 </span>
               </div>
+
               <button
                 @click="zoomParcel(p)"
-                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded-lg bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30 mt-2 sm:mt-0"
+                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30 mt-2 sm:mt-0"
               >
                 <i class="bx bx-zoom-in text-base"></i>
-                <span>Zoom</span>
               </button>
             </li>
           </ul>
@@ -191,26 +191,29 @@
       </div>
     </div>
 
-    <div class="space-y-6">
+    <div
+      v-if="analyticsData && Object.keys(analyticsData).length"
+      class="space-y-6 hidden"
+    >
       <h2 class="text-3xl font-extrabold text-gray-900 mb-6">
         {{ t("titleanalytics") }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
-          class="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-6"
+          class="col-span-1 md:col-span-2 bg-white rounded border border-gray-100 p-6"
         >
           <h3 class="font-bold text-lg mb-4 text-gray-900">
             {{ t("charttitleyield") }}
           </h3>
           <canvas
             id="parcelYieldChart"
-            class="h-64 sm:h-80 md:h-96 w-full rounded-xl"
+            class="h-64 sm:h-80 md:h-96 w-full rounded"
           ></canvas>
         </div>
 
         <div
-          class="col-span-1 bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition flex-1 min-w-[200px]"
+          class="col-span-1 bg-white rounded border border-gray-100 p-5 hover:shadow-xl transition flex-1 min-w-[200px]"
         >
           <h3
             class="font-bold text-lg text-gray-900 flex items-center gap-2 mb-4"
@@ -222,7 +225,7 @@
           <div
             v-for="(parcel, key) in analyticsData"
             :key="key"
-            class="bg-white rounded-md shadow-md mb-4 overflow-hidden transition hover:shadow-xl"
+            class="bg-white rounded-md border border-gray-100 mb-4 overflow-hidden transition hover:shadow-xl"
           >
             <button
               @click="parcel.open = !parcel.open"
@@ -266,7 +269,7 @@
                 <div
                   v-for="(date, i) in parcel.dates"
                   :key="i"
-                  class="bg-white p-3 rounded-md shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center hover:shadow-md transition"
+                  class="bg-white p-3 rounded-md shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center hover:border border-gray-100 transition"
                 >
                   <div class="flex flex-col">
                     <span class="text-gray-500 text-sm"
@@ -295,15 +298,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, reactive } from "vue";
+definePageMeta({ layout: "dashboard" });
+import { ref, computed, onMounted, watch } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import Chart from "chart.js/auto";
 import { nextTick } from "vue";
 import { API_URL } from "~/config";
-
-definePageMeta({ layout: "dashboard" });
-
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 

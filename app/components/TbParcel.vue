@@ -1,8 +1,8 @@
 <template>
-  <div class="p-4 sm:p-6">
+  <div>
     <div class="mb-6">
       <h2
-        class="text-2xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+        class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
       >
         <i class="bxr bx-list-ul text-2xl sm:text-3xl"></i>
         {{ t("titleparcellist") }}
@@ -93,10 +93,10 @@
       </div>
     </div>
 
-    <div class="bg-red rounded-lg shadow pb-2">
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-left border-collapse">
-          <thead class="bg-gray-100">
+    <div class="pb-2">
+      <div class="overflow-x-auto bg-white">
+        <table class="min-w-[700px] w-full text-left border-collapse">
+          <thead class="bg-gray-100 text-gray-800">
             <tr>
               <th class="px-6 py-2 border-b hidden">Owner</th>
               <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
@@ -115,7 +115,7 @@
             <tr
               v-for="field in paginatedFields"
               :key="field.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-gray-50 text-gray-800"
             >
               <td class="px-6 py-2 border-b hidden">{{ field.owner }}</td>
 
@@ -208,7 +208,7 @@
     v-if="showDeleteModal"
     class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
   >
-    <div class="bg-white rounded-lg p-6 w-80 text-center shadow-lg">
+    <div class="bg-white rounded p-6 w-80 text-center shadow-lg">
       <h3 class="text-xl font-bold mb-4">Delete Parcel</h3>
       <p class="mb-6">Are you sure you want to delete this parcel?</p>
       <div class="flex justify-center gap-4">

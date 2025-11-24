@@ -1,92 +1,104 @@
 <template>
-  <div class="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-2xl shadow-lg mt-1 sm:mt-10 mb-10 sm:mb-1">
-    <div class="flex items-center gap-3 mb-6">
-      <i class="bx bx-edit text-xl text-3xl text-[#10b481] animate-pulse"></i>
-      <h2 class="text-xl text-3xl font-extrabold text-gray-800 tracking-tight relative">
-        {{ t("editparcelcrop") }}
-      </h2>
-    </div>
-
-    <form @submit.prevent="submitParcelCrop" class="space-y-6 bg-white">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("parcel") }} *</label>
-          <select
-            v-model="form.parcel"
-            required
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          >
-            <option v-for="p in parcels" :key="p.uuid" :value="p.uuid">
-              {{ p.parcel_name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("crop") }} *</label>
-          <select
-            v-model="form.crop_id"
-            required
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          >
-            <option v-for="c in crops" :key="c.id" :value="c.id">
-              {{ c.name }} ({{ c.variety?.name }})
-            </option>
-          </select>
-        </div>
-
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("plantingdate") }} *</label>
-          <input
-            v-model="form.planting_date"
-            type="date"
-            required
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          />
-        </div>
-
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("harvestdate") }}</label>
-          <input
-            v-model="form.harvest_date"
-            type="date"
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          />
-        </div>
-
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("area") }} (m²) *</label>
-          <input
-            v-model="form.area"
-            type="number"
-            step="1"
-            required
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          />
-        </div>
-
-        <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("status") }} *</label>
-          <select
-            v-model="form.status_id"
-            required
-            class="px-3 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
-          >
-            <option v-for="s in statuses" :key="s.id" :value="s.id">
-              {{ t(cropStatusKeyMap[s.name]) }}
-            </option>
-          </select>
-        </div>
+  <div class="flex items-center justify-center p-6">
+    <div class="w-full max-w-3xl mt-6">
+      <div class="mb-8 text-left">
+        <h2 class="text-3xl font-semibold text-gray-900">
+          {{ t("editparcelcrop") }}
+        </h2>
       </div>
 
-      <button
-        type="submit"
-        class="w-full bg-gradient-to-r from-[#10b481] to-[#0da06a] hover:from-[#0da06a] hover:to-[#10b481] transition-colors py-3 rounded-xl font-semibold text-white text-lg flex justify-center items-center gap-2"
-      >
-        <i class="bx bx-save text-xl"></i>
-        {{ t("btnsaveparcelcrop") }}
-      </button>
-    </form>
+      <form @submit.prevent="submitParcelCrop" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("parcel") }} *</label
+            >
+            <select
+              v-model="form.parcel"
+              required
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            >
+              <option v-for="p in parcels" :key="p.uuid" :value="p.uuid">
+                {{ p.parcel_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("crop") }} *</label
+            >
+            <select
+              v-model="form.crop_id"
+              required
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            >
+              <option v-for="c in crops" :key="c.id" :value="c.id">
+                {{ c.name }} ({{ c.variety?.name }})
+              </option>
+            </select>
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("plantingdate") }} *</label
+            >
+            <input
+              v-model="form.planting_date"
+              type="date"
+              required
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1">{{
+              t("harvestdate")
+            }}</label>
+            <input
+              v-model="form.harvest_date"
+              type="date"
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("area") }} (m²) *</label
+            >
+            <input
+              v-model="form.area"
+              type="number"
+              step="1"
+              required
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("status") }} *</label
+            >
+            <select
+              v-model="form.status_id"
+              required
+              class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+            >
+              <option v-for="s in statuses" :key="s.id" :value="s.id">
+                {{ t(cropStatusKeyMap[s.name]) }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 bg-[#10b481] text-white font-medium rounded hover:bg-[#0e9d6f] transition-colors"
+        >
+          {{ t("btnsaveparcelcrop") }}
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 

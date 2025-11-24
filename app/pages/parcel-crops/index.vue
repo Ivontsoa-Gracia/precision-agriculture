@@ -3,21 +3,21 @@
     <h2
       class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
     >
-      <i class="bx bx-box text-xl sm:text-3xl text-[#10b481]"></i>
+      <i class='bxr  bx-list-ul'></i> 
       {{ t("parcelcroplist") }}
     </h2>
 
     <div class="flex justify-end mb-4">
       <NuxtLink
         to="/parcel-crops/create"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded hover:bg-[#0da06a] transition"
       >
         <i class="bx bx-plus text-lg"></i> {{ t("btnaddparcelcrop") }}
       </NuxtLink>
     </div>
 
-    <div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
-      <table class="min-w-[600px] w-full text-left border-collapse">
+    <div class="hidden md:block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
             <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
@@ -39,8 +39,8 @@
               {{ pc.parcel_name || pc.parcel }}
             </td>
             <td class="px-6 py-2 border-b">{{ pc.crop?.name || "-" }}</td>
-            <td class="px-6 py-2 border-b">{{ pc.planting_date }}</td>
-            <td class="px-6 py-2 border-b">{{ pc.harvest_date || "-" }}</td>
+            <td class="px-6 py-2 border-b">{{ formatDate(pc.planting_date) }}</td>
+            <td class="px-6 py-2 border-b">{{ formatDate(pc.harvest_date) || "-" }}</td>
             <td class="px-6 py-2 border-b">{{ pc.area }}</td>
             <td class="px-6 py-2 border-b">
               <span
@@ -57,19 +57,19 @@
             <td class="p-3 border-b text-center flex justify-center gap-2">
               <button
                 @click="showParcelCrop(pc.id)"
-                class="p-2 rounded-full hover:bg-[#10b481]/20"
+                class="p-2 px-4 rounded hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-xl"></i>
               </button>
               <button
                 @click="editParcelCrop(pc.id)"
-                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-xl"></i>
               </button>
               <button
                 @click="deleteParcelCrop(pc.id)"
-                class="p-2 rounded-full hover:bg-[#e63946]/10"
+                class="p-2 px-4 rounded hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-xl"></i>
               </button>
@@ -92,19 +92,19 @@
           <div class="flex gap-2">
             <button
               @click="showParcelCrop(pc.id)"
-              class="p-2 rounded-full hover:bg-[#10b481]/20"
+              class="p-2 px-4 rounded hover:bg-[#10b481]/20"
             >
               <i class="bx bx-show text-[#10b481] text-md"></i>
             </button>
             <button
               @click="editParcelCrop(pc.id)"
-              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
             >
               <i class="bx bx-edit text-[#f4a261] text-md"></i>
             </button>
             <button
               @click="deleteParcelCrop(pc.id)"
-              class="p-2 rounded-full hover:bg-[#e63946]/10"
+              class="p-2 px-4 rounded hover:bg-[#e63946]/10"
             >
               <i class="bx bx-trash text-[#e63946] text-md"></i>
             </button>
@@ -381,4 +381,13 @@ async function loadParcelCrops() {
   }
 }
 
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 </script>

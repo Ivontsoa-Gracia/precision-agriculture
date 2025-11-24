@@ -1,15 +1,15 @@
 <template>
-  <div class="p-1 sm:p-6">
+  <div>
     <h2
-      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+      class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
     >
       <i class="bxr bx-list-ul text-2xl sm:text-3xl"></i>
       {{ t("yieldlist") }}
     </h2>
 
-    <div class="hidden md:block overflow-x-auto bg-white rounded-xl shadow">
-      <table class="min-w-full text-left border-collapse">
-        <thead class="bg-gray-100">
+    <div class="hidden md:block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse">
+        <thead class="bg-gray-100 text-gray-800">
           <tr>
             <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
             <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
@@ -20,7 +20,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
+          <tr
+            v-for="y in paginatedYields"
+            :key="y.id"
+            class="hover:bg-gray-50 text-gray-800"
+          >
             <td class="px-6 py-2 border-b">{{ y.date }}</td>
             <td class="px-6 py-2 border-b">{{ y.parcel_name || "-" }}</td>
             <td class="px-6 py-2 border-b">{{ y.area }}</td>

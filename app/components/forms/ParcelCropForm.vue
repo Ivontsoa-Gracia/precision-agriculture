@@ -1,29 +1,21 @@
 <template>
-  <div
-    class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mt-1 sm:mt-10 mb-10 sm:mb-1"
-  >
+  <div class="max-w-3xl mx-auto mt-1 sm:mt-16 mb-10 sm:mb-1">
     <div
       class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4"
     >
       <h2
         class="text-xl sm:text-3xl font-bold text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-box text-xl sm:text-3xl text-[#10b481]"></i>
         {{ t("newparcelcrop") }}
       </h2>
-
-      <NuxtLink
-        to="/crops/create"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition w-full md:w-auto justify-center"
-      >
-        <i class="bx bx-plus text-lg"></i> {{ t("btnaddcrop") }}
-      </NuxtLink>
     </div>
 
     <form @submit.prevent="submitParcelCrop" class="space-y-5">
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("parcel") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("parcel") }} *</label
+          >
           <select
             v-model="form.parcel"
             required
@@ -36,7 +28,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("crop") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("crop") }} *</label
+          >
           <select
             v-model="form.crop_id"
             required
@@ -51,7 +45,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("plantingdate") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("plantingdate") }} *</label
+          >
           <input
             v-model="form.planting_date"
             type="date"
@@ -61,7 +57,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("harvestdate") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("harvestdate")
+          }}</label>
           <input
             v-model="form.harvest_date"
             type="date"
@@ -72,7 +70,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("area") }} (m²) *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("area") }} (m²) *</label
+          >
           <input
             v-model.number="form.area"
             type="number"
@@ -83,13 +83,15 @@
             class="w-full border p-2 rounded focus:ring-[#212121]"
             @input="onAreaInput"
           />
-          <small class="text-gray-500 text-sm">
+          <!-- <small class="text-gray-500 text-sm">
             Max: {{ formatM2(calculatedArea) }}
-          </small>
+          </small> -->
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("status") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("status") }} *</label
+          >
           <select
             v-model="form.status_id"
             required
@@ -104,30 +106,56 @@
 
       <button
         type="submit"
-        class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded-xl text-white text-lg flex justify-center items-center gap-2"
+        class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-lg flex justify-center items-center gap-2"
       >
-        <i class="bx bx-plus text-xl"></i>
         {{ t("btnsaveparcelcrop") }}
       </button>
     </form>
   </div>
-  <!-- <div
-      v-if="isLoading"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl"
-    >
-      <div
-        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-      ></div>
-    </div> -->
+
   <transition name="fade">
     <div
       v-if="notification.visible"
-      :class="[
-        'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold',
-        notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
-      ]"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
     >
-      {{ notification.message }}
+      <div
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
+      >
+        <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
+          :class="[
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
+          ]"
+        >
+          {{ notification.message }}
+        </p>
+
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
+      </div>
     </div>
   </transition>
 </template>

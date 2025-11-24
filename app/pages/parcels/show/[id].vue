@@ -1,29 +1,13 @@
 <template>
   <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[90vw] mb-10 sm:mb-1">
     <div class="flex flex-col lg:flex-row gap-6">
-      <div class="fixed bottom-6 right-6 z-50 hidden">
-        <NuxtLink
-          :to="`/assistant/p/${parcelData.uuid}`"
-          class="px-6 py-3 bg-[#212121] rounded-full shadow hover:bg-[#000000] flex items-center gap-2"
-        >
-          <i
-            class="bx bx-brain text-xl bg-gradient-to-r from-[#ffffff] to-[#ffffff] bg-clip-text text-transparent"
-          ></i>
-          <span
-            class="bg-gradient-to-r from-[#ffffff] to-[#ffffff] bg-clip-text text-transparent font-bold"
-          >
-            Agronomist IA
-          </span>
-        </NuxtLink>
-      </div>
-
       <div class="flex-1 lg:flex-[2] flex flex-col space-y-6 w-full lg:w-2/3">
         <div
-          class="flex flex-col md:flex-row gap-6 w-full max-w-4xl mx-auto mt-6"
+          class="flex flex-col md:flex-row gap-6 w-full max-w-4xl mx-auto mt-6 mb-6"
         >
           <div
             v-if="currentWeather && todayForecast"
-            class="flex-1 bg-gradient-to-br from-[#219ebc]/40 to-[#219ebc]/60 text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between"
+            class="flex-1 bg-gradient-to-br from-[#219ebc]/40 to-[#219ebc]/60 text-white rounded p-6 shadow-sm flex flex-col justify-between"
           >
             <div class="flex justify-between items-center">
               <div class="flex flex-col">
@@ -37,17 +21,17 @@
                   {{ currentWeather.temperature }}°C
                 </p>
                 <p class="text-sm opacity-80 capitalize">
-                  {{ currentWeather.condition }}
+                  {{ translatedCurrentCondition }}
                 </p>
               </div>
               <div>
                 <p class="text-xl font-medium opacity-90 mb-2">
-                    {{ currentTime }}
-                  </p>
-                  <Icon
-                :icon="getWeatherIcon(currentWeather.condition)"
-                class="text-7xl drop-shadow-lg"
-              />
+                  {{ currentTime }}
+                </p>
+                <Icon
+                  :icon="getWeatherIcon(currentWeather.condition)"
+                  class="text-7xl drop-shadow-sm"
+                />
               </div>
             </div>
 
@@ -64,17 +48,20 @@
 
             <div class="mt-4 grid grid-cols-2 gap-2 text-sm opacity-90">
               <p class="leading-tight">
-                Precipitation:
+                {{ t("precipitation") }}:
                 <strong>{{ todayForecast.total_precip }} mm</strong>
               </p>
               <p class="leading-tight">
-                Humidity: <strong>{{ currentWeather.humidity }}%</strong>
+                {{ t("humidity") }}:
+                <strong>{{ currentWeather.humidity }}%</strong>
               </p>
               <p class="leading-tight">
-                Wind: <strong>{{ currentWeather.wind_speed }} km/h</strong>
+                {{ t("vent") }}:
+                <strong>{{ currentWeather.wind_speed }} km/h</strong>
               </p>
               <p class="leading-tight">
-                UV Index: <strong>{{ currentWeather.uv_index }}</strong>
+                {{ t("uvIndex") }}:
+                <strong>{{ currentWeather.uv_index }}</strong>
               </p>
             </div>
           </div>
@@ -88,7 +75,7 @@
               <div
                 v-for="day in forecastDays"
                 :key="day.date"
-                class="flex-1 bg-gradient-to-br from-[#219ebc]/10 to-[#219ebc]/10 text-[#219ebc] rounded-2xl p-4 flex flex-col items-center shadow-md"
+                class="flex-1 bg-[#219ebc]/20 text-[#219ebc] rounded p-4 flex flex-col items-center shadow-sm"
               >
                 <p class="font-semibold">{{ getDayNameShort(day.date) }}</p>
 
@@ -109,69 +96,224 @@
         </div>
 
         <div
-          class="relative bg-gradient-to-r from-[#10b481]/10 to-white rounded-2xl shadow-md p-6 border-l-[4px] border-[#10b481] flex flex-col lg:flex-row gap-6 text-gray-800"
+          class="bg-white rounded shadow-sm overflow-hidden border border-gray-100 mb-6"
         >
-          <div class="flex-1 space-y-2">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-              <i class="bx bx-location-alt-2 text-lg text-gray-800"></i>
+          <div class="bg-gray-100 p-6 text-[#222831]">
+            <h2 class="text-2xl font-bold flex items-center gap-2">
+              <i class="bx bx-map-pin text-2xl"></i>
               {{ t("parceldetail") }}
-            </h3>
-            <p>
-              <span class="font-medium">{{ t("owner") }}:</span>
-              {{ ownerData.first_name || "N/A" }}
-              {{ ownerData.last_name || "N/A" }}
-            </p>
-            <p>
-              <span class="font-medium">{{ t("thparcelname") }}:</span>
+            </h2>
+            <p class="text-sm opacity-90 mt-1">
               {{ parcelData.parcel_name || "N/A" }}
-            </p>
-            <p>
-              <span class="font-medium">{{ t("Area") }}:</span>
-              {{ formatM2(parcelAreaHa) }}
             </p>
           </div>
 
-          <div
-            class="w-full lg:w-1/3 bg-[#10b481]/10 rounded-xl p-4 shadow-inner"
-            v-if="parcelPoints.length"
-          >
-            <h3 class="text-gray-800 font-bold mb-4 text-center text-lg">
-              {{ t("Parcel Points") }}
-            </h3>
-
-            <div class="flex flex-col gap-4">
-              <div
-                class="flex gap-4 overflow-x-auto scrollbar-hidden py-2 px-1"
-              >
+          <div class="flex flex-col lg:flex-row">
+            <div
+              class="w-full lg:w-1/3 p-6 bg-gray-50 border-r border-gray-100"
+            >
+              <div class="space-y-5">
                 <div
-                  v-for="(point, i) in parcelPoints"
-                  :key="i"
-                  class="flex-shrink-0 w-44 p-4 bg-white/20 rounded-xl shadow hover:shadow-sm transition-transform hover:-translate-y-1 hover:scale-101 cursor-pointer"
+                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
                 >
-                  <p class="text-gray-500 text-xs mb-1 font-semibold">
-                    Point {{ i + 1 }}
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    {{ t("owner") }}
                   </p>
-                  <p class="text-[#10b481] font-semibold text-sm">
-                    Lat: {{ point.lat?.toFixed(6) ?? "N/A" }}
-                  </p>
-                  <p class="text-[#10b481] font-semibold text-sm">
-                    Lng: {{ point.lng?.toFixed(6) ?? "N/A" }}
+                  <p class="text-gray-800 font-semibold mt-1">
+                    {{ ownerData.first_name || "N/A" }}
+                    {{ ownerData.last_name || "N/A" }}
                   </p>
                 </div>
+
+                <div
+                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                >
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    {{ t("thparcelname") }}
+                  </p>
+                  <p class="text-gray-800 font-semibold mt-1">
+                    {{ parcelData.parcel_name || "N/A" }}
+                  </p>
+                </div>
+
+                <div
+                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                >
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    {{ t("Area") }}
+                  </p>
+                  <p class="text-gray-800 font-semibold mt-1">
+                    {{ formatM2(parcelAreaHa) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full lg:flex-1 p-6">
+              <div
+                class="flex items-center gap-8 border-b border-gray-200 mb-6"
+              >
+                <span
+                  @click="selectedTab = 'points'"
+                  class="cursor-pointer pb-2 text-sm font-medium transition relative"
+                  :class="
+                    selectedTab === 'points'
+                      ? 'text-[#10b481]'
+                      : 'text-gray-500 hover:text-gray-700'
+                  "
+                >
+                  {{ t("pointsParcel") }}
+
+                  <span
+                    v-if="selectedTab === 'points'"
+                    class="absolute left-0 -bottom-[1px] w-full h-[2px] bg-[#10b481] rounded"
+                  ></span>
+                </span>
+
+                <span
+                  @click="selectedTab = 'crops'"
+                  class="cursor-pointer pb-2 text-sm font-medium transition relative"
+                  :class="
+                    selectedTab === 'crops'
+                      ? 'text-[#10b481]'
+                      : 'text-gray-500 hover:text-gray-700'
+                  "
+                >
+                  {{ t("croptype") }}
+
+                  <span
+                    v-if="selectedTab === 'crops'"
+                    class="absolute left-0 -bottom-[1px] w-full h-[2px] bg-[#10b481] rounded"
+                  ></span>
+                </span>
+              </div>
+
+              <div v-if="selectedTab === 'points'">
+                <h3
+                  class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
+                >
+                  <i class="bx bx-target-lock text-xl"></i>
+                  {{ t("pointsParcel") }}
+                </h3>
+
+                <div v-if="parcelPoints.length" class="overflow-x-auto text-sm">
+                  <table class="min-w-full border-separate border-spacing-y-2">
+                    <thead>
+                      <tr class="text-left text-gray-600">
+                        <th
+                          class="py-2 px-4 font-medium border-b border-gray-200"
+                        >
+                          #
+                        </th>
+                        <th
+                          class="py-2 px-4 font-medium border-b border-gray-200"
+                        >
+                          {{ t("thlatitude") }}
+                        </th>
+                        <th
+                          class="py-2 px-4 font-medium border-b border-gray-200"
+                        >
+                          {{ t("thlongitude") }}
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr
+                        v-for="(point, i) in parcelPoints"
+                        :key="i"
+                        class="bg-white hover:bg-gray-50 transition rounded"
+                      >
+                        <td
+                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                        >
+                          {{ t("point") }} {{ i + 1 }}
+                        </td>
+                        <td
+                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                        >
+                          {{ point.lat?.toFixed(6) ?? "N/A" }}
+                        </td>
+                        <td
+                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                        >
+                          {{ point.lng?.toFixed(6) ?? "N/A" }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p v-else class="text-gray-500 text-sm mt-4 italic">
+                  {{ t("nopoinntsfound") }}
+                </p>
+              </div>
+
+              <div v-if="selectedTab === 'crops'" class="mt-4">
+                <h3
+                  class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
+                >
+                  <i class="bxr bx-leaf-alt text-lg"></i>
+                  {{ t("croptype") }}
+                </h3>
+                <table
+                  class="min-w-full border-separate border-spacing-y-2 text-sm"
+                >
+                  <thead>
+                    <tr class="text-left text-gray-600">
+                      <th
+                        class="py-2 px-4 font-medium border-b border-gray-200"
+                      >
+                        {{ t("croptype") }}
+                      </th>
+                      <th
+                        class="py-2 px-4 font-medium border-b border-gray-200"
+                      >
+                        {{ t("area") }}
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      v-for="crop in filteredParcelCrops"
+                      :key="crop.id"
+                      class="bg-white hover:bg-gray-50 transition rounded"
+                    >
+                      <td
+                        class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                      >
+                        {{ crop.crop.name }}
+                      </td>
+                      <td
+                        class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                      >
+                        {{ crop.area }} m²
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p
+                  v-if="!filteredParcelCrops.length"
+                  class="text-gray-500 text-sm mt-4 italic"
+                >
+                  {{ t("noparcelsfound") }}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
-          <div class="bg-white rounded-2xl shadow p-4">
+          <div class="bg-white rounded shadow p-4">
             <h3 class="font-semibold text-gray-800 mb-2">
               {{ t("charttitleweather") }}
             </h3>
             <canvas id="weatherConditionChart"></canvas>
           </div>
 
-          <div class="bg-white rounded-2xl shadow p-4">
+          <div class="bg-white rounded shadow p-4">
             <h3 class="font-semibold text-gray-800 mb-2">
               {{ t("chartprecipitation") }}
             </h3>
@@ -179,7 +321,7 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow p-4">
+        <div class="bg-white rounded shadow p-4 max-h-[350px] pb-16">
           <h3 class="font-semibold text-gray-800 mb-2">
             {{ t("charttitleyield") }}
           </h3>
@@ -187,58 +329,71 @@
         </div>
       </div>
 
-      <div class="flex-1 flex flex-col space-y-6 w-full lg:w-1/3 text-gray-800">
-        <div class="max-w-full">
-          <div
-            v-for="crop in filteredParcelCrops"
-            :key="crop.id"
-            class="bg-white shadow-md rounded-2xl p-5 border border-gray-100 duration-300"
-          >
-            <div class="mb-3">
-              <h3 class="text-lg font-semibold">{{ t("croptype") }}</h3>
-              <h2 class="text-2xl font-bold text-[#10b481] truncate">
-                {{ crop.crop.name }}
-              </h2>
-            </div>
-
-            <div class="space-y-1 text-gray-600 text-sm">
-              <p>
-                <span class="font-semibold">{{ t("variety") }}: </span
-                >{{ crop.crop.variety?.name ?? "N/A" }}
-              </p>
-              <p>
-                <span class="font-semibold">{{ t("plantingdate") }}: </span
-                >{{ crop.planting_date }}
-              </p>
-              <p>
-                <span class="font-semibold">{{ t("harvestdate") }}: </span
-                >{{ crop.harvest_date }}
-              </p>
-              <p>
-                <span class="font-semibold">{{ t("area") }}: </span
-                >{{ crop.area }} m²
-              </p>
-            </div>
-
-            <div class="mt-3">
-              <span
-                :class="`inline-block text-xs font-semibold px-3 py-1 rounded-full ${statusClasses(
-                  crop.status.name
-                )}`"
-              >
-                {{ crop.status.name }}
-              </span>
-            </div>
-          </div>
+      <div class="flex-1 flex flex-col space-y-6 w-full lg:w-1/3 text-gary-800">
+        <div
+          v-if="metadata.location"
+          class="p-6 rounded mt-4 border border-gray-100 bg-gray-100"
+        >
+          <h3 class="text-lg font-semibold mb-2 text-[#222831]">
+            {{ t("forecastInfo") }}
+          </h3>
+          <ul class="text-sm text-[#222831] space-y-1">
+            <li>
+              <strong>{{ t("locations") }}:</strong> {{ metadata.location }}
+            </li>
+            <li>
+              <strong>{{ t("forecastPeriod") }}:</strong>
+              {{ metadata.forecast_period }}
+            </li>
+            <li>
+              <strong>{{ t("riskLevel") }}:</strong> {{ metadata.risk_level }}
+            </li>
+          </ul>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md p-6 space-y-4">
+        <div v-if="translatedAlerts.length" class="mt-6">
+          <ul class="space-y-3">
+            <li
+              v-for="alert in translatedAlerts"
+              :key="alert.type"
+              class="flex items-start gap-3 p-4 rounded shadow-sm bg-gradient-to-r from-yellow-100 to-yellow-200 border-l-4 border-yellow-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-800 mb-1">
+                  {{ alert.message }}
+                </p>
+                <p class="text-xs text-gray-600">
+                  {{ alert.action }}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div
+          class="bg-white rounded shadow-sm p-6 space-y-4 border border-gray-100 mt-12"
+        >
           <h3 class="text-lg font-semibold">{{ t("soilinfo") }}</h3>
           <div class="mt-4 space-y-3">
             <div
               v-for="(quality, index) in soilQualities"
               :key="index"
-              class="p-3 rounded-lg flex justify-between items-center border-l-[4px]"
+              class="p-3 rounded flex justify-between items-center border-l-[4px]"
               :style="{
                 borderColor: colorMap[quality.name] || '#ccc',
                 background: colorMap[quality.name]
@@ -264,10 +419,10 @@
             {{ t("titleanalytics") }}
           </h3>
           <div
-            class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+            class="relative flex items-center gap-4 p-6 bg-white rounded shadow-sm hover:shadow-sm transition border border-gray-100"
           >
             <div
-              class="flex items-center justify-center w-16 h-16 rounded-full bg-[#222831]/10"
+              class="flex items-center justify-center w-16 h-16 rounded bg-[#222831]/10"
             >
               <i class="bx bx-bar-chart-alt-2 text-4xl text-[#222831]"></i>
             </div>
@@ -285,10 +440,10 @@
           </div>
 
           <div
-            class="relative flex items-center gap-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition"
+            class="relative flex items-center gap-4 p-6 bg-white rounded shadow-sm hover:shadow-sm transition border border-gray-100"
           >
             <div
-              class="flex items-center justify-center w-16 h-16 rounded-full bg-[#6d4c41]/10"
+              class="flex items-center justify-center w-16 h-16 rounded bg-[#6d4c41]/10"
             >
               <i class="bx bx-line-chart text-4xl text-[#6d4c41]"></i>
             </div>
@@ -308,20 +463,20 @@
         </div>
         <div
           v-if="selectedParcel"
-          class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition hidden"
+          class="p-6 bg-white rounded shadow-sm hover:shadow-sm transition hidden"
         >
           <h3 class="font-semibold text-gray-800 mb-2">
-            Yield Evolution per Year
+            {{ t("charttitleyield") }}
           </h3>
           <canvas id="analyticsChart"></canvas>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col space-y-6 mt-6">
+    <div class="flex flex-col space-y-6 mt-12">
       <div class="flex flex-col lg:flex-row gap-6">
         <div
-          class="bg-white rounded-2xl shadow-lg p-6 w-full lg:w-2/3 space-y-4"
+          class="bg-white rounded shadow-sm p-6 w-full lg:w-2/3 space-y-4 border border-gray-100"
         >
           <div class="flex justify-between items-start">
             <div>
@@ -339,7 +494,7 @@
             <div>
               <NuxtLink
                 to="/tasks/create"
-                class="flex items-center px-4 py-2 bg-[#10b481] text-white rounded-lg shadow hover:bg-[#0da06a] transition"
+                class="flex items-center px-4 py-2 bg-[#10b481] text-white rounded shadow hover:bg-[#0da06a] transition"
               >
                 <i class="bx bx-plus mr-2"></i>{{ t("addtask") }}
               </NuxtLink>
@@ -350,71 +505,76 @@
             <div
               v-for="task in nearestTasks"
               :key="task.id"
-              class="flex justify-between items-center p-4 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
+              class="flex justify-between items-start p-4 rounded border border-gray-100 bg-white shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
               :class="{
-                'border-l-4 bg-gradient-to-r from-[#10b4811a] to-white border-[#10b481]':
-                  task.priority === 'Low',
-                'border-l-4 bg-gradient-to-r from-[#f4a2611a] to-white border-[#f4a261]':
-                  task.priority === 'Medium',
-                'border-l-4 bg-gradient-to-r from-[#e639461a] to-white border-[#e63946]':
-                  task.priority === 'High',
+                'border-l-4 border-l-[#10b481]': task.priority === 'Low',
+                'border-l-4 border-l-[#f4a261]': task.priority === 'Medium',
+                'border-l-4 border-l-[#e63946]': task.priority === 'High',
               }"
             >
-              <div class="flex flex-col">
-                <p class="font-semibold text-gray-800 text-lg">
+              <div class="flex flex-col gap-1">
+                <p class="font-semibold text-gray-900 text-base">
                   {{ task.name }}
                 </p>
-                <p class="text-gray-500 text-sm">
-                  {{ t("priority") }}:
-                  <span class="capitalize">{{
-                    t("priority" + task.priority)
-                  }}</span>
-                </p>
-                <p class="text-gray-500 text-sm">
-                  {{ t("due") }}: {{ formatDate(task.due_date) }}
-                </p>
+
+                <div class="flex flex-col gap-3 text-xs text-gray-500">
+                  <span class="flex items-center gap-1">
+                    <i class="bxr bx-calendar-star"></i>
+                    <span class="capitalize">
+                      {{ t("priority") }}:
+                      {{ t("priority" + task.priority) }}
+                    </span>
+                  </span>
+
+                  <span class="flex items-center gap-1">
+                    <i class="bxr bx-calendar-alt-2"></i>
+                    {{ t("due") }}: {{ formatDate(task.due_date) }}
+                  </span>
+                </div>
               </div>
 
-              <span
-                :class="[
-                  'px-3 py-1 rounded-full text-xs font-medium border',
-                  task.status === 'Pending'
-                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                    : task.status === 'In Progress'
-                    ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
-                    : task.status === 'Done'
-                    ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
-                    : task.status === 'Cancelled'
-                    ? 'bg-gray-50 text-gray-700 border-gray-300'
-                    : 'bg-gray-100 text-gray-600 border-gray-300',
-                ]"
-              >
-                {{ t("status" + task.status.replace(/ /g, "")) }}
-              </span>
-
-              <div class="relative">
-                <i
-                  class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-500 hover:text-gray-700"
-                  @click="task.showMenu = !task.showMenu"
-                ></i>
-
-                <div
-                  v-if="task.showMenu"
-                  class="absolute right-0 top-full mt-2 w-36 bg-white rounded-xl shadow-lg z-50 overflow-hidden"
+              <div class="flex flex-col items-end gap-2">
+                <span
+                  :class="[
+                    'px-3 py-1 rounded-full text-xs font-medium border transition',
+                    task.status === 'Pending'
+                      ? 'bg-orange-50 text-orange-600 border-orange-200'
+                      : task.status === 'In Progress'
+                      ? 'bg-blue-50 text-blue-600 border-blue-200'
+                      : task.status === 'Done'
+                      ? 'bg-green-50 text-green-600 border-green-200'
+                      : task.status === 'Cancelled'
+                      ? 'bg-gray-50 text-gray-600 border-gray-300'
+                      : 'bg-gray-100 text-gray-600 border-gray-300',
+                  ]"
                 >
-                  <NuxtLink
-                    :to="`/tasks/edit/${task.id}`"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                  >
-                    {{ t("edit") }}
-                  </NuxtLink>
+                  {{ t("status" + task.status.replace(/ /g, "")) }}
+                </span>
 
-                  <NuxtLink
-                    :to="`/tasks/show/${task.id}`"
-                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                <div class="relative">
+                  <i
+                    class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-500 hover:text-gray-800 transition"
+                    @click="task.showMenu = !task.showMenu"
+                  ></i>
+
+                  <div
+                    v-if="task.showMenu"
+                    class="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-md border z-50 overflow-hidden animate-fadeIn"
                   >
-                    {{ t("show") }}
-                  </NuxtLink>
+                    <NuxtLink
+                      :to="`/tasks/edit/${task.id}`"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      {{ t("edit") }}
+                    </NuxtLink>
+
+                    <NuxtLink
+                      :to="`/tasks/show/${task.id}`"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      {{ t("show") }}
+                    </NuxtLink>
+                  </div>
                 </div>
               </div>
             </div>
@@ -422,7 +582,7 @@
         </div>
 
         <div
-          class="bg-white rounded-2xl shadow p-6 w-full lg:w-1/3 flex flex-col"
+          class="bg-white rounded shadow p-6 w-full lg:w-1/3 flex flex-col border border-gray-100"
         >
           <h3 class="text-lg font-semibold text-gray-800 mb-4">
             {{ t("charttitletask") }}
@@ -431,7 +591,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+      <div class="bg-white rounded space-y-4">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-[#212121]">
             {{ t("harvesthistory") }}
@@ -440,15 +600,15 @@
           <div class="flex space-x-3">
             <button
               @click="exportCSV"
-              class="flex items-center px-3 py-2 bg-[#4da6ff] text-white rounded hover:bg-blue-600"
+              class="flex items-center px-3 py-2 bg-gray-100 text-gray-900 rounded hover:bg-gray-200"
             >
               <i class="bx bx-export mr-2"></i> {{ t("export") }}
             </button>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-left border-collapse">
+        <div class="overflow-x-auto bg-white">
+          <table class="min-w-[700px] w-full text-left border-collapse">
             <thead class="bg-gray-100">
               <tr>
                 <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
@@ -548,7 +708,7 @@
     </div>
   </div>
 
-  <div class="bg-gray-100 rounded-lg p-4 mt-4 hidden">
+  <div class="bg-gray-100 rounded p-4 mt-4 hidden">
     <h3 class="font-semibold text-gray-800 mb-2">Parcel Full Data (JSON)</h3>
     <pre class="text-sm text-gray-700 overflow-x-auto">
     {{ parcelFullDataJSON }}
@@ -578,6 +738,10 @@ const forecastDays = ref([]);
 const climate = ref(null);
 const parcelPoints = ref([]);
 const analysis = ref([]);
+const alerts = ref([]);
+const translatedAlerts = ref([]);
+const metadata = ref({});
+const selectedTab = ref("points");
 
 function updateWeatherForecast(data) {
   const weatherData = data?.weather_data?.data;
@@ -587,6 +751,8 @@ function updateWeatherForecast(data) {
     currentWeather.value = null;
     forecastDays.value = [];
     parcelPoints.value = [];
+    alerts.value = [];
+    metadata.value = {};
     return;
   }
 
@@ -594,6 +760,24 @@ function updateWeatherForecast(data) {
   currentWeather.value = weatherData.current ?? null;
   forecastDays.value = weatherData.daily_forecast ?? [];
   parcelPoints.value = data?.parcel?.points ?? [];
+  const today = new Date().toISOString().split("T")[0];
+  alerts.value = (data?.weather_data?.analysis?.alerts ?? []).filter(
+    (alert) => alert.date === today
+  );
+
+  const meta = data?.weather_data?.metadata;
+  if (!meta) {
+    metadata.value = {};
+    return;
+  }
+
+  metadata.value = {
+    location: meta.location_name,
+    forecast_period: `${meta.start_date} → ${meta.end_date}`,
+    forecast_days: meta.forecast_days,
+    risk_level: meta.risk_level,
+    last_update: meta.created_at,
+  };
 }
 
 const todayForecast = computed(() => {
@@ -613,7 +797,6 @@ function getDayNameShort(dateStr) {
   return date.toLocaleDateString(currentLocale.value, { weekday: "short" });
 }
 
-// Ta map d’icônes selon la météo
 const weatherIcons = {
   "Patchy rain nearby": "mdi:weather-rainy",
   "Moderate rain": "mdi:weather-pouring",
@@ -622,6 +805,7 @@ const weatherIcons = {
   "Partly cloudy": "mdi:weather-partly-cloudy",
   Cloudy: "mdi:weather-cloudy",
   "Light rain": "mdi:weather-rainy",
+  "Light rain shower": "mdi:weather-rainy",
   "Heavy rain": "mdi:weather-heavy-rain",
   Thunderstorm: "mdi:weather-lightning",
   Mist: "mdi:weather-fog",
@@ -632,9 +816,15 @@ function getWeatherIcon(condition) {
   return weatherIcons[condition] ?? "mdi:help-circle";
 }
 
+const removeEmojis = (text) => {
+  return text.replace(
+    /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF])/g,
+    ""
+  );
+};
+
 const currentTime = ref("");
 
-// Fonction pour mettre à jour l'heure chaque seconde
 const updateTime = () => {
   const now = new Date();
   currentTime.value = `${now.getHours().toString().padStart(2, "0")}:${now
@@ -647,11 +837,11 @@ let intervalId;
 
 onMounted(() => {
   updateTime();
-  intervalId = setInterval(updateTime, 1000); // toutes les secondes
+  intervalId = setInterval(updateTime, 1000);
 });
 
 onUnmounted(() => {
-  clearInterval(intervalId); // nettoyer l'intervalle
+  clearInterval(intervalId);
 });
 
 const languageStore = useLanguageStore();
@@ -660,11 +850,13 @@ const t = (key) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
 
-async function translateText(text) {
-  const targetLang = currentLocale.value;
+async function translateText(text, sourceLang = "fr") {
+  const targetLang = currentLocale.value || "en";
+  if (sourceLang === targetLang) return text;
+
   const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
     text
-  )}&langpair=en|${targetLang}`;
+  )}&langpair=${sourceLang}|${targetLang}`;
 
   try {
     const res = await fetch(url);
@@ -675,6 +867,38 @@ async function translateText(text) {
     return text;
   }
 }
+
+async function translateAlerts(alerts) {
+  translatedAlerts.value = await Promise.all(
+    alerts.map(async (alert) => ({
+      ...alert,
+      message: await translateText(removeEmojis(alert.message)),
+      action: await translateText(alert.action),
+    }))
+  );
+}
+
+watchEffect(() => {
+  if (alerts.value.length) {
+    translateAlerts(alerts.value);
+  }
+});
+
+const translatedCurrentCondition = ref("");
+
+async function translateCurrentWeatherCondition() {
+  if (currentWeather.value && currentWeather.value.condition) {
+    translatedCurrentCondition.value = await translateText(
+      removeEmojis(currentWeather.value.condition)
+    );
+  } else {
+    translatedCurrentCondition.value = "";
+  }
+}
+
+watch(currentWeather, () => {
+  translateCurrentWeatherCondition();
+});
 
 const parcelFullDataJSON = ref(null);
 
@@ -796,7 +1020,6 @@ function updateYieldEvolutionChart() {
   if (!records.length) return;
 
   const grouped = {};
-
   records.forEach((r) => {
     const date = new Date(r.date);
     const monthYear = date.toLocaleString("default", {
@@ -816,28 +1039,49 @@ function updateYieldEvolutionChart() {
   if (yieldChart) yieldChart.destroy();
 
   yieldChart = new Chart(ctx.getContext("2d"), {
-    type: "line",
+    type: "bar",
     data: {
       labels,
       datasets: [
         {
           label: t("chartYieldEvolution"),
           data,
-          borderColor: "#10b481",
-          backgroundColor: "rgba(16, 180, 129, 0.2)",
-          tension: 0.3,
-          fill: true,
-          pointRadius: 4,
+          backgroundColor: "#222831",
+          borderRadius: 0,
+          borderSkipped: false,
+          barThickness: 30,
+          hoverBackgroundColor: "#222831",
         },
       ],
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position: "bottom" },
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#fafafa",
+          titleColor: "#222831",
+          bodyColor: "#222831",
+          bodyFont: { weight: "bold" },
+          padding: 10,
+          cornerRadius: 8,
+        },
       },
       scales: {
-        y: { beginAtZero: true },
+        x: {
+          grid: { display: false },
+          ticks: { color: "#222831", font: { size: 14, weight: "600" } },
+        },
+        y: {
+          beginAtZero: true,
+          max: Math.max(...data) * 1.2,
+          grid: {
+            drawBorder: false,
+            color: "rgba(34, 40, 49, 0.1)",
+          },
+          ticks: { color: "#222831", font: { size: 14, weight: "600" } },
+        },
       },
     },
   });
@@ -1006,7 +1250,7 @@ async function fetchParcelData() {
       { headers: { Authorization: `Token ${token}` } }
     );
     Object.assign(parcelFullData, fullDataResponse.data);
-    parcelFullDataJSON.value = JSON.stringify(fullDataResponse.data, null, 2); // formaté joliment
+    parcelFullDataJSON.value = JSON.stringify(fullDataResponse.data, null, 2);
 
     if (parcelFullData.weather_data) {
       updateWeatherForecast(parcelFullData);

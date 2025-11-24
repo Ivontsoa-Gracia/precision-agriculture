@@ -1,13 +1,14 @@
 <template>
-  <div class="p-4 sm:p-6 bg-white rounded-xl shadow-md max-w-3xl mx-auto mb-10 sm:mb-1">
-    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
-      <i class="bx bx-bar-chart text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
+  <div class="max-w-3xl mx-auto mt-1 sm:mt-16 mb-10 sm:mb-1">
+    <h2
+      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3"
+    >
       {{ t("newyield") }}
     </h2>
 
     <form @submit.prevent="createYieldRecord" class="space-y-4">
       <div>
-        <label class="block mb-1 font-medium text-gray-700">{{
+        <label class="text-gray-700 text-sm font-medium mb-1">{{
           t("parcelcrop")
         }}</label>
         <select
@@ -24,7 +25,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block mb-1 font-medium text-gray-700">{{
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
             t("thdate")
           }}</label>
           <input
@@ -36,7 +37,7 @@
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700">{{
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
             t("thyield")
           }}</label>
           <input
@@ -48,7 +49,7 @@
         </div>
 
         <div>
-          <label class="block mb-1 font-medium text-gray-700"
+          <label class="text-gray-700 text-sm font-medium mb-1"
             >{{ t("area") }} (m²)</label
           >
           <input
@@ -64,7 +65,7 @@
       </div>
 
       <div>
-        <label class="block mb-1 font-medium text-gray-700">{{
+        <label class="text-gray-700 text-sm font-medium mb-1">{{
           t("notes")
         }}</label>
         <textarea
@@ -76,7 +77,7 @@
       <div class="text-right">
         <button
           type="submit"
-          class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white px-6 py-2 rounded-lg font-bold shadow hover:shadow-lg transition transform hover:-translate-y-0.5"
+          class="w-full bg-[#10b481] text-white px-6 py-2 rounded font-bold transition transform"
         >
           {{ t("btnsaveyield") }}
         </button>
@@ -84,62 +85,59 @@
     </form>
   </div>
   <div
-      v-if="isLoading"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center"
+    v-if="isLoading"
+    class="absolute inset-0 bg-black/50 flex items-center justify-center"
+  >
+    <div
+      class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
+    ></div>
+  </div>
+
+  <transition name="fade">
+    <div
+      v-if="notification.visible"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
     >
       <div
-        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-      ></div>
-    </div>
-
-    <transition name="fade">
-      <div
-        v-if="notification.visible"
-        class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
       >
         <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
           :class="[
-            'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
-            notification.type === 'success'
-              ? 'border-t-4 border-[#10b481]'
-              : 'border-t-4 border-red-500',
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
           ]"
         >
-          <!-- Icône -->
-          <div
-            v-if="notification.type === 'success'"
-            class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
-          >
-            <i class="bx bx-check text-4xl font-extrabold text-white"></i>
-          </div>
-          <div
-            v-else
-            class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
-          >
-            <i class="bx bx-x text-4xl font-extrabold text-white"></i>
-          </div>
+          {{ notification.message }}
+        </p>
 
-          <p
-            :class="[
-              'text-lg font-semibold',
-              notification.type === 'success'
-                ? 'text-[#10b481]'
-                : 'text-red-500',
-            ]"
-          >
-            {{ notification.message }}
-          </p>
-
-          <p class="text-gray-500 text-sm">
-            {{
-              notification.type === "success"
-                ? "Redirecting to your dashboard..."
-                : "Please try again."
-            }}
-          </p>
-        </div>
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
       </div>
-    </transition>
+    </div>
+  </transition>
 </template>
 
 <script setup>
@@ -230,7 +228,7 @@ function calculateParcelArea(points) {
   coords.push([points[0].lng, points[0].lat]);
   const polygon = turf.polygon([coords]);
   const areaM2 = turf.area(polygon);
-  return areaM2 / 10000; // hectares
+  return areaM2 / 10000;
 }
 
 function onParcelCropChange() {

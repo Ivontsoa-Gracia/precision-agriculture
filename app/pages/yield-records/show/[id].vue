@@ -1,54 +1,63 @@
 <template>
-  <div class="p-1 sm:p-6 flex justify-center items-start mb-10 sm:mb-1">
-    <div
-      class="w-full max-w-3xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-4 sm:p-8 mt-2"
+  <div class="w-full md:w-2/3 mx-auto mt-12">
+    <button
+      @click="goBack"
+      class="text-[#222831] hover:underline text-sm font-medium mb-4 inline-flex items-center gap-1"
     >
-      <div class="flex items-center gap-3 mb-8">
-        <i class="bx bx-bar-chart text-xl sm:text-3xl text-[#10b481] animate-pulse"></i>
-        <h1
-          class="text-xl sm:text-3xl font-extrabold text-gray-800 tracking-tight relative"
-        >
-          {{ t("yielddetail") }}
-          <span
-            class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"
-          ></span>
-        </h1>
+      <i class="bx bx-arrow-left"></i> {{ t("back") }}
+    </button>
+
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl sm:text-3xl font-bold text-gray-800 flex items-center gap-3">
+        {{ t("yielddetail") }}
+      </h2>
+      <button
+        @click="goToEdit"
+        class="text-[#222831] hover:text-[#10b481] text-2xl flex items-center"
+        title="Edit"
+      >
+        <i class="bx bx-edit-alt"></i>
+      </button>
+    </div>
+
+    <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thdate") }}</p>
+          <p class="font-semibold text-gray-800">{{ formatDate(yieldRecord.date) }}</p>
+        </div>
       </div>
 
-      <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailItem :label="t('thdate')" :value="yieldRecord.date" />
-        <DetailItem :label="t('thyield')" :value="yieldRecord.yield_amount" />
-        <DetailItem :label="`${t('area')} (m²)`" :value="yieldRecord.area" />
-        <DetailItem
-          :label="t('parcelcrop')"
-          :value="
-            parcelCropData && parcelData
-              ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}`
-              : '-'
-          "
-        />
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thyield") }}</p>
+          <p class="font-semibold text-gray-800">{{ yieldRecord.yield_amount }}</p>
+        </div>
+      </div>
 
-        <div class="col-span-1 md:col-span-2 flex flex-col gap-1">
-          <span class="font-semibold text-[#10b481]">{{ t("note") }}</span>
-          <p class="mt-1 text-gray-700 bg-gray-50 p-4 rounded-md border">
-            {{ yieldRecord.notes }}
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("area") }} (m²)</p>
+          <p class="font-semibold text-gray-800">{{ yieldRecord.area }}</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("parcelcrop") }}</p>
+          <p class="font-semibold text-gray-800">
+            {{ parcelCropData && parcelData ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}` : "-" }}
           </p>
         </div>
       </div>
 
-      <div class="mt-8 flex justify-end gap-4">
-        <button
-          @click="goToEdit"
-          class="px-6 py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white rounded-2xl font-bold shadow-md hover:shadow-xl hover:scale-105 transition transform"
-        >
-          <i class="bx bx-edit-alt"></i> {{ t("edit") }}
-        </button>
-        <button
-          @click="goBack"
-          class="px-6 py-3 bg-gray-50 text-gray-800 rounded-2xl font-semibold shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
-        >
-          <i class="bx bx-arrow-back"></i> {{ t("back") }}
-        </button>
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("notes") }}</p>
+          <p class="font-semibold text-gray-800">
+            {{ yieldRecord.notes || "-" }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -119,6 +128,16 @@ function goToEdit() {
 function goBack() {
   router.push("/yield-records");
 }
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 
 onMounted(fetchYield);
 </script>

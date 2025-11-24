@@ -4,10 +4,10 @@
       <h1
         class="text-2xl sm:text-3xl font-semibold text-gray-800 tracking-tight"
       >
-        Setup Wizard
+        {{ t('stepTittle') }}
       </h1>
       <p class="text-sm text-gray-500">
-        Step {{ currentStep + 1 }} / {{ steps.length }}
+        {{ t('step') }} {{ currentStep + 1 }} / {{ steps.length }}
       </p>
     </div>
 
@@ -43,7 +43,7 @@
     </div>
 
     <div
-      class="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 sm:p-10 transition-all duration-500"
+      class="transition-all duration-500"
     >
       <transition name="fade" mode="out-in">
         <div :key="currentStep">
@@ -71,22 +71,24 @@
       </transition>
     </div>
 
-    <div class="mt-10 flex justify-between items-center">
-      <button
-        @click="prevStep"
-        :disabled="currentStep === 0"
-        class="text-sm px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition"
-      >
-        Back
-      </button>
-
+    <div class="mt-10 flex gap-4 justify-start items-center">
+      
       <button
         v-if="currentStep < steps.length - 1"
         @click="skipStep"
-        class="text-sm text-gray-500 hover:text-[#10b481] transition"
+        class="text-sm text-gray-500 hover:text-[#10b481] transition font-medium"
       >
-        Skip
+        {{ t('skip') }}
       </button>
+
+      <button
+        @click="prevStep"
+        :disabled="currentStep === 0"
+        class="text-sm px-5 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-0 font-medium transition shadow-sm"
+      >
+        {{ t('back') }}
+      </button>
+
     </div>
 
     <transition name="fade">
@@ -104,16 +106,20 @@
 </template>
 
 <script setup>
+definePageMeta({ layout: "dashboard" });
+
 import { ref } from "vue";
 import ParcelForm from "~/components/forms/ParcelForm.vue";
 import CropForm from "~/components/forms/CropForm.vue";
 import ParcelCropForm from "~/components/forms/ParcelCropForm.vue";
 import YieldForm from "~/components/forms/YieldForm.vue";
 import TaskForm from "~/components/forms/TaskForm.vue";
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
+const languageStore = useLanguageStore();
+const t = (key) => translate[languageStore.lang][key] || key;
 
-definePageMeta({ layout: "dashboard" });
-
-const steps = ["Parcel", "Crop", "Parcel Crop", "Yield", "Task"];
+const steps = [t('parcels'), t('crops'), t('parcelcrop'), t('yields'), t('tasks')];
 
 const currentStep = ref(0);
 const completedSteps = ref([]);
