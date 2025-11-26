@@ -20,7 +20,7 @@
       <div class="w-full max-w-sm mt-16 p-6">
         <AuthForm
           class="mt-6"
-          title="Log in to account"
+          title="Log in"
           buttonText="Log in"
           :fields="['username', 'password']"
           passwordLabel="Password"
