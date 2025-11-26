@@ -261,7 +261,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
@@ -323,18 +323,15 @@ const selectLocale = (code: string) => {
   open.value = false;
 };
 
-// const userStore = useUserStore();
-const uuid = ref<string | null>(null);
-
-onMounted(() => {
-  uuid.value = sessionStorage.getItem("uuid");
+const state = reactive({
+  uuid: "",
 });
 
 const groupInfo = false;
 
 const baseMenu = computed(() => [
   {
-    to: `/dashboard/s/${uuid.value || ""}`,
+    to: state.uuid ? `/dashboard/s/${state.uuid}` : "/dashboard",
     icon: "bxr bx-home-alt-2",
     label: t("home"),
   },
@@ -344,6 +341,12 @@ const baseMenu = computed(() => [
   { to: "/yield-records", icon: "bx bx-bar-chart", label: t("yields") },
   { to: "/parcel-crops", icon: "bx bx-box", label: t("crops") },
 ]);
+
+onMounted(() => {
+  if (typeof window !== "undefined") {
+    state.uuid = sessionStorage.getItem("uuid") || "";
+  }
+});
 
 const fullMenu = [
   {

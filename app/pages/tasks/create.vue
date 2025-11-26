@@ -158,7 +158,7 @@ definePageMeta({
   layout: "dashboard",
 });
 
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
 
@@ -166,10 +166,7 @@ import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key: string) => translate[languageStore.lang][key] || key;
-
-const currentLocale = computed(() => languageStore.lang);
 
 const priorityKeyMap = {
   Low: "priorityLow",
@@ -185,7 +182,6 @@ const statusKeyMap = {
 };
 
 const router = useRouter();
-
 const isLoading = ref(false);
 
 const notification = ref({
@@ -205,6 +201,10 @@ const showNotification = (
   setTimeout(() => (notification.value.visible = false), duration);
 };
 
+const priorities = useState<any[]>("prioritiesData", () => []);
+const statuses = useState<any[]>("statusesData", () => []);
+const parcelCrops = useState<any[]>("parcelCropsData", () => []);
+
 const form = ref({
   name: "",
   description: "",
@@ -213,10 +213,6 @@ const form = ref({
   priority: null,
   status: null,
 });
-
-const priorities = ref<any[]>([]);
-const statuses = ref<any[]>([]);
-const parcelCrops = ref<any[]>([]);
 
 onMounted(async () => {
   const uuid = sessionStorage.getItem("uuid");
@@ -228,19 +224,20 @@ onMounted(async () => {
   }
 
   try {
-    const priRes = await fetch(`${API_URL}/api/task-priority/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
+    const [priRes, staRes, cropRes] = await Promise.all([
+      fetch(`${API_URL}/api/task-priority/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+      fetch(`${API_URL}/api/task-status/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+      fetch(`${API_URL}/api/parcel-crops/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+    ]);
+
     priorities.value = await priRes.json();
-
-    const staRes = await fetch(`${API_URL}/api/task-status/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
     statuses.value = await staRes.json();
-
-    const cropRes = await fetch(`${API_URL}/api/parcel-crops/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
     const cropsData = await cropRes.json();
 
     const enrichedCrops = await Promise.all(
@@ -248,18 +245,15 @@ onMounted(async () => {
         try {
           const resParcel = await fetch(
             `${API_URL}/api/parcels/${pc.parcel}/`,
-            {
-              headers: { Authorization: `Token ${token}` },
-            }
+            { headers: { Authorization: `Token ${token}` } }
           );
           const parcelData = await resParcel.json();
           return {
             ...pc,
             fullName: `${parcelData.parcel_name} - ${pc.crop.name}`,
           };
-        } catch (err) {
-          console.error("Erreur fetch parcel:", err);
-          return { ...pc, fullName: `${pc.crop.name}` };
+        } catch {
+          return { ...pc, fullName: pc.crop.name };
         }
       })
     );
@@ -272,15 +266,11 @@ onMounted(async () => {
 
 const submitTask = async () => {
   const token = sessionStorage.getItem("token");
-  if (!token) {
-    router.push("/login");
-    return;
-  }
+  if (!token) return router.push("/login");
 
   const { name, due_date, parcelCrop, priority, status } = form.value;
   if (!name || !due_date || !parcelCrop || !priority || !status) {
     showNotification("Please fill in all required fields.", "error");
-    setTimeout(() => {}, 3000);
     return;
   }
 
@@ -296,12 +286,14 @@ const submitTask = async () => {
       body: JSON.stringify(form.value),
     });
 
-    const data = await res.json();
+    if (!res.ok) throw new Error("Failed to create task");
+    await res.json();
 
     showNotification("Task saved successfully!", "success");
-    setTimeout(() => {
-      router.push({ path: "/tasks", query: { refresh: "1" } });
-    }, 3000);
+    setTimeout(
+      () => router.push({ path: "/tasks", query: { refresh: "1" } }),
+      3000
+    );
   } catch (err) {
     console.error("Erreur création tâche:", err);
     showNotification("Network error, please check your server", "error");

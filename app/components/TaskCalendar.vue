@@ -319,8 +319,12 @@ interface Task {
   priority: number;
   completed_at?: string | null;
 }
+const tasksState = useState("tasksData", () => ({
+  data: [] as any[],
+  timestamp: 0,
+}));
 
-const tasks = ref<Task[]>([]);
+const tasks = ref<any[]>(tasksState.value.data);
 const statusColors: Record<number, string> = {};
 const statusNames: Record<number, string> = {};
 
@@ -390,6 +394,13 @@ function formatDateISO(date: Date) {
 const loadTasks = async () => {
   const token = sessionStorage.getItem("token");
   if (!token) return router.push("/login");
+
+  if (
+    tasksState.value.data.length
+  ) {
+    tasks.value = tasksState.value.data;
+    return;
+  }
 
   try {
     const resTasks = await fetch(`${API_URL}/api/tasks/`, {

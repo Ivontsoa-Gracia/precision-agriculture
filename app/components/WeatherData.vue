@@ -50,9 +50,23 @@
             {{
               forecast.agricultural_summary.irrigation_recommendation.irrigation
             }}
+            <span
+              v-if="forecast.agricultural_summary.irrigation_recommendation.irrigationOriginal !==
+              forecast.agricultural_summary.irrigation_recommendation.irrigation"
+            >
+              <!-- ({{ forecast.agricultural_summary.irrigation_recommendation.irrigationOriginal }}) -->
+            </span>
           </p>
           <p class="text-xs text-gray-500">
-            {{ forecast.agricultural_summary.irrigation_recommendation.reason }}
+            {{
+              forecast.agricultural_summary.irrigation_recommendation.reason
+            }}
+            <span
+              v-if="forecast.agricultural_summary.irrigation_recommendation.reasonOriginal !==
+              forecast.agricultural_summary.irrigation_recommendation.reason"
+            >
+              <!-- ({{ forecast.agricultural_summary.irrigation_recommendation.reasonOriginal }}) -->
+            </span>
           </p>
         </div>
       </div>
@@ -69,9 +83,9 @@
             :key="risk.date + risk.type"
             class="bg-yellow-100 border border-yellow-400 rounded p-2 text-sm flex flex-wrap items-center gap-x-4"
           >
-            <span class="font-semibold text-gray-800"
-              >{{ formatDate(risk.date) }}:</span
-            >
+            <span class="font-semibold text-gray-800">
+              {{ formatDate(risk.date) }}:
+            </span>
             <span>{{ risk.message }}</span>
             <span class="text-gray-500 text-xs">
               ({{ t("condition") }}: {{ risk.metrics.condition }},
@@ -82,29 +96,27 @@
       </div>
     </div>
   </div>
+
   <div class="mt-6 p-4 bg-gray-100 rounded border hidden">
     <h3 class="text-lg font-bold mb-2 text-[#212121]">Weather Data (JSON)</h3>
-
     <pre class="text-sm bg-white p-3 rounded border overflow-x-auto">
-    {{ weather }}
-  </pre
-    >
+      {{ weather }}
+    </pre>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
-
-const weather = ref([]);
+const weather = useState<any[]>("weatherData", () => []);
+const translatedWeather = ref<any[]>([]);
 
 const today = new Date();
 const yesterday = new Date(today);
@@ -115,6 +127,11 @@ tomorrow.setDate(today.getDate() + 1);
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
   if (!token) return;
+
+  if (weather.value.length > 0) {
+    console.log("Using cached weather data");
+    return;
+  }
 
   try {
     const res = await fetch(`${API_URL}/api/weather-data/`, {
@@ -128,17 +145,25 @@ onMounted(async () => {
   }
 });
 
-// Supprime les emojis
-function removeEmojis(text) {
+// Supprime les emojis en toute sécurité
+function removeEmojis(text: string) {
+  if (!text) return "";
   return text.replace(
     /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF])/g,
     ""
   );
 }
 
-async function translateText(text, sourceLang = "fr") {
+// Cache pour traductions
+const translationCache = useState<Record<string, string>>("translationCache", () => ({}));
+
+async function translateText(text: string, sourceLang = "fr") {
   const targetLang = currentLocale.value || "en";
-  if (sourceLang === targetLang) return text;
+  if (sourceLang === targetLang) return { translated: text, original: text };
+
+  if (translationCache.value[text]) {
+    return { translated: translationCache.value[text], original: text };
+  }
 
   const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
     text
@@ -146,35 +171,42 @@ async function translateText(text, sourceLang = "fr") {
 
   try {
     const res = await fetch(url);
+    if (!res.ok) throw new Error("Translation API error");
     const data = await res.json();
-    return data.responseData.translatedText;
+    const translatedText = data?.responseData?.translatedText || text;
+    translationCache.value[text] = translatedText;
+    return { translated: translatedText, original: text };
   } catch (error) {
-    console.error("Erreur de traduction :", error);
-    return text;
+    console.warn("Translation failed, using original text:", text, error);
+    translationCache.value[text] = text;
+    return { translated: text, original: text };
   }
 }
 
-const translatedWeather = ref([]);
-
+// Traduction des forecasts
 async function translateForecast(weather) {
-  const irrigation = await translateText(
-    removeEmojis(
-      weather.agricultural_summary.irrigation_recommendation.irrigation
-    )
+  const irrigationRes = await translateText(
+    removeEmojis(weather.agricultural_summary?.irrigation_recommendation?.irrigation)
   );
-  const reason = await translateText(
-    removeEmojis(weather.agricultural_summary.irrigation_recommendation.reason)
+  const reasonRes = await translateText(
+    removeEmojis(weather.agricultural_summary?.irrigation_recommendation?.reason)
   );
 
   const riskAnalysis = await Promise.all(
-    (weather.risk_analysis || []).map(async (risk) => ({
-      ...risk,
-      message: await translateText(removeEmojis(risk.message)),
-      metrics: {
-        ...risk.metrics,
-        condition: await translateText(removeEmojis(risk.metrics.condition)),
-      },
-    }))
+    (weather.risk_analysis || []).map(async (risk) => {
+      const messageRes = await translateText(removeEmojis(risk.message));
+      const conditionRes = await translateText(removeEmojis(risk.metrics?.condition));
+      return {
+        ...risk,
+        message: messageRes.translated,
+        messageOriginal: messageRes.original,
+        metrics: {
+          ...risk.metrics,
+          condition: conditionRes.translated,
+          conditionOriginal: conditionRes.original,
+        },
+      };
+    })
   );
 
   return {
@@ -182,39 +214,36 @@ async function translateForecast(weather) {
     agricultural_summary: {
       ...weather.agricultural_summary,
       irrigation_recommendation: {
-        ...weather.agricultural_summary.irrigation_recommendation,
-        irrigation,
-        reason,
+        ...weather.agricultural_summary?.irrigation_recommendation,
+        irrigation: irrigationRes.translated,
+        irrigationOriginal: irrigationRes.original,
+        reason: reasonRes.translated,
+        reasonOriginal: reasonRes.original,
       },
     },
     risk_analysis: riskAnalysis,
   };
 }
 
+// Traduire toutes les données météo
 async function translateWeather() {
   translatedWeather.value = await Promise.all(
-    weather.value.map((weather) => translateForecast(weather))
+    weather.value.map((w) => translateForecast(w))
   );
 }
 
 watchEffect(() => {
-  if (weather.value.length) {
-    translateWeather();
-  }
+  if (weather.value.length) translateWeather();
 });
 
 const filteredWeather = computed(() => {
   return translatedWeather.value.filter((forecast) => {
     const start = new Date(forecast.start);
     const end = new Date(forecast.end);
-
     const isYesterdayIncluded = yesterday >= start && yesterday <= end;
     const isTodayIncluded =
-      today >= start &&
-      today <= end &&
-      end.toDateString() !== today.toDateString();
+      today >= start && today <= end && end.toDateString() !== today.toDateString();
     const isTomorrowIncluded = tomorrow >= start && tomorrow <= end;
-
     return isYesterdayIncluded || isTodayIncluded || isTomorrowIncluded;
   });
 });

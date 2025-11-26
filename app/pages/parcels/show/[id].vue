@@ -21,7 +21,12 @@
                   {{ currentWeather.temperature }}°C
                 </p>
                 <p class="text-sm opacity-80 capitalize">
-                  {{ translatedCurrentCondition }}
+                  {{
+                    translatedCurrentCondition ||
+                    currentWeather.conditionOriginal ||
+                    currentWeather.condition ||
+                    "-"
+                  }}
                 </p>
               </div>
               <div>
@@ -375,10 +380,14 @@
 
               <div class="flex-1">
                 <p class="text-sm font-medium text-gray-800 mb-1">
-                  {{ alert.message }}
+                  {{
+                    alert.message ||
+                    alert.messageOriginal ||
+                    "No message available"
+                  }}
                 </p>
                 <p class="text-xs text-gray-600">
-                  {{ alert.action }}
+                  {{ alert.action || alert.actionOriginal || "-" }}
                 </p>
               </div>
             </li>
@@ -517,7 +526,9 @@
                   {{ task.name }}
                 </p>
 
-                <div class="flex flex-col gap-3 text-xs text-gray-500">
+                <div
+                  class="flex flex-col gap-3 text-xs text-gray-500 leading-tight"
+                >
                   <span class="flex items-center gap-1">
                     <i class="bxr bx-calendar-star"></i>
                     <span class="capitalize">
@@ -587,7 +598,7 @@
           <h3 class="text-lg font-semibold text-gray-800 mb-4">
             {{ t("charttitletask") }}
           </h3>
-          <canvas id="taskPerformanceChart" class="flex-1 w-full"></canvas>
+          <canvas id="taskPerformanceChart" class="w-full aspect-square"></canvas>
         </div>
       </div>
 
@@ -850,49 +861,66 @@ const t = (key) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
 
+const translationCache = useState("translationCache", () => ({}));
+
 async function translateText(text, sourceLang = "fr") {
   const targetLang = currentLocale.value || "en";
-  if (sourceLang === targetLang) return text;
+  if (sourceLang === targetLang) return { translated: text, original: text };
 
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
-    text
-  )}&langpair=${sourceLang}|${targetLang}`;
+  if (translationCache.value[text]) {
+    return { translated: translationCache.value[text], original: text };
+  }
 
   try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
+      text
+    )}&langpair=${sourceLang}|${targetLang}`;
+
     const res = await fetch(url);
-    const data = await res.json();
-    return data.responseData.translatedText;
+    const translatedText = res?.responseData?.translatedText || text;
+    translationCache.value[text] = translatedText;
+
+    return { translated: translatedText || text, original: text };
   } catch (error) {
-    console.error("Erreur de traduction :", error);
-    return text;
+    console.warn("Translation failed, using original text:", text, error);
+    translationCache.value[text] = text;
+    return { translated: text, original: text };
   }
 }
 
 async function translateAlerts(alerts) {
   translatedAlerts.value = await Promise.all(
-    alerts.map(async (alert) => ({
-      ...alert,
-      message: await translateText(removeEmojis(alert.message)),
-      action: await translateText(alert.action),
-    }))
+    alerts.map(async (alert) => {
+      const messageRes = await translateText(removeEmojis(alert.message));
+      const actionRes = await translateText(removeEmojis(alert.action));
+      return {
+        ...alert,
+        message: messageRes.translated,
+        messageOriginal: messageRes.original,
+        action: actionRes.translated,
+        actionOriginal: actionRes.original,
+      };
+    })
   );
 }
 
-watchEffect(() => {
-  if (alerts.value.length) {
-    translateAlerts(alerts.value);
-  }
+watch(alerts, () => {
+  if (alerts.value.length) translateAlerts(alerts.value);
 });
 
 const translatedCurrentCondition = ref("");
 
 async function translateCurrentWeatherCondition() {
   if (currentWeather.value && currentWeather.value.condition) {
-    translatedCurrentCondition.value = await translateText(
+    const res = await translateText(
       removeEmojis(currentWeather.value.condition)
     );
+    translatedCurrentCondition.value = res.translated;
+    currentWeather.value.conditionOriginal = res.original;
   } else {
     translatedCurrentCondition.value = "";
+    currentWeather.value.conditionOriginal =
+      currentWeather.value?.condition || "";
   }
 }
 

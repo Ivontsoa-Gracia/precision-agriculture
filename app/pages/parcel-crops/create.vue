@@ -234,9 +234,9 @@ const form = ref({
   status_id: null,
 });
 
-const parcels = ref<any[]>([]);
-const crops = ref<any[]>([]);
-const statuses = ref<any[]>([]);
+const parcels = useState<any[]>("parcelsData", () => []);
+const crops = useState<any[]>("cropsData", () => []);
+const statuses = useState<any[]>("statusesData", () => []);
 
 const calculatedArea = ref<number>(0);
 

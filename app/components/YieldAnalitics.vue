@@ -99,12 +99,21 @@ const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const yieldChart = ref<Chart | null>(null);
 const yieldCanvas = ref<HTMLCanvasElement | null>(null);
-const analyticsData = ref<any[]>([]);
+  const analyticsData = useState<any[]>("analyticsData", () => []);
 const selectedParcel = ref<string>("");
 
 async function fetchAnalytics() {
   const token = sessionStorage.getItem("token");
   if (!token) return;
+
+  if (!Array.isArray(analyticsData.value)) analyticsData.value = [];
+
+  if (analyticsData.value.length > 0) {
+    console.log("Using cached analytics data");
+    await nextTick();
+    createChart();
+    return;
+  }
 
   try {
     const res = await fetch(`${API_URL}/analytics/yields/`, {
@@ -263,28 +272,35 @@ function downloadChart() {
 watch(selectedParcel, () => createChart());
 onMounted(() => fetchAnalytics());
 
+// Assurer que filteredData est un tableau
 const filteredData = computed(() =>
-  selectedParcel.value
-    ? analyticsData.value.filter((p) => p.parcel_name === selectedParcel.value)
-    : analyticsData.value
+  Array.isArray(analyticsData.value)
+    ? selectedParcel.value
+      ? analyticsData.value.filter((p) => p.parcel_name === selectedParcel.value)
+      : analyticsData.value
+    : []
 );
 
+// Assurer que yield_amount est un tableau
 const allYields = computed(() =>
-  filteredData.value.flatMap((p) => p.yield_amount)
+  filteredData.value.flatMap((p) => Array.isArray(p.yield_amount) ? p.yield_amount : [])
 );
 
 const totalYield = computed(() =>
   allYields.value.reduce((acc, v) => acc + v, 0)
 );
+
 const averageYield = computed(() =>
   allYields.value.length ? totalYield.value / allYields.value.length : 0
 );
+
 const cumulativeYield = computed(() =>
   filteredData.value.reduce(
-    (acc, p) => acc + p.yield_amount.reduce((a, b) => a + b, 0),
+    (acc, p) => acc + (Array.isArray(p.yield_amount) ? p.yield_amount.reduce((a, b) => a + b, 0) : 0),
     0
   )
 );
+
 const volatility = computed(() => {
   const mean = averageYield.value;
   const n = allYields.value.length;
@@ -293,17 +309,18 @@ const volatility = computed(() => {
     allYields.value.reduce((sum, y) => sum + (y - mean) ** 2, 0) / n;
   return Math.sqrt(variance);
 });
+
 const relativeYield = computed(() => {
   if (!filteredData.value.length) return 0;
   const maxTotal = Math.max(
-    ...analyticsData.value.map((p) => p.yield_amount.reduce((a, b) => a + b, 0))
+    ...analyticsData.value.map((p) => Array.isArray(p.yield_amount) ? p.yield_amount.reduce((a, b) => a + b, 0) : 0)
   );
-  const thisTotal = filteredData.value[0].yield_amount.reduce(
-    (a, b) => a + b,
-    0
-  );
-  return (thisTotal / maxTotal) * 100;
+  const thisTotal = Array.isArray(filteredData.value[0].yield_amount)
+    ? filteredData.value[0].yield_amount.reduce((a, b) => a + b, 0)
+    : 0;
+  return maxTotal ? (thisTotal / maxTotal) * 100 : 0;
 });
+
 const anomalies = computed(() => {
   const mean = averageYield.value;
   const std = volatility.value;
@@ -311,6 +328,7 @@ const anomalies = computed(() => {
     (y) => y > mean + 2 * std || y < mean - 2 * std
   );
 });
+
 </script>
 
 <style scoped>

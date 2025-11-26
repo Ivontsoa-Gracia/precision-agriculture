@@ -140,44 +140,31 @@
   </transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
 
-import { ref, onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import * as turf from "@turf/turf";
 import { API_URL } from "~/config";
-
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
-
 const router = useRouter();
-const parcelCrops = ref([]);
-const maxArea = ref(null);
 
-const isLoading = ref(false);
-
-const notification = ref({
+// ✅ useState Nuxt3 style
+const parcelCrops = useState<any[]>("parcelCrops", () => []);
+const maxArea = useState<number | null>("maxArea", () => null);
+const isLoading = useState<boolean>("isLoading", () => false);
+const notification = useState("notification", () => ({
   visible: false,
   message: "",
   type: "success",
-});
-
-const showNotification = (message, type = "success", duration = 3000) => {
-  notification.value.message = message;
-  notification.value.type = type;
-  notification.value.visible = true;
-  setTimeout(() => {
-    notification.value.visible = false;
-  }, duration);
-};
-
+}));
 const form = ref({
   date: "",
   yield_amount: null,
@@ -186,7 +173,14 @@ const form = ref({
   parcelCrop: null,
 });
 
-let token = null;
+let token: string | null = null;
+
+const showNotification = (message: string, type = "success", duration = 3000) => {
+  notification.value.message = message;
+  notification.value.type = type;
+  notification.value.visible = true;
+  setTimeout(() => (notification.value.visible = false), duration);
+};
 
 onMounted(async () => {
   if (!process.client) return;
@@ -222,7 +216,7 @@ async function loadParcelCrops() {
   }
 }
 
-function calculateParcelArea(points) {
+function calculateParcelArea(points: { lng: number; lat: number }[]) {
   if (!points || points.length < 3) return 0;
   const coords = points.map((p) => [p.lng, p.lat]);
   coords.push([points[0].lng, points[0].lat]);
@@ -232,12 +226,10 @@ function calculateParcelArea(points) {
 }
 
 function onParcelCropChange() {
-  const selected = parcelCrops.value.find(
-    (pc) => pc.id === form.value.parcelCrop
-  );
+  const selected = parcelCrops.value.find(pc => pc.id === form.value.parcelCrop);
   if (selected?.parcel?.points) {
     const area = calculateParcelArea(selected.parcel.points);
-    maxArea.value = area.toFixed(2);
+    maxArea.value = area.toFixed(2) as unknown as number;
     form.value.area = areaInM2(maxArea.value);
   } else {
     maxArea.value = null;
@@ -277,13 +269,14 @@ async function createYieldRecord() {
   }
 }
 
-const formatM2 = (areaInHa) => {
+const formatM2 = (areaInHa: number | null) => {
   if (!areaInHa) return "0 m²";
   return `${(areaInHa * 10000).toLocaleString()} m²`;
 };
 
-const areaInM2 = (areaInHa) => {
+const areaInM2 = (areaInHa: number | null) => {
   if (!areaInHa) return 0;
   return areaInHa * 10000;
 };
 </script>
+

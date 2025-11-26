@@ -32,6 +32,7 @@
     "leaflet": "^1.9.4",
     "nuxt": "^4.1.1",
     "pinia": "^3.0.3",
+    "swiper": "^12.0.3",
     "toast-ui-calendar-vue3": "^0.3.1",
     "vue": "^3.5.21",
     "vue-cal": "^4.10.2",
