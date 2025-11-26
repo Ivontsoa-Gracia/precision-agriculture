@@ -4,79 +4,63 @@
       <h2
         class="text-2xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-location-alt-2 text-2xl sm:text-3xl text-[#10b481]"></i>
+        <i class="bxr bx-list-ul"></i>
         {{ t("titleparcellist") }}
       </h2>
 
-      <div class="flex justify-between items-center flex-wrap gap-4">
-        <div class="flex items-center space-x-2">
-          <label for="rows" class="text-sm">{{ t("rowperpage") }}</label>
+      <div
+        class="flex flex-col sm:flex-row justify-between items-center flex-wrap gap-4 p-4"
+      >
+        <div class="flex items-center space-x-2 flex-wrap w-full sm:w-auto">
+          <label for="rows" class="text-sm text-gray-600 font-medium">{{
+            t("rowperpage")
+          }}</label>
           <select
             id="rows"
             v-model.number="rowsPerPage"
-            class="p-1 border rounded"
+            class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
           >
             <option :value="4">4</option>
             <option :value="8">8</option>
             <option :value="12">12</option>
             <option :value="16">16</option>
           </select>
-        </div>
-        <div class="flex items-center sm:hidden">
-          <button
-            @click="showFilters = !showFilters"
-            class="p-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            <i class="bx bx-filter-alt text-xl"></i>
-          </button>
-        </div>
 
-        <div
-          :class="[
-            'flex space-x-4 items-center flex-wrap mt-2 sm:mt-0',
-            showFilters ? 'block w-full' : 'hidden sm:flex',
-          ]"
-        >
-          <input
-            v-model="filters.owner"
-            type="text"
-            :placeholder="t('filterbyowner')"
-            class="p-2 border border-gray-300 rounded w-full sm:w-60"
-          />
           <input
             v-model="filters.parcel_name"
             type="text"
             :placeholder="t('filterbyparcel')"
-            class="p-2 border border-gray-300 rounded w-full sm:w-60"
+            class="p-2 border border-gray-300 rounded w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
           />
           <button
             @click="resetFilters"
-            class="p-2 bg-gray-200 rounded hover:bg-gray-300 flex items-center justify-center"
+            class="p-2 px-4 bg-gray-100 rounded hover:bg-gray-200 flex items-center justify-center transition"
+            aria-label="Refresh Filters"
           >
-            <i class="bx bx-reset text-lg"></i>
+            <i class="bx bx-refresh text-xl text-gray-700"></i>
           </button>
         </div>
 
-        <div class="flex space-x-3 flex-nowrap mt-2 sm:mt-0">
+        <div class="flex space-x-3 mt-4 sm:mt-0 flex-nowrap">
           <div class="relative inline-block group">
             <button
-              class="flex items-center bg-white text-[#222831] px-4 py-2 rounded-xl shadow hover:bg-gray-100"
+              class="flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition"
             >
               <i class="bx bx-export mr-2 text-xl"></i> {{ t("export") }}
-              <i class="bx bx-chevron-down ml-2"></i>
+              <i class="bx bx-chevron-down ml-2 text-sm"></i>
             </button>
             <div
-              class="absolute -mt-1 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50"
+              class="absolute mt-2 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50"
             >
               <button
                 @click="exportData('pdf')"
-                class="block px-4 py-2 w-full text-left hover:bg-gray-100"
+                class="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100 transition rounded-t-lg"
               >
                 PDF
               </button>
               <button
                 @click="exportData('csv')"
-                class="block px-4 py-2 w-full text-left hover:bg-gray-100"
+                class="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100 transition rounded-b-lg"
               >
                 CSV
               </button>
@@ -85,7 +69,7 @@
 
           <NuxtLink
             to="/parcels/create"
-            class="flex items-center bg-[#10b481] text-white px-6 py-2 rounded-xl shadow hover:bg-[#0da06a]"
+            class="flex items-center bg-[#10b481] text-white px-6 py-2 rounded shadow-sm hover:bg-[#0da06a] transition"
           >
             <i class="bx bx-plus mr-2 text-xl"></i> {{ t("addparcel") }}
           </NuxtLink>
@@ -93,9 +77,9 @@
       </div>
     </div>
 
-    <div class="bg-red rounded-lg shadow pb-2">
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-left border-collapse">
+    <div class="pb-2">
+      <div class="overflow-x-auto bg-white">
+        <table class="min-w-[700px] w-full text-left border-collapse">
           <thead class="bg-gray-100">
             <tr>
               <th class="px-6 py-2 border-b hidden">Owner</th>
@@ -138,20 +122,20 @@
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
-                  class="p-2 rounded-full hover:bg-[#10b481]/20"
+                  class="p-2 px-4 rounded hover:bg-[#10b481]/20"
                 >
                   <i class="bx bx-show text-[#10b481] text-xl"></i>
                 </NuxtLink>
 
                 <NuxtLink
                   :to="`/parcels/edit/${field.fieldId}`"
-                  class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                  class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
                 >
                   <i class="bx bx-edit text-[#f4a261] text-xl"></i>
                 </NuxtLink>
                 <button
                   @click="confirmDelete(field.fieldId)"
-                  class="p-2 rounded-full hover:bg-[#e63946]/10"
+                  class="p-2 px-4 rounded hover:bg-[#e63946]/10"
                 >
                   <i class="bx bx-trash text-[#e63946] text-xl"></i>
                 </button>
@@ -208,25 +192,80 @@
     v-if="showDeleteModal"
     class="fixed inset-0 flex items-center justify-center bg-black/40 z-50"
   >
-    <div class="bg-white rounded-lg p-6 w-80 text-center shadow-lg">
-      <h3 class="text-xl font-bold mb-4">Delete Parcel</h3>
-      <p class="mb-6">Are you sure you want to delete this parcel?</p>
+    <div class="bg-white rounded p-6 w-80 text-center shadow-lg">
+      <h3 class="text-xl font-bold mb-4">{{ t("deleteParcel") }}</h3>
+      <p class="mb-6">{{ t("textConfirmDeleteParcel") }}</p>
       <div class="flex justify-center gap-4">
         <button
           @click="deleteParcelConfirmed"
           class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
-          Yes
+          {{ t("yes") }}
         </button>
         <button
           @click="cancelDelete"
-          class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+          class="bg-gray-100 px-4 py-2 rounded hover:bg-gray-200"
         >
-          No
+          {{ t("no") }}
         </button>
       </div>
     </div>
   </div>
+
+  <div
+    v-if="isLoading"
+    class="absolute inset-0 bg-black/50 flex items-center justify-center"
+  >
+    <div
+      class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
+    ></div>
+  </div>
+
+  <transition name="fade">
+    <div
+      v-if="notification.visible"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
+    >
+      <div
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
+      >
+        <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
+          :class="[
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
+          ]"
+        >
+          {{ notification.message }}
+        </p>
+
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -234,6 +273,8 @@ import { ref, reactive, computed, onMounted } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const languageStore = useLanguageStore();
 const showFilters = ref(false);
@@ -245,6 +286,25 @@ const currentLocale = computed(() => languageStore.lang);
 definePageMeta({
   layout: "dashboard",
 });
+
+const isLoading = ref(false);
+
+const notification = ref({
+  visible: false,
+  message: "",
+  type: "success",
+});
+
+const showNotification = (
+  message: string,
+  type: "success" | "error" = "success",
+  duration = 3000
+) => {
+  notification.value.message = message;
+  notification.value.type = type;
+  notification.value.visible = true;
+  setTimeout(() => (notification.value.visible = false), duration);
+};
 
 async function exportData(type: "pdf" | "csv") {
   const data = filteredFields.value.map((f) => ({
@@ -425,7 +485,7 @@ async function deleteParcelConfirmed() {
     alert("Vous devez être connecté");
     return;
   }
-
+  isLoading.value = true;
   try {
     const res = await fetch(`${API_URL}/api/parcels/${parcelToDelete.value}/`, {
       method: "DELETE",
@@ -437,6 +497,10 @@ async function deleteParcelConfirmed() {
     );
     showDeleteModal.value = false;
     parcelToDelete.value = null;
+
+    showNotification("Parcel deleted successfully!", "success");
+    setTimeout(() => {
+    }, 3000);
   } catch (err) {
     console.error(err);
     alert("Failed to delete parcel");

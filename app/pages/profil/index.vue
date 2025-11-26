@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-20 flex justify-center">
-    <div class="w-full max-w-3xl bg-white rounded-3xl overflow-hidden">
+  <div class="py-12 px-4 sm:px-6 lg:px-20 flex justify-center">
+    <div class="w-full max-w-5xl bg-white rounded overflow-hidden">
       <div
-        class="relative h-36 bg-gradient-to-r from-[#10b481] to-[#0da06a] flex justify-center items-center"
+        class="relative h-24 bg-gradient-to-r from-[#10b481] to-[#0da06a] flex justify-center items-center"
       >
         <div
           class="absolute -bottom-16 w-32 h-32 rounded-full border-4 border-white shadow-lg flex justify-center items-center bg-white"
@@ -20,57 +20,62 @@
 
       <div class="px-8 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
-          class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition flex items-center gap-4"
+          class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
-          <i class="bx bx-id-card text-3xl text-[#10b481]"></i>
           <div>
-            <h2 class="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("firstName") }}
             </h2>
-            <p class="text-gray-900 font-medium text-lg">
+            <p class="font-medium text-gray-800">
               {{ user?.first_name }}
             </p>
           </div>
         </div>
 
         <div
-          class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition flex items-center gap-4"
+          class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
-          <i class="bx bx-id-card text-3xl text-[#10b481]"></i>
           <div>
-            <h2 class="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("lastName") }}
             </h2>
-            <p class="text-gray-900 font-medium text-lg">
+            <p class="font-medium text-gray-800">
               {{ user?.last_name }}
             </p>
           </div>
         </div>
 
         <div
-          class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition flex items-center gap-4"
+          class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
-          <i class="bx bx-user-circle text-3xl text-[#10b481]"></i>
           <div>
-            <h2 class="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("username") }}
             </h2>
-            <p class="text-gray-900 font-medium text-lg">
+            <p class="font-medium text-gray-800">
               {{ user?.username }}
             </p>
           </div>
         </div>
 
         <div
-          class="bg-white p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition flex items-center gap-4"
+          class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
-          <i class="bx bx-envelope text-3xl text-[#10b481]"></i>
           <div>
-            <h2 class="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("email") }}
             </h2>
-            <p class="text-gray-900 font-medium text-lg">{{ user?.email }}</p>
+            <p class="font-medium text-gray-800">{{ user?.email }}</p>
           </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <p
+            class="tracking-wide text-[#10b481] cursor-pointer"
+            @click="router.push('/profil/edit/reset-password')"
+          >
+            {{ t("changePassword") }}
+          </p>
         </div>
       </div>
 
@@ -79,17 +84,10 @@
       >
         <a
           href="/profil/edit"
-          class="w-full sm:w-auto text-center px-6 py-3 bg-[#10b481] text-white font-semibold rounded-2xl shadow hover:bg-[#0da06a] transition flex items-center justify-center gap-2"
+          class="w-full sm:w-auto text-center px-6 py-3 bg-[#10b481] text-white font-medium rounded shadow hover:bg-[#0da06a] transition flex items-center justify-center gap-2"
         >
           <i class="bx bx-edit-alt text-lg"></i>
           {{ t("editProfile") }}
-        </a>
-        <a
-          href="/profil/edit/reset-password"
-          class="w-full sm:w-auto text-center px-6 py-3 bg-yellow-500 text-white font-semibold rounded-2xl shadow hover:bg-yellow-600 transition flex items-center justify-center gap-2"
-        >
-          <i class="bx bx-key text-lg"></i>
-          {{ t("changePassword") }}
         </a>
       </div>
 

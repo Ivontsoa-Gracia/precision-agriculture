@@ -1,10 +1,10 @@
 <template>
   <div
-    class="p-1 sm:p-6 flex flex-col lg:flex-row gap-6 relative mb-10 sm:mb-1"
+    class="p-1 sm:p-6 flex flex-col lg:flex-row gap-12 relative mb-10 sm:mb-1"
   >
     <div class="w-full lg:w-2/5 space-y-4">
       <div
-        class="overflow-hidden rounded-lg border border-[#f4a261]/40 bg-[#f4a261]/10 text-[#5a3210] shadow-sm"
+        class="overflow-hidden rounded border border-[#f4a261]/40 bg-[#f4a261]/10 text-[#5a3210] shadow-sm mb-12"
       >
         <div
           class="px-2 sm:px-4 py-2 cursor-pointer select-none flex justify-between items-center"
@@ -33,15 +33,17 @@
           </ul>
         </transition>
       </div>
-      <!-- Formulaire -->
+
       <form class="space-y-4">
-        <div class="bg-[#f9f9f9] shadow p-6 space-y-4 rounded-lg">
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-[#222831] mb-4">
+        <div class="space-y-4 rounded">
+          <h2
+            class="text-2xl sm:text-3xl font-extrabold text-[#222831] mb-4 hidden"
+          >
             {{ t("titlesaveparcel") }}
           </h2>
 
           <div class="hidden">
-            <label class="block text-sm font-medium mb-1">Owner</label>
+            <label class="text-gray-700 text-sm font-medium mb-1">Owner</label>
             <input
               v-model="user.username"
               type="text"
@@ -50,7 +52,9 @@
             />
           </div>
 
-          <p class="text-xs text-gray-500 mt-1">{{ t("searchintruction") }}</p>
+          <p class="text-gray-700 text-sm font-medium mb-1">
+            {{ t("searchintruction") }}
+          </p>
 
           <div class="relative">
             <i
@@ -59,35 +63,37 @@
             <input
               v-model="form.search"
               type="text"
-              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
               :placeholder="t('searchonmap')"
               @input="onSearchInput"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-2">{{
+            <label class="text-gray-700 text-sm font-medium mb-1">{{
               t("points")
             }}</label>
 
             <div
               v-if="form.points.length"
-              class="max-h-56 overflow-y-auto border rounded-lg bg-gray-50"
+              class="max-h-56 overflow-y-auto border rounded bg-gray-50"
             >
               <table class="w-full text-sm text-left">
                 <thead class="bg-gray-100 sticky top-0">
                   <tr>
-                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
+                    <th
+                      class="px-3 py-2 font-medium text-gray-700 border-b text-center"
+                    >
                       #
                     </th>
-                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
-                      Latitude
+                    <th class="px-3 py-2 font-medium text-gray-700 border-b">
+                      {{ t("thlatitude") }}
                     </th>
-                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
-                      Longitude
+                    <th class="px-3 py-2 font-medium text-gray-700 border-b">
+                      {{ t("thlongitude") }}
                     </th>
-                    <th class="px-3 py-2 font-semibold text-gray-700 border-b">
-                      Action
+                    <th class="px-3 py-2 font-medium text-gray-700 border-b">
+                      {{ t("thactions") }}
                     </th>
                   </tr>
                 </thead>
@@ -97,8 +103,10 @@
                     :key="index"
                     class="hover:bg-white transition"
                   >
-                    <td class="px-3 py-2 text-[#10b481] font-semibold">
-                      Point {{ index + 1 }}
+                    <td
+                      class="text-gray-700 text-sm font-medium mb-1 text-center"
+                    >
+                      {{ index + 1 }}
                     </td>
                     <td class="px-3 py-2 border-t">{{ p.lat.toFixed(6) }}</td>
                     <td class="px-3 py-2 border-t">{{ p.lng.toFixed(6) }}</td>
@@ -123,19 +131,19 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">
+            <label class="text-gray-700 text-sm font-medium mb-1">
               {{ t("parcelarea") }}
             </label>
             <input
               :value="formatM2(form.area)"
               type="text"
               readonly
-              class="w-full p-2 border rounded bg-gray-100"
+              class="w-full p-2 border rounded"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium mb-1">
+            <label class="text-gray-700 text-sm font-medium mb-1">
               {{ t("thparcelname") }}
             </label>
             <input
@@ -148,7 +156,7 @@
 
           <button
             type="button"
-            class="bg-[#10b481] text-white px-4 py-3 rounded-lg shadow hover:bg-[#0da06a] w-full transition"
+            class="bg-[#10b481] text-white px-4 py-3 rounded shadow hover:bg-[#0da06a] w-full transition"
             @click="submitForm"
           >
             {{ t("btnsaveparcel") }}
@@ -158,9 +166,9 @@
     </div>
 
     <div
-      class="w-full lg:flex-1 bg-gray-200 rounded-lg shadow-md h-[350px] sm:h-[400px] lg:h-auto overflow-hidden z-40"
+      class="w-full lg:flex-1 bg-gray-200 rounded shadow-md h-[350px] sm:h-[400px] lg:h-auto overflow-hidden z-40"
     >
-      <div id="map" class="h-full w-full rounded-lg"></div>
+      <div id="map" class="h-full w-full rounded"></div>
     </div>
 
     <div
@@ -185,7 +193,6 @@
               : 'border-t-4 border-red-500',
           ]"
         >
-          <!-- Icône -->
           <div
             v-if="notification.type === 'success'"
             class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"

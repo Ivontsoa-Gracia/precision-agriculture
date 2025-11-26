@@ -1,54 +1,111 @@
 <template>
-  <div
-    class="min-h-screen bg-cover bg-center flex items-center justify-center"
-    style="background: #212121"
-  >
-    <AuthForm
-      title="Réinitialiser le mot de passe"
-      buttonText="Envoyer lien"
-      :fields="['email']"
-      :showPassword="false"
-      @submit="handleForgotPassword"
-    >
-      <template #footer-links>
-        <NuxtLink to="/login" class="text-white-600 hover:underline"
-          >Retour à la connexion</NuxtLink
+  <div class=" flex items-center justify-center mt-16">
+    <div class="w-full max-w-md bg-white rounded  border border-gray-100 p-8">
+      <header class="mb-6 text-center">
+        <h1 class="text-2xl font-semibold text-gray-900">{{ t('resetMdpTittle') }}</h1>
+        <p class="mt-2 text-sm text-gray-500">{{ t('resetText') }}</p>
+      </header>
+
+      <form @submit.prevent="onSubmit" novalidate>
+        <label for="email" class="text-gray-700 text-sm font-medium mb-1">{{ t('email') }}</label>
+        <div class="mt-1 relative">
+          <input
+            id="email"
+            v-model="email"
+            :aria-invalid="!!errorMessage || !isEmailValid"
+            type="email"
+            placeholder="nom@exemple.com"
+            class="appearance-none block w-full px-4 py-3 border rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#10b481] transition disabled:opacity-60"
+            :disabled="loading || success"
+            required
+          />
+        </div>
+
+        <p v-if="validationTouched && !isEmailValid" class="mt-2 text-sm text-red-600">{{ t('resetLabel') }}</p>
+        <p v-if="errorMessage" class="mt-2 text-sm text-red-600">{{ errorMessage }}</p>
+
+        <button
+          type="submit"
+          :disabled="!isEmailValid || loading || success"
+          class="mt-6 w-full inline-flex items-center justify-center gap-2 rounded px-4 py-3 bg-[#10b481] text-white font-medium hover:bg-[#10b481] focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500 disabled:opacity-60"
         >
-      </template>
-    </AuthForm>
+          <svg v-if="loading" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"></circle>
+            <path d="M22 12a10 10 0 00-10-10" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+          </svg>
+
+          <span v-if="!loading && !success">{{ t('resetBtn') }}</span>
+          <span v-if="success">{{ t('errorMessage') }}</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <NuxtLink to="/login" class="underline">{{ t('return') }}</NuxtLink>
+      </div>
+
+      <div v-if="success" class="mt-6 p-4 rounded-lg bg-green-50 border border-green-100 text-green-800 text-sm">
+        {{ t('responseMessage') }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import AuthForm from "~/components/AuthForm.vue";
+
+definePageMeta({ layout: "dashboard" });
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { API_URL } from "~/config";
 
-const handleForgotPassword = async (formData: { email: string }) => {
-  if (!formData.email) {
-    alert("Veuillez entrer votre email");
-    return;
-  }
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
+
+const languageStore = useLanguageStore();
+const t = (key: string) => translate[languageStore.lang][key] || key;
+
+
+const email = ref('')
+const loading = ref(false)
+const success = ref(false)
+const errorMessage = ref('')
+const validationTouched = ref(false)
+
+const isEmailValid = computed(() => {
+  const re = /^\S+@\S+\.\S+$/
+  return re.test(email.value.trim())
+})
+
+const router = useRouter()
+
+const onSubmit = async () => {
+  validationTouched.value = true
+  errorMessage.value = ''
+
+  if (!isEmailValid.value) return
+
+  loading.value = true
 
   try {
-    const response = await fetch(`${API_URL}/api/forgot-password/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: formData.email }),
-    });
+    await $fetch(`${API_URL}/api/forgot-password/`, {
+      method: 'POST',
+      body: { email: email.value.trim() }
+    })
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errors = Object.entries(data)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join("\n");
-      alert(errors);
-      return;
+    success.value = true
+  } catch (err: any) {
+    if (err?.data?.error) {
+      errorMessage.value = err.data.error
+    } else if (err?.data?.message) {
+      errorMessage.value = err.data.message
+    } else {
+      errorMessage.value = 'Erreur réseau. Réessaie plus tard.'
     }
-    alert("Un lien de réinitialisation a été envoyé à votre email !");
-  } catch (error) {
-    console.error("Erreur réseau:", error);
-    alert("Erreur réseau, vérifie ton serveur");
+  } finally {
+    loading.value = false
   }
-};
+}
 </script>
+
+<style scoped>
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial }
+</style>

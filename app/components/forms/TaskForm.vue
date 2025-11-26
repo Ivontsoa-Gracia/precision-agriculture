@@ -1,18 +1,17 @@
 <template>
-  <div
-    class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 sm:mb-1"
-  >
+  <div class="max-w-3xl mx-auto p-4 sm:p-6 mb-10 sm:mb-1">
     <h2
       class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
     >
-      <i class="bx bx-task text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("titlenewtask") }}
     </h2>
 
     <form @submit.prevent="submitTask" class="space-y-4">
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("taskname") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("taskname") }} *</label
+          >
           <input
             v-model="form.name"
             type="text"
@@ -22,7 +21,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("due") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("due") }} *</label
+          >
           <input
             v-model="form.due_date"
             type="date"
@@ -33,7 +34,9 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="block font-medium">{{ t("desc") }} *</label>
+        <label class="text-gray-700 text-sm font-medium mb-1"
+          >{{ t("desc") }} *</label
+        >
         <textarea
           v-model="form.description"
           required
@@ -43,7 +46,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("parcelcrop") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("parcelcrop")
+          }}</label>
           <select
             v-model="form.parcelCrop"
             class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -55,7 +60,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("priority") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("priority")
+          }}</label>
           <select
             v-model="form.priority"
             class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -68,7 +75,9 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="block font-medium">{{ t("status") }}</label>
+        <label class="text-gray-700 text-sm font-medium mb-1">{{
+          t("status")
+        }}</label>
         <select
           v-model="form.status"
           class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -81,30 +90,56 @@
 
       <button
         type="submit"
-        class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white py-2 rounded-lg hover:opacity-90 transition"
+        class="w-full bg-[#10b481] text-white py-2 rounded hover:opacity-90 transition"
       >
         {{ t("btnaddtask") }}
       </button>
     </form>
   </div>
 
-  <!-- <div
-      v-if="isLoading"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl"
-    >
-      <div
-        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-      ></div>
-    </div> -->
   <transition name="fade">
     <div
       v-if="notification.visible"
-      :class="[
-        'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold',
-        notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
-      ]"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
     >
-      {{ notification.message }}
+      <div
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
+      >
+        <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
+          :class="[
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
+          ]"
+        >
+          {{ notification.message }}
+        </p>
+
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
+      </div>
     </div>
   </transition>
 </template>

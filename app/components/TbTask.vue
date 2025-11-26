@@ -1,6 +1,8 @@
 <template>
-  <div class="p-1 sm:p-6 mb-10 sm:mb-1">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+  <div>
+    <h2
+      class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+    >
       <i class="bxr bx-list-ul text-2xl sm:text-3xl"></i>
       {{ t("titiletaskslist") }}
     </h2>
@@ -39,13 +41,13 @@
         :disabled="selectedTasks.length === 0"
         class="px-4 py-2 bg-[#10b481] text-white rounded disabled:opacity-0"
       >
-        Mark as Done
+        {{ t("markDone") }}
       </button>
     </div>
 
-    <div class="hidden md:block overflow-x-auto bg-white rounded-sm shadow">
+    <div class="hidden md:block overflow-x-auto bg-white">
       <table class="min-w-[700px] w-full text-left border-collapse">
-        <thead class="bg-gray-100">
+        <thead class="bg-gray-100 text-gray-800">
           <tr>
             <th class="px-14 py-2 border-b">{{ t("taskname") }}</th>
             <th class="px-6 py-2 border-b">{{ t("due") }}</th>
@@ -59,9 +61,8 @@
           <tr
             v-for="task in paginatedTasks"
             :key="task.id"
-            class="hover:bg-gray-50"
+            class="hover:bg-gray-50 text-gray-800"
           >
-            <!-- Checkbox + Name -->
             <td class="px-6 py-2 border-b">
               <div class="flex items-center gap-3">
                 <label
@@ -73,7 +74,7 @@
                       type="checkbox"
                       v-model="selectedTasks"
                       :value="task.id"
-                      class="appearance-none w-5 h-5 border border-gray-300 rounded-md flex items-center justify-center transition-all duration-200 checked:bg-[#10b481] checked:border-[#10b481] cursor-pointer"
+                      class="appearance-none w-5 h-5 border border-gray-300 rounded flex items-center justify-center transition-all duration-200 checked:bg-[#10b481] checked:border-[#10b481] cursor-pointer"
                     />
                     <svg
                       v-if="selectedTasks.includes(task.id)"
@@ -95,7 +96,7 @@
 
                 <span
                   v-else
-                  class="flex items-center justify-center w-5 h-5 border border-[#10b481] rounded-md"
+                  class="flex items-center justify-center w-5 h-5 border border-[#10b481] rounded"
                 >
                   <svg
                     class="w-3 h-3 text-[#10b481]"
@@ -126,7 +127,6 @@
               </div>
             </td>
 
-            <!-- Due Date -->
             <td
               class="px-6 py-2 border-b"
               :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
@@ -134,17 +134,12 @@
               {{ new Date(task.due_date).toLocaleDateString() }}
             </td>
 
-            <!-- ParcelCrop -->
             <td
               class="px-6 py-2 border-b"
               :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
             >
               {{ task.parcelCropFull || "-" }}
             </td>
-            <!-- <td class="px-6 py-2 border-b">
-              {{ new Date(task.due_date).toLocaleDateString() }}
-            </td> -->
-            <!-- <td class="px-6 py-2 border-b">{{ task.parcelCropFull || "-" }}</td> -->
             <td class="px-6 py-2 border-b text-center">
               <span
                 v-if="priorities[task.priority]"

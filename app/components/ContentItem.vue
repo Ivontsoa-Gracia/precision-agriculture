@@ -9,10 +9,10 @@ defineProps<{
 
 <template>
   <div
-    class="flex items-start gap-4 p-4 rounded-xl border border-gray-200 hover:shadow-lg transition"
+    class="flex items-start gap-4 p-4 rounded border border-gray-200 hover:shadow-lg transition"
   >
     <div
-      class="w-10 h-10 bg-[#10b481] rounded-full flex items-center justify-center text-white font-bold text-lg"
+      class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
     >
       <i v-if="icon" :class="['bx', icon, 'text-lg']"></i>
       <template v-else>{{ number }}</template>

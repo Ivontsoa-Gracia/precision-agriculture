@@ -1,20 +1,17 @@
 <template>
-  <div
-    class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mt-1 sm:mt-10 mb-10 sm:mb-1"
-  >
+  <div class="max-w-3xl mx-auto mt-1 sm:mt-16 mb-10 sm:mb-1">
     <div
       class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4"
     >
       <h2
         class="text-xl sm:text-3xl font-bold text-[#212121] flex items-center gap-2"
       >
-        <i class="bx bx-box text-xl sm:text-3xl text-[#10b481]"></i>
         {{ t("newparcelcrop") }}
       </h2>
 
       <NuxtLink
         to="/crops/create"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition w-full md:w-auto justify-center"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded hover:bg-[#0da06a] transition w-full md:w-auto justify-center"
       >
         <i class="bx bx-plus text-lg"></i> {{ t("btnaddcrop") }}
       </NuxtLink>
@@ -23,7 +20,9 @@
     <form @submit.prevent="submitParcelCrop" class="space-y-5">
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("parcel") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("parcel") }} *</label
+          >
           <select
             v-model="form.parcel"
             required
@@ -36,7 +35,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("crop") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("crop") }} *</label
+          >
           <select
             v-model="form.crop_id"
             required
@@ -51,7 +52,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("plantingdate") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("plantingdate") }} *</label
+          >
           <input
             v-model="form.planting_date"
             type="date"
@@ -61,7 +64,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("harvestdate") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("harvestdate")
+          }}</label>
           <input
             v-model="form.harvest_date"
             type="date"
@@ -72,7 +77,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("area") }} (m²) *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("area") }} (m²) *</label
+          >
           <input
             v-model.number="form.area"
             type="number"
@@ -89,7 +96,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("status") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("status") }} *</label
+          >
           <select
             v-model="form.status_id"
             required
@@ -104,9 +113,8 @@
 
       <button
         type="submit"
-        class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded-xl text-white text-lg flex justify-center items-center gap-2"
+        class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-lg flex justify-center items-center gap-2"
       >
-        <i class="bx bx-plus text-xl"></i>
         {{ t("btnsaveparcelcrop") }}
       </button>
     </form>
@@ -155,7 +163,6 @@
           {{ notification.message }}
         </p>
 
-        <!-- Message secondaire -->
         <p class="text-gray-500 text-sm">
           {{
             notification.type === "success"
@@ -227,9 +234,9 @@ const form = ref({
   status_id: null,
 });
 
-const parcels = ref<any[]>([]);
-const crops = ref<any[]>([]);
-const statuses = ref<any[]>([]);
+const parcels = useState<any[]>("parcelsData", () => []);
+const crops = useState<any[]>("cropsData", () => []);
+const statuses = useState<any[]>("statusesData", () => []);
 
 const calculatedArea = ref<number>(0);
 

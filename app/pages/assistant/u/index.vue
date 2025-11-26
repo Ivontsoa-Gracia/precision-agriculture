@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex flex-col">
+  <div class="relative flex flex-col p-10">
     <div
       v-if="isMounted"
       ref="chatContainer"
@@ -93,7 +93,7 @@ import axios from "axios";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
-definePageMeta({ layout: "dashboard" });
+// definePageMeta({ layout: "dashboard" });
 const languageStore = useLanguageStore();
 const t = (key: string) => translate[languageStore.lang][key] || key;
 

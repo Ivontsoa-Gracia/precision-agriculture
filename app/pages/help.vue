@@ -8,10 +8,10 @@
     </div>
 
     <div
-      class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-md transition"
+      class="bg-white p-6 rounded shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-md transition"
     >
       <div
-        class="w-12 h-12 flex items-center justify-center bg-[#10b481] text-white rounded-full text-2xl"
+        class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
       >
         <i class="bx bx-info-circle"></i>
       </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
       <h3 class="text-xl font-semibold text-[#212121] mb-4">
         {{ t("howitworks") }}
       </h3>
@@ -79,17 +79,22 @@
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
       <h3 class="text-xl font-semibold text-[#212121] mb-3">
         {{ t("needhelp") }}
       </h3>
       <p class="text-gray-600 mb-6">{{ t("contactteam") }}</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- WhatsApp -->
         <div
-          class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
         >
-          <i class="bx bx-message-circle-plus text-2xl text-[#10b481]"></i>
+          <div
+            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+          >
+            <i class="bx bx-message-circle-plus"></i>
+          </div>
           <a
             href="https://wa.me/261327114865"
             target="_blank"
@@ -99,10 +104,15 @@
           </a>
         </div>
 
+        <!-- Email -->
         <div
-          class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
         >
-          <i class="bx bx-envelope text-2xl text-[#10b481]"></i>
+          <div
+            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+          >
+            <i class="bx bx-envelope"></i>
+          </div>
           <a
             href="mailto:contact@smart-saha.com"
             class="text-gray-800 font-medium"
@@ -111,19 +121,31 @@
           </a>
         </div>
 
+        <!-- Location -->
         <div
-          class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
         >
-          <i class="bx bx-location-plus text-2xl text-[#10b481]"></i>
+          <div
+            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+          >
+            <i class="bx bx-location-plus"></i>
+          </div>
           <span class="text-gray-800 font-medium">
             {{ t("location") }}
           </span>
         </div>
-
+      </div>
+    </div>
+    <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div
-          class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
         >
-          <i class="bx bx-shield-quarter text-2xl text-[#10b481]"></i>
+          <div
+            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+          >
+            <i class="bx bx-shield-quarter"></i>
+          </div>
           <a
             href="/conditions/privacy-policy"
             class="text-gray-800 font-medium"
@@ -133,9 +155,13 @@
         </div>
 
         <div
-          class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
         >
-          <i class="bx bx-file text-2xl text-[#10b481]"></i>
+          <div
+            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+          >
+            <i class="bx bx-file"></i>
+          </div>
           <a
             href="/conditions/terms-of-service"
             class="text-gray-800 font-medium"

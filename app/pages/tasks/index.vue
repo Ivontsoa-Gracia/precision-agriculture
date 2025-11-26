@@ -1,7 +1,9 @@
 <template>
   <div class="p-1 sm:p-6 mb-10 sm:mb-1">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class="bx bx-task text-3xl text-[#10b481]"></i>
+    <TaskCalendar class="mb-2" />
+
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2 hidden">
+      <i class='bxr  bx-list-ul'></i> 
       {{ t("titiletaskslist") }}
     </h2>
 
@@ -38,21 +40,14 @@
       <div class="flex justify-end">
         <NuxtLink
           to="/tasks/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded hover:bg-[#0da06a] transition"
         >
           <i class="bx bx-plus text-lg"></i> {{ t("btnaddtask") }}
-        </NuxtLink>
-
-        <NuxtLink
-          to="/tasks/d"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
-        >
-          <i class="bx bx-plus text-lg"></i> {{ t("TAsk Dashboard") }}
         </NuxtLink>
       </div>
     </div>
 
-    <div class="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
+    <div class="hidden md:block overflow-x-auto bg-white">
       <table class="min-w-[700px] w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
@@ -72,7 +67,7 @@
           >
             <td class="px-6 py-2 border-b">{{ task.name }}</td>
             <td class="px-6 py-2 border-b">
-              {{ new Date(task.due_date).toLocaleDateString() }}
+              {{ formatDate(task.due_date) }}
             </td>
             <td class="px-6 py-2 border-b">{{ task.parcelCropFull || "-" }}</td>
             <td class="px-6 py-2 border-b text-center">
@@ -114,19 +109,19 @@
             <td class="p-3 border-b text-center flex justify-center gap-2">
               <button
                 @click="showTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#10b481]/20"
+                class="p-2 px-4 rounded hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-xl"></i>
               </button>
               <button
                 @click="editTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-xl"></i>
               </button>
               <button
                 @click="deleteTask(task.id)"
-                class="p-2 rounded-full hover:bg-[#e63946]/10"
+                class="p-2 px-4 rounded hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-xl"></i>
               </button>
@@ -152,19 +147,19 @@
           <div class="flex gap-2">
             <button
               @click="showTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#10b481]/20"
+              class="p-2 px-4 rounded hover:bg-[#10b481]/20"
             >
               <i class="bx bx-show text-[#10b481] text-xl"></i>
             </button>
             <button
               @click="editTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
             >
               <i class="bx bx-edit text-[#f4a261] text-xl"></i>
             </button>
             <button
               @click="deleteTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#e63946]/10"
+              class="p-2 px-4 rounded hover:bg-[#e63946]/10"
             >
               <i class="bx bx-trash text-[#e63946] text-xl"></i>
             </button>
@@ -172,7 +167,7 @@
         </div>
         <p>
           <span class="font-semibold">{{ t("due") }}:</span>
-          {{ new Date(task.due_date).toLocaleDateString() }}
+          {{ formatDate(task.due_date)}}
         </p>
         <p>
           <span class="font-semibold">{{ t("parcelcrop") }}:</span>
@@ -265,6 +260,7 @@ import { API_URL } from "~/config";
 
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+import TaskCalendar from "~/components/TaskCalendar.vue";
 
 const languageStore = useLanguageStore();
 const t = (key: string) => translate[languageStore.lang][key] || key;
@@ -539,5 +535,15 @@ const fetchTasks = async () => {
   } catch (err) {
     console.error("Failed to fetch tasks:", err);
   }
+};
+
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 </script>

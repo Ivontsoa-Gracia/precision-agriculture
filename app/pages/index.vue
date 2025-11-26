@@ -1,7 +1,10 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center h-screen bg-[#212121] text-white relative"
+    class="flex flex-col items-center justify-center h-screen bg-gray-900 text-white relative"
   >
+  <div
+        class="absolute inset-0 bg-[#10b481]/10 backdrop-blur-xs pointer-events-none"
+      ></div>
     <transition name="fade-zoom">
       <div v-if="showLogo" class="flex flex-col items-center">
         <img

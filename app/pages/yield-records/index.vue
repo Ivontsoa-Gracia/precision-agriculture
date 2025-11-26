@@ -3,21 +3,21 @@
     <h2
       class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
     >
-      <i class="bx bx-bar-chart text-3xl text-[#10b481]"></i>
+    <i class='bxr  bx-list-ul'></i> 
       {{ t("yieldlist") }}
     </h2>
 
     <div class="flex justify-end mb-4">
       <button
         @click="goToCreate"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded hover:bg-[#0da06a] transition"
       >
         <i class="bx bx-plus text-lg"></i> {{ t("btnyield") }}
       </button>
     </div>
 
-    <div class="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
-      <table class="min-w-full text-left border-collapse">
+    <div class="hidden md:block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse">
         <thead class="bg-gray-100">
           <tr>
             <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
@@ -30,7 +30,7 @@
         </thead>
         <tbody>
           <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
-            <td class="px-6 py-2 border-b">{{ y.date }}</td>
+            <td class="px-6 py-2 border-b">{{ formatDate(y.date) }}</td>
             <td class="px-6 py-2 border-b">{{ y.parcel_name || "-" }}</td>
             <td class="px-6 py-2 border-b">{{ y.area }}</td>
             <td class="px-6 py-2 border-b">
@@ -42,19 +42,19 @@
             >
               <button
                 @click="goToShow(y.id)"
-                class="p-2 rounded-full hover:bg-[#10b481]/20"
+                class="p-2 px-4 rounded hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-xl"></i>
               </button>
               <button
                 @click="goToEdit(y.id)"
-                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-xl"></i>
               </button>
               <button
                 @click="deleteYield(y.id)"
-                class="p-2 rounded-full hover:bg-[#e63946]/10"
+                class="p-2 px-4 rounded hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-xl"></i>
               </button>
@@ -82,26 +82,26 @@
           <div class="flex gap-1">
             <button
               @click="goToShow(y.id)"
-              class="p-2 rounded-full hover:bg-[#10b481]/20"
+              class="p-2 rounded hover:bg-[#10b481]/20"
             >
               <i class="bx bx-show text-[#10b481] text-md"></i>
             </button>
             <button
               @click="goToEdit(y.id)"
-              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              class="p-2 rounded hover:bg-[#f4a261]/10"
             >
               <i class="bx bx-edit text-[#f4a261] text-md"></i>
             </button>
             <button
               @click="deleteYield(y.id)"
-              class="p-2 rounded-full hover:bg-[#e63946]/10"
+              class="p-2 rounded hover:bg-[#e63946]/10"
             >
               <i class="bx bx-trash text-[#e63946] text-md"></i>
             </button>
           </div>
         </div>
         <p>
-          <span class="font-semibold">{{ t("thdate") }}:</span> {{ y.date }}
+          <span class="font-semibold">{{ t("thdate") }}:</span> {{ formatDate(y.date) }}
         </p>
         <p>
           <span class="font-semibold">{{ t("area") }}:</span> {{ y.area }}
@@ -314,4 +314,14 @@ onMounted(() => {
     }
   }
 });
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 </script>

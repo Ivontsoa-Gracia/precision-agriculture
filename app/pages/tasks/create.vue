@@ -1,18 +1,17 @@
 <template>
-  <div
-    class="max-w-5xl mx-auto bg-white p-4 sm:p-6 rounded-xl shadow-md mb-10 sm:mb-1"
-  >
+  <div class="max-w-3xl mx-auto p-4 sm:p-6 mb-10 sm:mb-1">
     <h2
       class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
     >
-      <i class="bx bx-task text-xl sm:text-3xl text-[#10b481]"></i>
       {{ t("titlenewtask") }}
     </h2>
 
     <form @submit.prevent="submitTask" class="space-y-4">
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("taskname") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("taskname") }} *</label
+          >
           <input
             v-model="form.name"
             type="text"
@@ -22,7 +21,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("due") }} *</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("due") }} *</label
+          >
           <input
             v-model="form.due_date"
             type="date"
@@ -33,7 +34,9 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="block font-medium">{{ t("desc") }} *</label>
+        <label class="text-gray-700 text-sm font-medium mb-1"
+          >{{ t("desc") }} *</label
+        >
         <textarea
           v-model="form.description"
           required
@@ -43,7 +46,9 @@
 
       <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("parcelcrop") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("parcelcrop")
+          }}</label>
           <select
             v-model="form.parcelCrop"
             class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -55,7 +60,9 @@
         </div>
 
         <div class="flex-1 flex flex-col">
-          <label class="block font-medium">{{ t("priority") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("priority")
+          }}</label>
           <select
             v-model="form.priority"
             class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -68,7 +75,9 @@
       </div>
 
       <div class="flex flex-col">
-        <label class="block font-medium">{{ t("status") }}</label>
+        <label class="text-gray-700 text-sm font-medium mb-1">{{
+          t("status")
+        }}</label>
         <select
           v-model="form.status"
           class="w-full border p-2 rounded focus:ring-[#212121]"
@@ -81,7 +90,7 @@
 
       <button
         type="submit"
-        class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white py-2 rounded-lg hover:opacity-90 transition"
+        class="w-full bg-[#10b481] text-white py-2 rounded hover:opacity-90 transition"
       >
         {{ t("btnaddtask") }}
       </button>
@@ -149,7 +158,7 @@ definePageMeta({
   layout: "dashboard",
 });
 
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
 
@@ -157,10 +166,7 @@ import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
 const languageStore = useLanguageStore();
-
 const t = (key: string) => translate[languageStore.lang][key] || key;
-
-const currentLocale = computed(() => languageStore.lang);
 
 const priorityKeyMap = {
   Low: "priorityLow",
@@ -176,7 +182,6 @@ const statusKeyMap = {
 };
 
 const router = useRouter();
-
 const isLoading = ref(false);
 
 const notification = ref({
@@ -196,6 +201,10 @@ const showNotification = (
   setTimeout(() => (notification.value.visible = false), duration);
 };
 
+const priorities = useState<any[]>("prioritiesData", () => []);
+const statuses = useState<any[]>("statusesData", () => []);
+const parcelCrops = useState<any[]>("parcelCropsData", () => []);
+
 const form = ref({
   name: "",
   description: "",
@@ -204,10 +213,6 @@ const form = ref({
   priority: null,
   status: null,
 });
-
-const priorities = ref<any[]>([]);
-const statuses = ref<any[]>([]);
-const parcelCrops = ref<any[]>([]);
 
 onMounted(async () => {
   const uuid = sessionStorage.getItem("uuid");
@@ -219,19 +224,20 @@ onMounted(async () => {
   }
 
   try {
-    const priRes = await fetch(`${API_URL}/api/task-priority/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
+    const [priRes, staRes, cropRes] = await Promise.all([
+      fetch(`${API_URL}/api/task-priority/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+      fetch(`${API_URL}/api/task-status/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+      fetch(`${API_URL}/api/parcel-crops/`, {
+        headers: { Authorization: `Token ${token}` },
+      }),
+    ]);
+
     priorities.value = await priRes.json();
-
-    const staRes = await fetch(`${API_URL}/api/task-status/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
     statuses.value = await staRes.json();
-
-    const cropRes = await fetch(`${API_URL}/api/parcel-crops/`, {
-      headers: { Authorization: `Token ${token}` },
-    });
     const cropsData = await cropRes.json();
 
     const enrichedCrops = await Promise.all(
@@ -239,18 +245,15 @@ onMounted(async () => {
         try {
           const resParcel = await fetch(
             `${API_URL}/api/parcels/${pc.parcel}/`,
-            {
-              headers: { Authorization: `Token ${token}` },
-            }
+            { headers: { Authorization: `Token ${token}` } }
           );
           const parcelData = await resParcel.json();
           return {
             ...pc,
             fullName: `${parcelData.parcel_name} - ${pc.crop.name}`,
           };
-        } catch (err) {
-          console.error("Erreur fetch parcel:", err);
-          return { ...pc, fullName: `${pc.crop.name}` };
+        } catch {
+          return { ...pc, fullName: pc.crop.name };
         }
       })
     );
@@ -263,15 +266,11 @@ onMounted(async () => {
 
 const submitTask = async () => {
   const token = sessionStorage.getItem("token");
-  if (!token) {
-    router.push("/login");
-    return;
-  }
+  if (!token) return router.push("/login");
 
   const { name, due_date, parcelCrop, priority, status } = form.value;
   if (!name || !due_date || !parcelCrop || !priority || !status) {
     showNotification("Please fill in all required fields.", "error");
-    setTimeout(() => {}, 3000);
     return;
   }
 
@@ -287,12 +286,14 @@ const submitTask = async () => {
       body: JSON.stringify(form.value),
     });
 
-    const data = await res.json();
+    if (!res.ok) throw new Error("Failed to create task");
+    await res.json();
 
     showNotification("Task saved successfully!", "success");
-    setTimeout(() => {
-      router.push({ path: "/tasks", query: { refresh: "1" } });
-    }, 3000);
+    setTimeout(
+      () => router.push({ path: "/tasks", query: { refresh: "1" } }),
+      3000
+    );
   } catch (err) {
     console.error("Erreur création tâche:", err);
     showNotification("Network error, please check your server", "error");

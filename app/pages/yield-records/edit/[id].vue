@@ -1,78 +1,121 @@
 <template>
-  <div class="p-4 sm:p-6 max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl mb-10 sm:mb1">
-    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
-      <i class="bx bx-edit text-xl sm:text-3xl text-[#10b481]"></i>
+  <div class="p-4 sm:p-6 max-w-3xl mx-auto mt-6 mb-10 sm:mb1">
+    <h2
+      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3"
+    >
       {{ t("edityield") }}
     </h2>
 
     <form @submit.prevent="update" class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("thdate") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("thdate")
+          }}</label>
           <input
             v-model="form.date"
             type="date"
-            class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
+            class="px-3 py-2 rounded border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
           />
         </div>
 
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("thyield") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("thyield")
+          }}</label>
           <input
             v-model.number="form.yield_amount"
             type="number"
             step="0.01"
-            class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
+            class="px-3 py-2 rounded border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
           />
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("area") }} (m²)</label>
+          <label class="text-gray-700 text-sm font-medium mb-1"
+            >{{ t("area") }} (m²)</label
+          >
           <input
             v-model.number="form.area"
             type="number"
             step="0.01"
-            class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
+            class="px-3 py-2 rounded border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
           />
         </div>
 
         <div class="flex flex-col">
-          <label class="font-semibold mb-1">{{ t("notes") }}</label>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("notes")
+          }}</label>
           <textarea
             v-model="form.notes"
-            class="px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
+            class="px-3 py-2 rounded border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#212121]"
           ></textarea>
         </div>
       </div>
 
       <button
         type="submit"
-        class="w-full bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white py-3 rounded-2xl text-lg flex justify-center items-center gap-2 hover:scale-105 transition-transform shadow-md"
+        class="w-full bg-[#10b481] text-white py-3 rounded text-lg flex justify-center items-center gap-2 hover:scale-105 transition-transform shadow-md"
       >
-        <i class="bx bx-save text-xl"></i>
         {{ t("btnsaveyield") }}
       </button>
     </form>
   </div>
   <div
     v-if="isLoading"
-    class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-3xl"
+    class="absolute inset-0 bg-black/50 flex items-center justify-center"
   >
     <div
       class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
     ></div>
   </div>
+
   <transition name="fade">
     <div
       v-if="notification.visible"
-      :class="[
-        'fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white font-semibold',
-        notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500',
-      ]"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
     >
-      {{ notification.message }}
+      <div
+        :class="[
+          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          notification.type === 'success'
+            ? 'border-t-4 border-[#10b481]'
+            : 'border-t-4 border-red-500',
+        ]"
+      >
+        <div
+          v-if="notification.type === 'success'"
+          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+        >
+          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+        </div>
+        <div
+          v-else
+          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
+        >
+          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        </div>
+
+        <p
+          :class="[
+            'text-lg font-semibold',
+            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
+          ]"
+        >
+          {{ notification.message }}
+        </p>
+
+        <p class="text-gray-500 text-sm">
+          {{
+            notification.type === "success"
+              ? "Redirecting to your dashboard..."
+              : "Please try again."
+          }}
+        </p>
+      </div>
     </div>
   </transition>
 </template>
@@ -158,7 +201,9 @@ async function update() {
       { headers: { Authorization: `Token ${token}` } }
     );
     showNotification("Yield updated successfully!", "success");
-    router.push(`/yield-records`);
+    setTimeout(() => {
+      router.push({ path: "/yield-records" });
+    }, 3000);
   } catch (err) {
     console.error(err);
     showNotification("Network error, please check your server", "error");

@@ -1,96 +1,139 @@
 <template>
-  <div class="p-1 sm:p-6 flex justify-center items-start">
-    <div
-      class="w-full max-w-5xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mt-2"
+  <div class="w-full md:w-3/4 mx-auto">
+    <button
+      @click="goBack"
+      class="text-[#222831] hover:underline text-sm font-medium mb-4 inline-flex items-center gap-1"
     >
-      <div class="flex items-center gap-3 mb-8">
-        <i
-          class="bx bx-show text-xl sm:text-3xl text-[#10b481] animate-pulse"
-        ></i>
-        <h2
-          class="text-xl sm:text-3xl font-extrabold text-gray-800 tracking-tight relative"
-        >
-          {{ t("detailtask") }}
-          <span
-            class="block w-24 h-1 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] rounded-full mt-1"
-          ></span>
-        </h2>
+      <i class="bx bx-arrow-left"></i> {{ t("back") }}
+    </button>
+
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+        {{ t("detailtask") }}
+      </h2>
+      <button
+        @click="editTask"
+        class="text-[#222831] hover:text-[#10b481] text-2xl flex items-center"
+        title="Edit"
+      >
+        <i class="bx bx-edit-alt"></i>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("taskname") }}
+          </p>
+          <p class="font-semibold text-gray-800">{{ task.name }}</p>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailItem :label="t('taskname')" :value="task.name" />
-        <DetailItem :label="t('due')" :value="task.due_date" />
-        <DetailItem
-          :label="t('parcelcrop')"
-          :value="task.parcelCropFull || '-'"
-        />
-        <DetailItem :label="t('createdat')" :value="task.created_at" />
-        <DetailItem :label="t('updatedat')" :value="task.updated_at" />
-        <DetailItem
-          :label="t('completedat')"
-          :value="task.completed_at || '-'"
-        />
-
-        <div class="col-span-1 md:col-span-2 flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">{{ t("desc") }}</span>
-          <p class="mt-1 text-gray-700 bg-gray-50 p-4 rounded-md border">
-            {{ task.description }}
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("due") }}
+          </p>
+          <p class="font-semibold text-gray-800">
+            {{ formatDate(task.due_date) }}
           </p>
         </div>
+      </div>
 
-        <div class="flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">{{ t("priority") }}</span>
-          <span
-            :class="[
-              'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
-              priorityName === 'Low'
-                ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
-                : priorityName === 'Medium'
-                ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                : priorityName === 'High'
-                ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
-                : 'bg-gray-400',
-            ]"
-          >
-            {{ t(priorityKeyMap[priorityName]) }}
-          </span>
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <span class="font-semibold text-[#212121]">{{ t("status") }}</span>
-          <span
-            :class="[
-              'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
-              statusName === 'Pending'
-                ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                : statusName === 'In Progress'
-                ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
-                : statusName === 'Done'
-                ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
-                : statusName === 'Cancelled'
-                ? 'bg-gary-10 text-gary border-gary-500'
-                : 'bg-gray-100',
-            ]"
-          >
-            {{ t(statusKeyMap[statusName]) }}
-          </span>
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("parcelcrop") }}
+          </p>
+          <p class="font-semibold text-gray-800">
+            {{ task.parcelCropFull || "-" }}
+          </p>
         </div>
       </div>
 
-      <div class="mt-10 flex justify-end gap-4">
-        <button
-          @click="editTask"
-          class="px-6 py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white rounded-2xl font-bold shadow-md hover:shadow-xl hover:scale-105 transition transform"
-        >
-          <i class="bx bx-edit-alt"></i> {{ t("edit") }}
-        </button>
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("createdat") }}
+          </p>
+          <p class="font-semibold text-gray-800">
+            {{ formatDate(task.created_at) }}
+          </p>
+        </div>
+      </div>
 
-        <button
-          @click="goBack"
-          class="px-6 py-3 bg-gray-50 text-gray-800 rounded-2xl font-semibold shadow-sm hover:shadow-md transition transform hover:-translate-y-0.5"
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("updatedat") }}
+          </p>
+          <p class="font-semibold text-gray-800">
+            {{ formatDate(task.updated_at) }}
+          </p>
+        </div>
+      </div>
+
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("completedat") }}
+          </p>
+          <p class="font-semibold text-gray-800">
+            {{ formatDate(task.completed_at) || "-" }}
+          </p>
+        </div>
+      </div>
+
+      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div>
+          <p class="uppercase tracking-wide text-gray-500 text-sm">
+            {{ t("desc") }}
+          </p>
+          <p class="font-semibold text-gray-800">{{ task.description }}</p>
+        </div>
+      </div>
+
+      <div class="border border-gray-100 p-4 rounded flex flex-col gap-3">
+        <span class="uppercase tracking-wide text-gray-500 text-sm">{{
+          t("priority")
+        }}</span>
+        <span
+          :class="[
+            'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+            priorityName === 'Low'
+              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+              : priorityName === 'Medium'
+              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+              : priorityName === 'High'
+              ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
+              : 'bg-gray-100',
+          ]"
         >
-          <i class="bx bx-arrow-back"></i> {{ t("back") }}
-        </button>
+          {{ t(priorityKeyMap[priorityName]) }}
+        </span>
+      </div>
+
+      <div class="border border-gray-100 p-4 rounded flex flex-col gap-3">
+        <span class="uppercase tracking-wide text-gray-500 text-sm">{{
+          t("status")
+        }}</span>
+        <span
+          :class="[
+            'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+            statusName === 'Pending'
+              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+              : statusName === 'In Progress'
+              ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
+              : statusName === 'Done'
+              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+              : statusName === 'Cancelled'
+              ? 'bg-gray-200 text-gray-600 border-gray-300'
+              : 'bg-gray-100',
+          ]"
+        >
+          {{ t(statusKeyMap[statusName]) }}
+        </span>
       </div>
     </div>
   </div>
@@ -101,7 +144,6 @@ definePageMeta({ layout: "dashboard" });
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { API_URL } from "~/config";
-import DetailItem from "~/components/DetailItem.vue";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 
@@ -193,6 +235,16 @@ onMounted(async () => {
 
 const goBack = () => router.push("/tasks");
 const editTask = () => router.push(`/tasks/edit/${id}`);
+
+const formatDate = (dateStr: string | null) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 </script>
 
 <style scoped>

@@ -1,17 +1,17 @@
 <template>
   <div class="relative w-full max-w-md mx-auto my-20">
-    <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10">
+    <!-- <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10">
       <img
         src="/logo.png"
         alt="Logo"
         class="h-24 w-auto rounded-full border-4 border-white shadow-lg"
       />
-    </div>
+    </div> -->
 
     <div
-      class="bg-[#101010] p-8 pt-20 rounded-3xl shadow-xl w-full relative z-0"
+      class=" w-full relative z-0"
     >
-      <h2 class="text-3xl font-bold mb-6 text-center text-white">
+      <h2 class="text-4xl font-bold mb-6 text-center text-gray-700">
         {{ title }}
       </h2>
 
@@ -28,7 +28,7 @@
             v-model="formData[field]"
             :type="getInputType(field)"
             placeholder=" "
-            class="peer w-full p-3 pl-10 pr-10 rounded-lg border border-gray-600 bg-black/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#10b481]"
+            class="peer w-full p-3 pl-10 pr-10 rounded border border-gray-400 bg-transparent text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#10b481]"
           />
 
           <label
@@ -58,7 +58,7 @@
             buttonText.toLowerCase().includes('sign') ||
             buttonText === 'S\'inscrire'
           "
-          class="mt-2 text-sm text-gray-200"
+          class="mt-2 text-sm text-gray-700"
         >
           <label class="flex items-center space-x-2">
             <input
@@ -93,7 +93,7 @@
               buttonText === 'S\'inscrire') &&
             !acceptedPolicy
           "
-          class="w-full py-3 bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-bold rounded-lg hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+          class="w-full py-3 bg-gradient-to-r from-[#10b481] uppercase text-md to-[#0a8f6e] text-white rounded hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {{ buttonText }}
         </button>

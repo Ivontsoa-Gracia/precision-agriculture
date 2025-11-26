@@ -1,20 +1,11 @@
 <template>
-  <div class="p-6 min-h-screen">
+  <div class="mb-12">
     <header class="mb-6 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-gray-800">Dashboard des tâches</h1>
-      <div class="flex items-center space-x-4">
-        <span class="text-gray-600">Bonjour, {{ username }}</span>
-        <button
-          class="bg-[#10b481] text-white px-4 py-2 rounded-lg shadow hover:bg-[#0a8f6e] transition"
-        >
-          Ajouter tâche
-        </button>
-      </div>
+      <h1 class="text-3xl font-bold text-gray-800">{{ t("tasks") }}</h1>
     </header>
-
     <div class="flex flex-col lg:flex-row gap-6">
       <div
-        class="w-full lg:w-[350px] p-4 bg-white rounded-2xl shadow-lg flex flex-col border border-gray-100"
+        class="w-full lg:w-[350px] p-4 rounded shadow-md flex flex-col border border-gray-100 bg-gray-100"
       >
         <div class="flex justify-between items-center mb-3">
           <button @click="prevMonth" class="text-gray-500 hover:text-gray-900">
@@ -60,12 +51,12 @@
       <div class="flex-1 grid grid-cols-1 gap-6">
         <div class="flex gap-6">
           <div
-            class="flex-1 p-6 bg-white rounded-2xl shadow-md flex flex-col justify-center items-center border border-gray-100"
+            class="flex-1 p-6 bg-white rounded shadow-md flex flex-col justify-center items-center border border-gray-100"
           >
             <h2
               class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-2"
             >
-              {{ t('totalTask') }}
+              {{ t("totalTask") }}
             </h2>
             <div class="text-5xl font-bold text-gray-800">
               {{ totalTasks }}
@@ -84,12 +75,12 @@
           </div>
 
           <div
-            class="flex-1 p-6 bg-white rounded-2xl shadow-md flex flex-col border border-gray-100 justify-center"
+            class="flex-1 p-6 bg-white rounded shadow-md flex flex-col border border-gray-100 justify-center"
           >
             <h2
               class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-6"
             >
-              {{ t('taskByPriority') }}
+              {{ t("taskByPriority") }}
             </h2>
             <ul class="space-y-2">
               <li
@@ -107,17 +98,17 @@
         </div>
 
         <div
-          class="p-6 bg-white rounded-2xl shadow-lg max-h-[180px] border border-gray-100"
+          class="p-6 bg-white rounded shadow-sm max-h-[180px] border border-gray-100"
         >
           <h2
             class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-8"
           >
-            {{ t('taskProgression') }}
+            {{ t("taskProgression") }}
           </h2>
 
           <div class="w-full flex flex-col space-y-2">
             <div
-              class="w-full h-14 flex rounded-lg overflow-hidden border border-gray-200"
+              class="w-full h-14 flex rounded overflow-hidden border border-gray-200"
             >
               <div
                 v-for="(count, statusId) in tasksByStatus"
@@ -150,7 +141,7 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
     >
       <div
-        class="bg-white rounded-2xl shadow-md w-full max-w-lg p-6 relative border border-gray-200"
+        class="bg-white rounded shadow-md w-full max-w-lg p-6 relative border border-gray-200"
       >
         <button
           @click="closeModal"
@@ -171,7 +162,7 @@
           <li
             v-for="ev in selectedEvents"
             :key="ev.id"
-            class="bg-gray-50 p-4 rounded-xl shadow transition border border-gray-100"
+            class="p-4 rounded shadow transition border border-gray-100"
           >
             <div class="flex justify-between items-start">
               <div>
@@ -191,9 +182,9 @@
             <button
               v-if="!ev.completed_at"
               @click="markDone(ev)"
-              class="mt-3 w-full text-white bg-[#10b481] hover:bg-[#10b481]/90 transition py-2 rounded-md font-semibold shadow"
+              class="mt-3 w-full text-white bg-[#10b481] transition py-2 rounded font-semibold shadow"
             >
-              {{ t("mark_done") }}
+              {{ t("markDone") }}
             </button>
           </li>
         </ul>
@@ -204,7 +195,7 @@
         >
           <button
             @click="showAddForm = true"
-            class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
+            class="inline-flex items-center px-3 py-1 text-[#222831] bg-gray-100 rounded transition"
           >
             <i class="bx bx-plus mr-1"></i> {{ t("addtask") }}
           </button>
@@ -215,48 +206,48 @@
           class="mt-4 space-y-5"
         >
           <div class="flex flex-col">
-            <label class="mb-1 font-medium text-gray-700"
+            <label class="text-gray-700 text-sm font-medium mb-1"
               >{{ t("taskname") }} *</label
             >
             <input
               v-model="newTask.name"
               type="text"
               placeholder="Enter task name"
-              class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
             />
           </div>
 
           <div class="flex flex-col">
-            <label class="mb-1 font-medium text-gray-700"
+            <label class="text-gray-700 text-sm font-medium mb-1"
               >{{ t("desc") }} *</label
             >
             <textarea
               v-model="newTask.description"
               placeholder="Enter task description"
               rows="3"
-              class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
             ></textarea>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1 flex flex-col hidden">
-              <label class="mb-1 font-medium text-gray-700"
+              <label class="text-gray-700 text-sm font-medium mb-1"
                 >{{ t("due") }} *</label
               >
               <input
                 v-model="newTask.due_date"
                 type="date"
-                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               />
             </div>
 
             <div class="flex-1 flex flex-col">
-              <label class="mb-1 font-medium text-gray-700">{{
+              <label class="text-gray-700 text-sm font-medium mb-1">{{
                 t("priority")
               }}</label>
               <select
                 v-model="newTask.priority"
-                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="p in priorities" :key="p.id" :value="p.id">
                   {{ t(priorityKeyMap[p.name]) }}
@@ -267,12 +258,12 @@
 
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1 flex flex-col">
-              <label class="mb-1 font-medium text-gray-700">{{
+              <label class="text-gray-700 text-sm font-medium mb-1">{{
                 t("status")
               }}</label>
               <select
                 v-model="newTask.status"
-                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="s in statuses" :key="s.id" :value="s.id">
                   {{ t(statusKeyMap[s.name]) }}
@@ -281,12 +272,12 @@
             </div>
 
             <div class="flex-1 flex flex-col">
-              <label class="mb-1 font-medium text-gray-700">{{
+              <label class="text-gray-700 text-sm font-medium mb-1">{{
                 t("parcelcrop")
               }}</label>
               <select
                 v-model="newTask.parcelCrop"
-                class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="c in parcelCrops" :key="c.id" :value="c.id">
                   {{ c.fullName }}
@@ -297,7 +288,7 @@
 
           <button
             @click="createTask"
-            class="w-full py-3 rounded-xl bg-gradient-to-r from-[#10b481] to-[#0a8f6e] text-white font-semibold hover:opacity-90 transition shadow-md"
+            class="w-full py-3 rounded bg-[#10b481] text-white font-semibold hover:opacity-90 transition shadow-md"
           >
             {{ t("addtask") }}
           </button>
@@ -328,8 +319,12 @@ interface Task {
   priority: number;
   completed_at?: string | null;
 }
+const tasksState = useState("tasksData", () => ({
+  data: [] as any[],
+  timestamp: 0,
+}));
 
-const tasks = ref<Task[]>([]);
+const tasks = ref<any[]>(tasksState.value.data);
 const statusColors: Record<number, string> = {};
 const statusNames: Record<number, string> = {};
 
@@ -399,6 +394,13 @@ function formatDateISO(date: Date) {
 const loadTasks = async () => {
   const token = sessionStorage.getItem("token");
   if (!token) return router.push("/login");
+
+  if (
+    tasksState.value.data.length
+  ) {
+    tasks.value = tasksState.value.data;
+    return;
+  }
 
   try {
     const resTasks = await fetch(`${API_URL}/api/tasks/`, {
