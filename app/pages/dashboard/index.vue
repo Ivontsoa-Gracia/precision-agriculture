@@ -47,18 +47,18 @@
         class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
       >
         <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#222831]/10"
+          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#112830]/10"
         >
-          <i class="bx bx-bar-chart-alt-2 text-4xl text-[#222831]"></i>
+          <i class="bx bx-bar-chart-alt-2 text-4xl text-[#112830]"></i>
         </div>
         <div class="flex flex-col text-left">
-          <p class="text-3xl font-bold text-[#222831]">{{ yieldTotal }} kg</p>
-          <p class="text-sm font-medium text-[#222831]">
+          <p class="text-3xl font-bold text-[#112830]">{{ yieldTotal }} kg</p>
+          <p class="text-sm font-medium text-[#112830]">
             {{ t("totalyield") }}
           </p>
         </div>
         <div
-          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#222831]"
+          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#112830]"
         ></div>
       </div>
 
@@ -932,7 +932,7 @@ const chartData = computed(() => {
     const colorPalette = [
       "#10b481",
       "#c99383",
-      "#222831",
+      "#112830",
       "#6d4c41",
       "#f4a261",
       "#219ebc",

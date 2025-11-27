@@ -16,7 +16,7 @@
           </div>
 
           <div class="hidden sm:flex flex-col text-left">
-            <h1 class="text-xl font-extrabold text-[#222831] tracking-tight">
+            <h1 class="text-xl font-extrabold text-[#112830] tracking-tight">
               SmartSaha
             </h1>
             <p class="text-sm text-gray-500">{{ t("slogan") }}</p>
@@ -105,7 +105,7 @@
     <transition name="slide">
       <aside
         v-if="isMobileMenuOpen"
-        class="fixed inset-0 z-50 bg-[#141414]/95 backdrop-blur-sm flex flex-col sm:hidden"
+        class="fixed inset-0 z-50 bg-[#112830]/95 backdrop-blur-sm flex flex-col sm:hidden"
       >
         <div
           class="flex justify-between items-center p-4 border-b border-gray-700"
@@ -121,7 +121,9 @@
                 <p class="text-white font-semibold text-sm">
                   {{ user?.username }}
                 </p>
-                <p class="text-gray-300 text-xs">{{ user?.email }}</p>
+                <p class="text-gray-300 text-xs font-light">
+                  {{ user?.email }}
+                </p>
               </div>
             </div>
           </h2>
@@ -135,7 +137,7 @@
             <label class="text-white text-sm mb-1 block">Language</label>
             <select
               v-model="languageStore.lang"
-              class="w-full p-2 rounded bg-gray-800 text-white"
+              class="w-full p-2 rounded bg-[#112830] text-white"
             >
               <option v-for="loc in locales" :key="loc.code" :value="loc.code">
                 {{ loc.name }}
@@ -145,6 +147,15 @@
         </div>
 
         <nav class="flex-1 overflow-y-auto py-4 px-2 flex flex-col gap-2">
+
+          <button
+            @click="router.push('/assistant')"
+            class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
+          >
+            <i class="bx bx-robot text-xl text-white"></i>
+            <span>Sesily</span>
+          </button>
+
           <button
             v-for="item in sidebarMenu"
             :key="item.to"
@@ -190,7 +201,7 @@
 
     <div class="flex flex-1 pt-20">
       <aside
-        class="hidden sm:flex peer group fixed top-20 left-0 h-[calc(100vh-5rem)] flex flex-col bg-[#141414] shadow-lg w-20 hover:w-56 transition-all duration-300 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
+        class="hidden sm:flex peer group fixed top-20 left-0 h-[calc(100vh-5rem)] flex flex-col bg-[#112830] shadow-lg w-20 hover:w-56 transition-all duration-300 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
       >
         <nav class="flex flex-col space-y-2 py-4">
           <button
@@ -248,10 +259,8 @@
     <div
       v-if="router.currentRoute.value.path !== '/assistant'"
       @click="router.push('/assistant')"
-      :class="[
-        'fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#141414] text-white px-4 py-3 shadow-lg hover:bg-[#222831] cursor-pointer transition-all duration-500 ease-in-out',
-        isScrolled ? 'px-3 py-3 w-auto justify-center' : '',
-      ]"
+      class="hidden sm:flex fixed bottom-6 right-6 z-50 items-center gap-2 bg-[#112830] text-white/90 rounded px-4 py-3 shadow-lg hover:bg-[#112830]/90 cursor-pointer transition-all duration-500 ease-in-out"
+      :class="[isScrolled ? 'px-3 py-3 w-auto justify-center' : '']"
     >
       <i class="bx bx-robot text-xl"></i>
       <transition name="fade">

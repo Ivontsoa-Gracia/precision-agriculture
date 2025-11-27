@@ -11,7 +11,7 @@
     <div
       class=" w-full relative z-0"
     >
-      <h2 class="text-4xl font-bold mb-6 text-center text-gray-700">
+      <h2 class="text-4xl font-bold mb-6 text-center text-[#112830]">
         {{ title }}
       </h2>
 
