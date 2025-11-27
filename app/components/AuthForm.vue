@@ -36,7 +36,7 @@
             class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200"
             :class="[
               formData[field] || fieldHasFocus[field]
-                ? '-top-3 text-sm text-[#10b481] bg-[#101010] px-2 rounded'
+                ? '-top-3 text-sm text-[#10b481] bg-[#f9f9f9] px-2 rounded'
                 : 'top-3 text-base text-[#10b481]',
             ]"
           >
