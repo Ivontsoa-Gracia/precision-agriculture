@@ -66,82 +66,100 @@
     </div>
 
     <div
-  ref="footer"
-  class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-[900px] w-full bg-[#112830] rounded-lg border border-gray-300 shadow-md p-2 flex flex-col gap-2"
->
-  <!-- Ligne de saisie + bouton -->
-  <div class="flex w-full items-center gap-2 relative">
-    <!-- Champ de saisie -->
-    <button
-      @click="showOptions = !showOptions"
-      class="bg-white/10 text-white p-2 px-3 rounded hover:bg-gray-300 transition"
+      ref="footer"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-[900px] w-full bg-[#112830] rounded-lg border border-gray-300 shadow-md p-2 flex flex-col gap-2"
     >
-    <i class='bxr  bx-plus'></i> 
-    </button>
-    <input
-      v-model="inputMessage"
-      @keyup.enter="sendMessage"
-      type="text"
-      :placeholder="t('ask')"
-      class="bg-transparent text-white flex-1 p-2 text-sm outline-none"
-    />
+      <!-- Ligne de saisie + bouton -->
+      <div class="flex w-full items-center gap-2 relative">
+        <!-- Champ de saisie -->
+        <button
+          @click="showOptions = !showOptions"
+          class="bg-white/10 text-white p-2 px-3 rounded hover:bg-gray-300 transition"
+        >
+          <i class="bxr bx-plus"></i>
+        </button>
+        <input
+          v-model="inputMessage"
+          @keyup.enter="sendMessage"
+          type="text"
+          :placeholder="t('ask')"
+          class="bg-transparent text-white flex-1 p-2 text-sm outline-none"
+        />
 
-    <button
-      @click="sendMessage"
-      class="bg-[#10b481] text-white rounded p-2 px-3 hover:bg-[#0d946b] transition flex items-center justify-center"
-    >
-      <i class="bx bx-up-arrow-alt text-lg"></i>
-    </button>
+        <button
+          @click="sendMessage"
+          class="bg-[#10b481] text-white rounded p-2 px-3 hover:bg-[#0d946b] transition flex items-center justify-center"
+        >
+          <i class="bx bx-up-arrow-alt text-lg"></i>
+        </button>
 
-    <!-- Menu flottant au-dessus -->
-    <transition name="fade">
-      <div
-        v-if="showOptions"
-        class="absolute bottom-full left-0 mb-2 w-[400px] sm:w-[500px] bg-gray-50 border border-gray-200 rounded shadow-lg p-3 z-50"
-      >
-        <!-- Bouton X pour fermer -->
-        <div class="flex justify-end mb-2">
-          <button
-            @click="showOptions = false"
-            class="text-gray-500 hover:text-gray-700 font-bold"
+        <transition name="fade">
+          <div
+            v-if="showOptions"
+            class="absolute bottom-full left-0 mb-2 w-[400px] sm:w-[500px] bg-gray-50 border border-gray-200 rounded shadow-lg p-3 z-50"
           >
-            &times;
-          </button>
-        </div>
+            <div class="flex justify-end mb-2">
+              <button
+                @click="showOptions = false"
+                class="text-gray-500 hover:text-gray-700 font-bold"
+              >
+                &times;
+              </button>
+            </div>
 
-        <!-- Parcelle + Crop -->
-        <div class="flex flex-col sm:flex-row sm:gap-2 w-full text-sm mb-2">
-          <div class="flex-1 flex flex-col">
-            <label class="mb-1">Parcel</label>
-            <select v-model="selectedParcel" class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]">
-              <option v-for="parcel in parcels" :key="parcel.uuid" :value="parcel.uuid">
-                {{ parcel.parcel_name }}
-              </option>
-            </select>
-          </div>
-          <div class="flex-1 flex flex-col">
-            <label class="mb-1">Crop</label>
-            <select v-model="selectedCrop" class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]">
-              <option v-for="crop in crops" :key="crop.id" :value="crop.name">
-                {{ crop.name }}
-              </option>
-            </select>
-          </div>
-        </div>
+            <div class="flex flex-col sm:flex-row sm:gap-2 w-full text-sm mb-2">
+              <div class="flex-1 flex flex-col">
+                <label class="mb-1">{{ t("parcels") }}</label>
+                <select
+                  v-model="selectedParcel"
+                  class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]"
+                >
+                  <option
+                    v-for="parcel in parcels"
+                    :key="parcel.uuid"
+                    :value="parcel.uuid"
+                  >
+                    {{ parcel.parcel_name }}
+                  </option>
+                </select>
+              </div>
+              <div class="flex-1 flex flex-col">
+                <label class="mb-1">{{ t("crops") }}</label>
+                <select
+                  v-model="selectedCrop"
+                  class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]"
+                >
+                  <option
+                    v-for="crop in parcelCrops"
+                    :key="crop.id"
+                    :value="crop.name"
+                  >
+                    {{ crop.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
 
-        <!-- Modules / checkboxes -->
-        <div class="flex flex-wrap items-center gap-3 text-sm pt-1 border-t border-gray-200">
-          <label v-for="module in moduleKeys" :key="module" class="flex items-center gap-1">
-            <input type="checkbox" v-model="userModules[module]" class="w-3 h-3 accent-[#10b481]" />
-            <span class="capitalize">{{ module.replace('_', ' ') }}</span>
-          </label>
-        </div>
+            <div
+              class="flex flex-wrap items-center gap-3 text-sm pt-1 border-t border-gray-200"
+            >
+              <label
+                v-for="module in moduleKeys"
+                :key="module"
+                class="flex items-center gap-1"
+              >
+                <input
+                  type="checkbox"
+                  v-model="userModules[module]"
+                  class="w-3 h-3 accent-[#10b481]"
+                />
+                <span class="capitalize">{{ module.replace("_", " ") }}</span>
+              </label>
+            </div>
+          </div>
+        </transition>
       </div>
-    </transition>
-  </div>
-</div>
-
-
+    </div>
   </div>
 </template>
 
@@ -156,9 +174,15 @@ const languageStore = useLanguageStore();
 const t = (key: string) => translate[languageStore.lang][key] || key;
 const showOptions = ref(false);
 
-
+const parcelCrops = ref<any[]>([]);
 const parcels = ref<any[]>([]);
 const crops = ref<any[]>([]);
+const cachedParcels = useState<any[]>("cachedParcels", () => []);
+const cachedCrops = useState<any[]>("cachedCrops", () => []);
+const cachedParcelCrops = useState<Record<string, any[]>>(
+  "cachedParcelCrops",
+  () => ({})
+);
 const selectedParcel = ref("");
 const selectedCrop = ref("");
 const moduleKeys = [
@@ -185,23 +209,67 @@ onMounted(async () => {
     footerHeight.value = footer.value.offsetHeight + 10;
   }
 
-  // Charger parcelles et cultures
+  const token = sessionStorage.getItem("token");
+
+  if (!cachedParcels.value.length) {
+    try {
+      const parcelsRes = await axios.get(`${API_URL}/api/parcels/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      cachedParcels.value = parcelsRes.data;
+    } catch (err) {
+      console.error("Error fetching parcels:", err);
+      cachedParcels.value = [];
+    }
+  }
+  parcels.value = cachedParcels.value;
+
+  if (!cachedCrops.value.length) {
+    try {
+      const cropsRes = await axios.get(`${API_URL}/api/crops/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      cachedCrops.value = cropsRes.data;
+    } catch (err) {
+      console.error("Error fetching crops:", err);
+      cachedCrops.value = [];
+    }
+  }
+  crops.value = cachedCrops.value;
+});
+
+async function fetchParcelCrops(parcelId: string) {
+  if (!parcelId) {
+    parcelCrops.value = [];
+    return;
+  }
+
+  if (cachedParcelCrops.value[parcelId]) {
+    parcelCrops.value = cachedParcelCrops.value[parcelId];
+    return;
+  }
+
   const token = sessionStorage.getItem("token");
   try {
-    const [parcelsRes, cropsRes] = await Promise.all([
-      axios.get(`${API_URL}/api/parcels/`, {
-        headers: { Authorization: `Token ${token}` },
-      }),
-      axios.get(`${API_URL}/api/crops/`, {
-        headers: { Authorization: `Token ${token}` },
-      }),
-    ]);
+    const res = await axios.get(`${API_URL}/api/parcel-crops/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
 
-    parcels.value = parcelsRes.data;
-    crops.value = cropsRes.data;
+    const cropsForParcel = res.data
+      .filter((pc: any) => pc.parcel === parcelId)
+      .map((pc: any) => pc.crop);
+
+    cachedParcelCrops.value[parcelId] = cropsForParcel;
+    parcelCrops.value = cropsForParcel;
   } catch (err) {
-    console.error("Error fetching parcels or crops", err);
+    console.error("Error fetching parcel crops:", err);
+    parcelCrops.value = [];
   }
+}
+
+watch(selectedParcel, (newParcel) => {
+  fetchParcelCrops(newParcel);
+  selectedCrop.value = "";
 });
 
 const messages = ref<{ sender: string; text: string }[]>([]);
@@ -259,10 +327,12 @@ async function sendMessage(isSuggestion = false) {
     const payload = {
       question: userMessage,
       question_type: "general",
-      parcel_id: isSuggestion || !selectedParcel.value ? null : selectedParcel.value,
-      crop_name: isSuggestion || !selectedCrop.value ? null : selectedCrop.value,
+      parcel_id:
+        isSuggestion || !selectedParcel.value ? null : selectedParcel.value,
+      crop_name:
+        isSuggestion || !selectedCrop.value ? null : selectedCrop.value,
       user_modules:
-        isSuggestion || Object.values(userModules.value).every(v => !v)
+        isSuggestion || Object.values(userModules.value).every((v) => !v)
           ? {
               parcel: false,
               crop: false,
@@ -274,9 +344,13 @@ async function sendMessage(isSuggestion = false) {
           : userModules.value,
     };
 
-    const res = await axios.post(`${API_URL}/api/assistant-agronome/`, payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.post(
+      `${API_URL}/api/assistant-agronome/`,
+      payload,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     isLoading.value = false;
 
@@ -303,8 +377,6 @@ function askSuggestedQuestion(question: string) {
   inputMessage.value = question;
   sendMessage(true);
 }
-
-
 </script>
 
 <style scoped>
