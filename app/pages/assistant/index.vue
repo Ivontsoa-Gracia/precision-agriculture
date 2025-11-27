@@ -69,9 +69,7 @@
       ref="footer"
       class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-[900px] w-full bg-[#112830] rounded-lg border border-gray-300 shadow-md p-2 flex flex-col gap-2"
     >
-      <!-- Ligne de saisie + bouton -->
       <div class="flex w-full items-center gap-2 relative">
-        <!-- Champ de saisie -->
         <button
           @click="showOptions = !showOptions"
           class="bg-white/10 text-white p-2 px-3 rounded hover:bg-gray-300 transition"

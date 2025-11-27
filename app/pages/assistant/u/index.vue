@@ -3,7 +3,7 @@
     <div
       v-if="isMounted"
       ref="chatContainer"
-      class="flex-1 overflow-y-auto px-3 sm:px-4 pt-4 pb-28 space-y-3"
+      class="flex-1 overflow-y-auto px-3 sm:px-32 pt-4 pb-28 space-y-3"
     >
       <div
         v-for="(msg, index) in messages"
@@ -38,19 +38,21 @@
               class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"
             ></span>
           </span>
+          <span class="text-gray-500 text-sm ml-2"></span>
         </div>
       </div>
     </div>
 
     <div
       v-if="showWelcome && messages.length === 0"
-      class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 pointer-events-none px-4 top-48"
+      class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 pointer-events-none px-4 top-64 sm:px-24"
     >
       <h1
         class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in"
-        v-html="t('heroTitle')"
-      ></h1>
-
+      >
+        Bonjour ! Je suis Sesily, votre assistant agronome. Posez-moi vos
+        questions !
+      </h1>
       <div
         class="flex flex-wrap gap-2 sm:gap-3 justify-center pointer-events-auto"
       >
@@ -67,21 +69,20 @@
 
     <div
       ref="footer"
-      class="fixed bottom-10 left-1/2 -translate-x-1/2 max-w-[800px] w-full bg-gray-100 rounded border border-gray-400 shadow-lg flex items-center gap-2"
+      class="fixed bottom-10 left-1/2 p-2 -translate-x-1/2 max-w-[1000px] w-full bg-[#112830] rounded border border-gray-400 shadow-lg flex items-center gap-2"
     >
       <input
         v-model="inputMessage"
         @keyup.enter="sendMessage"
         type="text"
-        :placeholder="t('ask')"
-        class="flex-1 p-3 rounded px-6 text-sm sm:text-base outline-none bg-gray-100"
+        placeholder="Posez votre question..."
+        class="bg-transparent text-white flex-1 p-2 text-sm outline-none"
       />
-
       <button
         @click="sendMessage"
-        class="bg-[#10b481] text-white rounded p-3 hover:bg-[#0d946b] transition flex items-center justify-center mt-1 mr-1 mb-1"
+        class="bg-[#10b481] text-white rounded p-2 px-3 hover:bg-[#0d946b] transition flex items-center justify-center"
       >
-        <i class="bx bx-up-arrow-alt text-xl"></i>
+        <i class="bx bx-up-arrow-alt text-lg"></i>
       </button>
     </div>
   </div>
@@ -91,11 +92,6 @@
 import { ref, nextTick, onMounted } from "vue";
 import axios from "axios";
 import { API_URL } from "~/config";
-import { useLanguageStore } from "~/stores/language";
-import { translate } from "~/utils/translate";
-// definePageMeta({ layout: "dashboard" });
-const languageStore = useLanguageStore();
-const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const messages = ref<{ sender: string; text: string }[]>([]);
 const inputMessage = ref("");
@@ -103,16 +99,22 @@ const chatContainer = ref<HTMLElement | null>(null);
 const footer = ref<HTMLElement | null>(null);
 const isLoading = ref(false);
 const showWelcome = ref(true);
-const suggestedQuestions = ref(t("suggestedQuestions"));
-const footerHeight = ref(80);
+const suggestedQuestions = ref([
+  "Comment planter du maïs ?",
+  "Comment reconnaître une maladie des plantes ?",
+  "Quels sont les signes de carences en nutriments ?",
+  "Comment améliorer la fertilité du sol ?",
+  "Comment protéger mes plantes contre les insectes ?",
+  "Quels sont les meilleurs engrais pour le manioc ?",
+  "Comment faire une rotation des cultures ?",
+  "Comment savoir si une plante a besoin d’eau ?",
+  "Comment récolter correctement mes cultures ?",
+]);
+
 const isMounted = ref(false);
 
 onMounted(() => {
   isMounted.value = true;
-
-  if (footer.value) {
-    footerHeight.value = footer.value.offsetHeight + 10;
-  }
 });
 
 function formatMessage(text: string) {
@@ -126,16 +128,14 @@ function formatMessage(text: string) {
 async function sendMessage() {
   if (!inputMessage.value.trim()) return;
 
-  // Premier message de bienvenue
   if (showWelcome.value) {
     messages.value.push({
       sender: "ai",
-      text: t("welcomeMessage"),
+      text: "Bonjour ! Je suis votre assistant agricole. Comment puis-je vous aider ?",
     });
     showWelcome.value = false;
   }
 
-  // Ajouter le message utilisateur
   messages.value.push({ sender: "user", text: inputMessage.value });
   const userMessage = inputMessage.value;
   inputMessage.value = "";
@@ -148,20 +148,18 @@ async function sendMessage() {
 
   try {
     isLoading.value = true;
-
     const res = await axios.post(`${API_URL}/api/mistral-assistant/`, {
-      question: userMessage
+      question: userMessage,
     });
-
     messages.value.push({
       sender: "ai",
-      text: res.data.reponse || "Pas de réponse disponible."
+      text: res.data.reponse || "Pas de réponse disponible.",
     });
   } catch (err: any) {
-    console.error("Error API:", err);
+    console.error("Erreur API:", err);
     messages.value.push({
       sender: "ai",
-      text: "Erreur lors de la communication avec l'assistant."
+      text: "Erreur lors de la communication avec l’assistant.",
     });
   } finally {
     isLoading.value = false;
@@ -173,7 +171,6 @@ async function sendMessage() {
     behavior: "smooth",
   });
 }
-
 
 function askSuggestedQuestion(question: string) {
   inputMessage.value = question;
@@ -192,7 +189,6 @@ function askSuggestedQuestion(question: string) {
 .typing-dots span.delay-300 {
   animation-delay: 0.3s;
 }
-
 @keyframes bounce {
   from {
     transform: translateY(0);
@@ -203,7 +199,6 @@ function askSuggestedQuestion(question: string) {
     opacity: 1;
   }
 }
-
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -214,7 +209,6 @@ function askSuggestedQuestion(question: string) {
     transform: translateY(0);
   }
 }
-
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
 }

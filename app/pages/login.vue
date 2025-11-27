@@ -95,7 +95,7 @@
           <p class="text-lg md:text-xl mb-6 text-gray-200">
             {{ slide.text }}
           </p>
-          <!-- <NuxtLink
+          <NuxtLink
             :to="slide.link"
             class="inline-flex items-center gap-2 text-white"
           >
@@ -103,7 +103,7 @@
               Learn More
             </span>
             <i class="bx bx-right-arrow-alt text-lg"></i>
-          </NuxtLink> -->
+          </NuxtLink>
 
           <div class="mb-24"></div>
         </div>
