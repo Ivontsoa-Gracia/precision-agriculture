@@ -354,6 +354,8 @@ export const translate = {
     moyenne: "Average",
     cultureSansDonnees: "Crops without data",
     culture: "Crop",
+    soil: "Soil",
+    weather: "Weather",
   },
   fr: {
     dashboard: "Tableau",
@@ -712,6 +714,8 @@ export const translate = {
     moyenne: "Moyenne",
     cultureSansDonnees: "Cultures sans données",
     culture: "cultures",
+    soil: "Sol",
+    weather: "Météo",
   },
   mg: {
     dashboard: "Tabilao",
@@ -1069,5 +1073,7 @@ export const translate = {
     moyenne: "Salan'isa",
     cultureSansDonnees: "Fambolena tsy misy angona",
     culture: "fambolena",
+    soil: "Tany",
+    weather: "Toetr’andro",
   },
 };

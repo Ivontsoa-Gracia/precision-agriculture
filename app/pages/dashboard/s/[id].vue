@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 pt-12 max-w-full">
+<div class="p-6 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 pt-12 w-full max-w-[100vw] overflow-x-hidden">
     <WeatherData />
     <YieldAnalitics />
 
@@ -61,7 +61,7 @@
           <div
             class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
           >
-            <p class="text-5xl font-extrabold text-gray-700">
+            <p class="text-5xl font-extrabold text-[#112830]">
               {{ taskCompletionRate }}%
             </p>
             <span class="mt-2 text-xs text-gray-500 font-medium">{{

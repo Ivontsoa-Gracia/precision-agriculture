@@ -126,6 +126,7 @@ function formatMessage(text: string) {
 async function sendMessage() {
   if (!inputMessage.value.trim()) return;
 
+  // Premier message de bienvenue
   if (showWelcome.value) {
     messages.value.push({
       sender: "ai",
@@ -134,6 +135,7 @@ async function sendMessage() {
     showWelcome.value = false;
   }
 
+  // Ajouter le message utilisateur
   messages.value.push({ sender: "user", text: inputMessage.value });
   const userMessage = inputMessage.value;
   inputMessage.value = "";
@@ -146,30 +148,23 @@ async function sendMessage() {
 
   try {
     isLoading.value = true;
-    const token = sessionStorage.getItem("token");
-    const res = await axios.post(
-      `${API_URL}/api/assistant-agronome/`,
-      {
-        question: userMessage,
-        question_type: "general",
-        parcel_id: null,
-        crop_name: null,
-        user_modules: {},
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
 
-    isLoading.value = false;
-    messages.value.push({ sender: "ai", text: res.data.answer });
-  } catch (err: any) {
-    console.error("Error API :", err);
-    isLoading.value = false;
+    const res = await axios.post(`${API_URL}/api/mistral-assistant/`, {
+      question: userMessage
+    });
+
     messages.value.push({
       sender: "ai",
-      text: "Error while communicating with the assistant.",
+      text: res.data.reponse || "Pas de réponse disponible."
     });
+  } catch (err: any) {
+    console.error("Error API:", err);
+    messages.value.push({
+      sender: "ai",
+      text: "Erreur lors de la communication avec l'assistant."
+    });
+  } finally {
+    isLoading.value = false;
   }
 
   await nextTick();
@@ -178,6 +173,7 @@ async function sendMessage() {
     behavior: "smooth",
   });
 }
+
 
 function askSuggestedQuestion(question: string) {
   inputMessage.value = question;

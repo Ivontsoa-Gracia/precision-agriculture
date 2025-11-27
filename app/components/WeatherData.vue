@@ -36,7 +36,7 @@
         </div>
         <div class="bg-gray-100 rounded p-4 text-center">
           <p class="text-sm text-gray-500">{{ t("precipitation") }}</p>
-          <p class="text-xl font-bold">{{ forecast.total_precipitation }} mm</p>
+          <p class="text-xl font-bold">{{ forecast.total_precipitation.toFixed(2) }} mm</p>
         </div>
         <div class="bg-gray-100 rounded p-4 text-center">
           <p class="text-sm text-gray-500">{{ t("alertAgricole") }}</p>

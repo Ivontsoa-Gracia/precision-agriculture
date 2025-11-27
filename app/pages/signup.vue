@@ -12,7 +12,7 @@
           class="w-10 h-10 object-contain"
         />
         <div class="flex flex-col">
-          <h1 class="text-md font-bold text-gray-800">Smartsaha</h1>
+          <h1 class="text-md font-bold text-[#112830]">Smartsaha</h1>
           <p class="text-gray-500 text-xs">Nurture Data, Harvest Impact.</p>
         </div>
       </div>
@@ -69,7 +69,7 @@
           <p class="text-lg md:text-xl mb-6 text-gray-200">
             {{ slide.text }}
           </p>
-          <NuxtLink
+          <!-- <NuxtLink
             :to="slide.link"
             class="inline-flex items-center gap-2 text-white"
           >
@@ -77,7 +77,7 @@
               Learn More
             </span>
             <i class="bx bx-right-arrow-alt text-lg"></i>
-          </NuxtLink>
+          </NuxtLink> -->
 
           <div class="mb-6"></div>
         </div>

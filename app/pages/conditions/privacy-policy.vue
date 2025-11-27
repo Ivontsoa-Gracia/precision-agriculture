@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen text-[#141414]/90 py-14 px-6 md:px-20">
+  <div class="min-h-screen text-[#141414]/90 py-6 sm:py-14 px-2 sm:px-6 md:px-20">
     <div class="max-w-5xl mx-auto p-8 md:p-12 bg-white">
       <router-link
         to="/help"
