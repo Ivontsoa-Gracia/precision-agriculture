@@ -130,7 +130,7 @@
                   class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]"
                 >
                   <option
-                    v-for="crop in parcelCrops"
+                    v-for="crop in crops"
                     :key="crop.id"
                     :value="crop.name"
                   >
