@@ -95,15 +95,17 @@
           <p class="text-lg md:text-xl mb-6 text-gray-200">
             {{ slide.text }}
           </p>
-          <NuxtLink
-            :to="slide.link"
+          <a
+            :href="$router.resolve(slide.link).href"
+            target="_blank"
+            rel="noopener noreferrer"
             class="inline-flex items-center gap-2 text-white"
           >
-            <span class="underline decoration-1 decoration-white">
-              Learn More
-            </span>
+            <span class="underline decoration-1 decoration-white"
+              >Learn More</span
+            >
             <i class="bx bx-right-arrow-alt text-lg"></i>
-          </NuxtLink>
+          </a>
 
           <div class="mb-24"></div>
         </div>

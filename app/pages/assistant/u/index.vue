@@ -108,7 +108,6 @@ const suggestedQuestions = ref([
   "Quels sont les meilleurs engrais pour le manioc ?",
   "Comment faire une rotation des cultures ?",
   "Comment savoir si une plante a besoin d’eau ?",
-  "Comment récolter correctement mes cultures ?",
 ]);
 
 const isMounted = ref(false);
