@@ -24,23 +24,23 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 p-4 text-sm rounded flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-500 ">
               {{ t("parcel") }}
             </p>
-            <p class="font-semibold text-gray-800">
+            <p class="font-medium text-gray-800">
               {{ parcelCrop.parcel_name }}
             </p>
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 p-4 text-sm rounded flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-500">
               {{ t("crop") }}
             </p>
-            <p class="font-semibold text-gray-800">
+            <p class="font-medium text-gray-800">
               {{ parcelCrop.crop?.name }} ({{
                 parcelCrop.crop?.variety?.name || "-"
               }})
@@ -48,23 +48,23 @@
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-500 ">
               {{ t("plantingdate") }}
             </p>
-            <p class="font-semibold text-gray-800">
+            <p class="font-medium text-gray-800">
               {{ formatDate(parcelCrop.planting_date) }}
             </p>
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
           <div>
             <p class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("harvestdate") }}
             </p>
-            <p class="font-semibold text-gray-800">
+            <p class="font-medium text-gray-800">
               {{
                 parcelCrop.harvest_date
                   ? formatDate(parcelCrop.harvest_date)
@@ -74,39 +74,41 @@
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
           <div>
             <p class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("area") }} (m²)
             </p>
-            <p class="font-semibold text-gray-800">{{ parcelCrop.area }}</p>
+            <p class="font-medium text-gray-800">{{ parcelCrop.area }}</p>
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-500 text-sm mb-2">
               {{ t("status") }}
             </p>
             <span
-              :class="[
-                'px-3 py-1 rounded-full text-xs font-semibold',
-                statusColorClass(parcelCrop.status?.name),
-              ]"
-            >
-              {{ parcelCrop.status?.name || "-" }}
-            </span>
+                v-if="parcelCrop.status?.name"
+                :class="[
+                  'px-3 py-1 rounded-full text-xs',
+                  statusClasses(parcelCrop.status.name),
+                ]"
+              >
+                {{ t(cropStatusKeyMap[parcelCrop.status.name]) }}
+              </span>
+              <span v-else>-</span>
           </div>
         </div>
 
         <div
-          class="border border-gray-100 p-4 rounded flex items-center gap-3 col-span-1 md:col-span-2"
+          class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3 col-span-1 md:col-span-2"
         >
           <div>
             <p class="uppercase tracking-wide text-gray-500 text-sm">
               {{ t("createdat") }}
             </p>
-            <p class="font-semibold text-gray-800">
+            <p class="font-medium text-gray-800">
               {{ formatDate(parcelCrop.created_at) }}
             </p>
           </div>
@@ -116,7 +118,7 @@
 
     <div
       v-if="forecastData"
-      class="w-full md:w-1/3 bg-[#222831] rounded shadow-sm p-6 flex flex-col items-center text-white"
+      class="w-full md:w-1/3 bg-[#112830] rounded shadow-sm p-6 flex flex-col items-center text-white"
     >
       <div
         class="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded bg-[#f4a261]/20"
@@ -131,7 +133,7 @@
       </h3>
       <p class="mt-2 text-center text-gray-300">
         {{ t("forecastdate") }}:
-        <span class="font-semibold text-gray-200">{{
+        <span class="font-medium text-gray-200">{{
           formatDate(forecastData.forecast_date)
         }}</span>
       </p>
@@ -167,6 +169,19 @@ const chartRef = ref<HTMLCanvasElement | null>(null);
 let chartInstance: Chart | null = null;
 
 const isLoading = ref(false);
+
+const cropStatusKeyMap: Record<string, string> = {
+  Planned: "cropStatusPlanned",
+  Planted: "cropStatusPlanted",
+  Germinated: "cropStatusGerminated",
+  Growing: "cropStatusGrowing",
+  Flowering: "cropStatusFlowering",
+  Fruiting: "cropStatusFruiting",
+  Mature: "cropStatusMature",
+  Harvested: "cropStatusHarvested",
+  "Post-Harvest": "cropStatusPostHarvest",
+  Failed: "cropStatusFailed",
+};
 
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
@@ -282,20 +297,30 @@ const goBack = () => {
   router.push("/parcel-crops");
 };
 
-const statusColorClass = (status: string | undefined) => {
-  switch (status) {
+const statusClasses = (statusName: string) => {
+  switch (statusName) {
     case "Planned":
-      return "bg-gray-200 text-gray-800";
+      return "bg-[#219ebc]/10 text-[#219ebc] border border-[#219ebc]/50";
     case "Planted":
-      return "bg-blue-100 text-blue-700";
+      return "bg-[#10b481]/10 text-[#10b481] border border-[#10b481]/50";
+    case "Germinated":
+      return "bg-[#5fd4a2]/10 text-[#0c9069] border border-[#0c9069]/40";
     case "Growing":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-[#c99383]/10 text-[#c99383] border border-[#c99383]/50";
+    case "Flowering":
+      return "bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]/50";
+    case "Fruiting":
+      return "bg-[#6d4c41]/10 text-[#6d4c41] border border-[#6d4c41]/40";
+    case "Mature":
+      return "bg-[#10b481]/10 text-[#0c9069] border border-[#10b481]/40";
     case "Harvested":
-      return "bg-green-100 text-green-700";
+      return "bg-[#222831]/10 text-[#222831] border border-[#222831]/40";
+    case "Post-Harvest":
+      return "bg-[#7a7a7a]/10 text-[#7a7a7a] border border-[#7a7a7a]/40";
     case "Failed":
-      return "bg-red-100 text-red-700";
+      return "bg-[#e63946]/10 text-[#e63946] border border-[#e63946]/50";
     default:
-      return "bg-gray-100 text-gray-700";
+      return "bg-gray-100 text-gray-600 border border-gray-300";
   }
 };
 </script>

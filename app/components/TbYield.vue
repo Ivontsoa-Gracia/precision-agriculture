@@ -1,62 +1,67 @@
 <template>
-  <div>
-    <h2
-      class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+  <div class="">
+
+    <div class="flex items-center justify-between mb-16 hidden">
+      <h2
+      class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2"
     >
-      <i class="bxr bx-list-ul text-2xl sm:text-3xl"></i>
       {{ t("yieldlist") }}
     </h2>
 
+      <button
+        @click="goToCreate"
+        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+      >
+        <i class="bx bx-plus"></i> {{ t("add") }}
+      </button>
+    </div>
+
     <div class="hidden md:block overflow-x-auto bg-white">
       <table class="min-w-[700px] w-full text-left border-collapse">
-        <thead class="bg-gray-100 text-gray-800">
+        <thead class="bg-[#FAFAF9]">
           <tr>
-            <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
-            <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
-            <th class="px-6 py-2 border-b">{{ t("area") }} (m²)</th>
-            <th class="px-6 py-2 border-b">{{ t("crop") }}</th>
-            <th class="px-6 py-2 border-b">{{ t("thyield") }}</th>
-            <th class="px-6 py-2 border-b text-center">{{ t("thactions") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("thdate") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("thparcelname") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("area") }} (m²)</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("crop") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("thyield") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center">{{ t("thactions") }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="y in paginatedYields"
-            :key="y.id"
-            class="hover:bg-gray-50 text-gray-800"
-          >
-            <td class="px-6 py-2 border-b">{{ y.date }}</td>
-            <td class="px-6 py-2 border-b">{{ y.parcel_name || "-" }}</td>
-            <td class="px-6 py-2 border-b">{{ y.area }}</td>
-            <td class="px-6 py-2 border-b">
+          <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
+            <td class="px-6 py-2 border-b text-sm text-gray-900">{{ formatDate(y.date) }}</td>
+            <td class="px-6 py-2 border-b text-sm text-gray-900">{{ y.parcel_name || "-" }}</td>
+            <td class="px-6 py-2 border-b text-sm text-gray-900">{{ y.area }}</td>
+            <td class="px-6 py-2 border-b text-sm text-gray-900">
               {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : "-" }}
             </td>
-            <td class="px-6 py-2 border-b">{{ y.yield_amount }}</td>
+            <td class="px-6 py-2 border-b text-sm text-gray-900">{{ y.yield_amount }}</td>
             <td
-              class="px-6 py-2 border-b text-center flex justify-center gap-2"
+              class="px-6 py-3 border-b text-sm text-gray-900 text-center flex justify-center gap-2"
             >
               <button
                 @click="goToShow(y.id)"
-                class="p-2 rounded-full hover:bg-[#10b481]/20"
+                class="p-1 px-2 rounded hover:bg-[#10b481]/20"
               >
-                <i class="bx bx-show text-[#10b481] text-xl"></i>
+                <i class="bx bx-show text-[#10b481] text-lg"></i>
               </button>
               <button
                 @click="goToEdit(y.id)"
-                class="p-2 rounded-full hover:bg-[#f4a261]/10"
+                class="p-1 px-2 rounded hover:bg-[#f4a261]/10"
               >
-                <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+                <i class="bx bx-edit text-[#f4a261] text-lg"></i>
               </button>
               <button
                 @click="deleteYield(y.id)"
-                class="p-2 rounded-full hover:bg-[#e63946]/10"
+                class="p-1 px-2 rounded hover:bg-[#e63946]/10"
               >
-                <i class="bx bx-trash text-[#e63946] text-xl"></i>
+                <i class="bx bx-trash text-[#e63946] text-lg"></i>
               </button>
             </td>
           </tr>
           <tr v-if="yields.length === 0">
-            <td colspan="6" class="p-6 text-center text-gray-500">
+            <td colspan="6" class="p-6 text-center text-sm text-gray-500">
               {{ t("noyieldfound") }}
             </td>
           </tr>
@@ -77,26 +82,26 @@
           <div class="flex gap-1">
             <button
               @click="goToShow(y.id)"
-              class="p-2 rounded-full hover:bg-[#10b481]/20"
+              class="p-2 rounded hover:bg-[#10b481]/20"
             >
               <i class="bx bx-show text-[#10b481] text-md"></i>
             </button>
             <button
               @click="goToEdit(y.id)"
-              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              class="p-2 rounded hover:bg-[#f4a261]/10"
             >
               <i class="bx bx-edit text-[#f4a261] text-md"></i>
             </button>
             <button
               @click="deleteYield(y.id)"
-              class="p-2 rounded-full hover:bg-[#e63946]/10"
+              class="p-2 rounded hover:bg-[#e63946]/10"
             >
               <i class="bx bx-trash text-[#e63946] text-md"></i>
             </button>
           </div>
         </div>
         <p>
-          <span class="font-semibold">{{ t("thdate") }}:</span> {{ y.date }}
+          <span class="font-semibold">{{ t("thdate") }}:</span> {{ formatDate(y.date) }}
         </p>
         <p>
           <span class="font-semibold">{{ t("area") }}:</span> {{ y.area }}
@@ -110,44 +115,78 @@
           {{ y.yield_amount }}
         </p>
       </div>
-      <p v-if="yields.length === 0" class="text-center text-gray-500">
+      <p v-if="yields.length === 0" class="text-center text-sm text-gray-500">
         {{ t("noyieldfound") }}
       </p>
     </div>
-    <div class="flex justify-between items-center mt-4 mb-2 text-sm sm:text-md">
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 1"
-        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-      >
-        <i class="bx bx-chevron-left"></i> {{ t("prev") }}
-      </button>
-
-      <div class="flex items-center space-x-2">
+    <div
+      class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
+    >
+      <div class="flex-1 flex justify-between sm:hidden">
         <button
-          v-for="page in visiblePages"
-          :key="page"
-          @click="goToPage(page)"
-          :class="[
-            'px-3 py-1 rounded',
-            currentPage === page
-              ? 'bg-[#10b481] text-white'
-              : 'bg-gray-100 hover:bg-gray-200',
-          ]"
-          v-if="page !== '...'"
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
         >
-          {{ page }}
+          {{ t("prev") }}
         </button>
-        <span v-else class="px-2">...</span>
+        <button
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+        >
+          {{ t("next") }}
+        </button>
       </div>
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            {{ t('affichage') }} <span class="font-medium">{{ currentPage }}</span> {{ t('a') }}
+            <span class="font-medium">{{ totalPages }}</span> {{ t('sur') }}
+            <span class="font-medium">{{ result }}</span> {{ t('résultats') }}
+          </p>
+        </div>
+        <div>
+          <nav
+            class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+            aria-label="Pagination"
+          >
+            <button
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span class="sr-only">{{ t("prev") }}</span>
+              <i class="bx bx-chevron-left"></i>
+            </button>
 
-      <button
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-        class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-      >
-        {{ t("next") }} <i class="bx bx-chevron-right"></i>
-      </button>
+            <button
+              v-for="page in visiblePages"
+              :key="page"
+              @click="goToPage(page)"
+              :class="[
+                'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                currentPage === page
+                  ? 'z-10 bg-[#10b481]/10 border-[#10b481] text-[#10b481]'
+                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
+              ]"
+              v-if="page !== '...'"
+            >
+              {{ page }}
+            </button>
+            <span v-else class="px-2">...</span>
+
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span class="sr-only">{{ t("next") }}</span>
+              <i class="bx bx-chevron-right"></i>
+            </button>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -208,6 +247,8 @@ async function fetchParcelCrop(id, token) {
   }
 }
 
+const result = ref(0);
+
 async function fetchYields() {
   const token = sessionStorage.getItem("token");
   if (!token) {
@@ -221,6 +262,7 @@ async function fetchYields() {
     now - yieldsState.value.timestamp < 30 * 60 * 1000
   ) {
     yields.value = yieldsState.value.data;
+    result.value = yields.value.length;
     return;
   }
 
@@ -240,7 +282,7 @@ async function fetchYields() {
     );
 
     yields.value = yieldsWithParcelCrop;
-
+    result.value = data.length;
     yieldsState.value = { data: yields.value, timestamp: Date.now() };
   } catch (err) {
     console.error(err);
@@ -297,4 +339,26 @@ const visiblePages = computed(() =>
 );
 
 onMounted(fetchYields);
+
+onMounted(() => {
+  if (router.currentRoute.value.query.refresh) {
+    yields.value = yieldsState.value.data;
+    if (
+      !yields.value.length ||
+      Date.now() - yieldsState.value.timestamp > 30 * 60 * 1000
+    ) {
+      fetchYields();
+    }
+  }
+});
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(languageStore.lang === "fr" ? "fr-FR" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
 </script>

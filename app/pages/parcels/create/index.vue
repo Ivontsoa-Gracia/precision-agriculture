@@ -1,7 +1,9 @@
 <template>
+    <Breadcrumb />
   <div
     class="p-1 sm:p-6 flex flex-col lg:flex-row gap-12 relative mb-10 sm:mb-1"
   >
+
     <div class="w-full lg:w-2/5 space-y-4">
       <div
         class="overflow-hidden rounded border border-[#f4a261]/40 bg-[#f4a261]/10 text-[#5a3210] shadow-sm mb-12"
@@ -10,7 +12,7 @@
           class="px-2 sm:px-4 py-2 cursor-pointer select-none flex justify-between items-center"
           @click="showInstructions = !showInstructions"
         >
-          <h3 class="font-semibold text-[#f4a261] text-lg">
+          <h3 class="font-semibold text-[#f4a261] text-md">
             {{ t("instructions") }}
           </h3>
           <i
@@ -171,57 +173,44 @@
       <div id="map" class="h-full w-full rounded"></div>
     </div>
 
-    <div
+    <!-- <div
       v-if="isLoading"
       class="absolute inset-0 bg-black/50 flex items-center justify-center"
     >
       <div
         class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
       ></div>
-    </div>
+    </div> -->
 
-    <transition name="fade">
+    <transition name="slide-right">
       <div
         v-if="notification.visible"
-        class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
+        class="fixed bottom-4 right-4 z-[9999] bg-[#112830] rounded shadow-xl px-6 py-4 flex items-center gap-4 w-80 text-left border-l-4 transition-all duration-300"
+        :class="
+          notification.type === 'success'
+            ? 'border-[#10b481]'
+            : 'border-red-500'
+        "
       >
         <div
-          :class="[
-            'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
-            notification.type === 'success'
-              ? 'border-t-4 border-[#10b481]'
-              : 'border-t-4 border-red-500',
-          ]"
+          :class="
+            notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500'
+          "
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl"
         >
-          <div
-            v-if="notification.type === 'success'"
-            class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
-          >
-            <i class="bx bx-check text-4xl font-extrabold text-white"></i>
-          </div>
-          <div
-            v-else
-            class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
-          >
-            <i class="bx bx-x text-4xl font-extrabold text-white"></i>
-          </div>
-
-          <p
-            :class="[
-              'text-lg font-semibold',
-              notification.type === 'success'
-                ? 'text-[#10b481]'
-                : 'text-red-500',
-            ]"
-          >
+          <i
+            :class="notification.type === 'success' ? 'bx bx-check' : 'bx bx-x'"
+          ></i>
+        </div>
+        <div>
+          <p class="font-medium text-sm text-gray-100">
             {{ notification.message }}
           </p>
-
-          <p class="text-gray-500 text-sm">
+          <p class="text-gray-300 text-xs">
             {{
               notification.type === "success"
-                ? "Redirecting to your dashboard..."
-                : "Please try again."
+                ? "Success!"
+                : "Something went wrong."
             }}
           </p>
         </div>
@@ -231,6 +220,8 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: "dashboard" });
+import { API_URL } from "~/config";
 import { reactive, ref, onMounted } from "vue";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
@@ -239,6 +230,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { useRouter } from "vue-router";
+import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const router = useRouter();
 
@@ -248,8 +240,6 @@ const showInstructions = ref(false);
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
-definePageMeta({ layout: "dashboard" });
-import { API_URL } from "~/config";
 
 const isLoading = ref(false);
 const notification = ref({ visible: false, message: "", type: "success" });
@@ -526,5 +516,27 @@ const formatM2 = (areaInHa) => {
 #map {
   height: 100%;
   width: 100%;
+}
+.slide-right-enter-active {
+  transition: all 0.4s ease-out;
+}
+.slide-right-leave-active {
+  transition: all 0.3s ease-in;
+}
+.slide-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-right-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>

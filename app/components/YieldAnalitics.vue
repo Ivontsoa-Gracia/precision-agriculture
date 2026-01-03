@@ -30,57 +30,40 @@
 
 
     <div class="flex flex-col md:flex-row gap-6">
-      <div class="flex-1 h-64 md:h-64 bg-white">
+      <div class="flex-1 h-64 md:h-72 bg-white">
         <canvas ref="yieldCanvas"></canvas>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-        <div class="relative gap-4 p-3 bg-gray-100 rounded shadow-sm transition border border-gray-100 text-center">
-          <h3 class="text-gray-500 tracking-wide text-sm">
-            {{ t("totalyield") }}
-          </h3>
-          <p class="text-lg font-bold text-gray-800">{{ totalYield.toFixed(2) }}</p>
-        </div>
-        <div class="relative gap-4 p-3 bg-gray-100 rounded shadow-sm transition border border-gray-100 text-center">
-          <h3 class="text-gray-500 tracking-wide text-sm">
-            {{ t("averageyield") }} (kg)
-          </h3>
-          <p class="text-lg font-bold text-gray-800">
-            {{ averageYield.toFixed(2) }}
-          </p>
-        </div>
-        <div class="relative gap-4 p-3 bg-gray-100 rounded shadow-sm transition border border-gray-100 text-center">
-          <h3 class="text-gray-500 tracking-wide text-sm">
-            {{ t("cumulativeYield") }} (kg)
-          </h3>
-          <p class="text-lg font-bold text-gray-800">
-            {{ cumulativeYield.toFixed(2) }} 
-          </p>
-        </div>
-        <div class="relative gap-4 p-3 bg-gray-100 rounded shadow-sm transition border border-gray-100 text-center">
-          <h3 class="text-gray-500 tracking-wide text-sm">
-            {{ t("volatility") }} 
-          </h3>
-          <p class="text-lg font-bold text-gray-800">
-            {{ volatility.toFixed(2) }} 
-          </p>
-        </div>
-        <div class="relative gap-4 p-3 bg-gray-100 rounded shadow-sm transition border border-gray-100 text-center">
-          <h3 class="text-gray-500 tracking-wide text-sm">
-            {{ t("yieldRelative") }}
-          </h3>
-          <p class="text-lg font-bold text-gray-800">
-            {{ relativeYield }}  %
-          </p>
-        </div>
-        <div
-          class="p-3 border border-[#f4a261]/80 bg-[#f4a261]/10 rounded text-center"
-        >
-          <h3 class="text-gray-500 tracking-wide text-sm text-[#f4a261]/80">
-            {{ t("anomalies") }}
-          </h3>
-          <p class="text-lg font-bold text-[#f4a261]">{{ anomalies.length }}</p>
-        </div>
+        <div class="p-4 bg-white rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-gray-500 text-xs uppercase tracking-wide">{{ t("totalyield") }}</h3>
+      <p class="text-xl font-bold text-gray-800 mt-1">{{ totalYield.toFixed(2) }}</p>
+    </div>
+
+    <div class="p-4 bg-white rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-gray-500 text-xs uppercase tracking-wide">{{ t("averageyield") }} (kg)</h3>
+      <p class="text-xl font-bold text-gray-800 mt-1">{{ averageYield.toFixed(2) }}</p>
+    </div>
+
+    <div class="p-4 bg-white rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-gray-500 text-xs uppercase tracking-wide">{{ t("cumulativeYield") }} (kg)</h3>
+      <p class="text-xl font-bold text-gray-800 mt-1">{{ cumulativeYield.toFixed(2) }}</p>
+    </div>
+
+    <div class="p-4 bg-white rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-gray-500 text-xs uppercase tracking-wide">{{ t("volatility") }}</h3>
+      <p class="text-xl font-bold text-gray-800 mt-1">{{ volatility.toFixed(2) }}</p>
+    </div>
+
+    <div class="p-4 bg-white rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-gray-500 text-xs uppercase tracking-wide">{{ t("yieldRelative") }}</h3>
+      <p class="text-xl font-bold text-gray-800 mt-1">{{ relativeYield.toFixed(2) }} %</p>
+    </div>
+
+    <div class="p-4 bg-[#f4a261]/10 border border-[#f4a261]/50 rounded shadow hover:shadow-lg transition text-center">
+      <h3 class="text-[#f4a261]/80 text-xs uppercase tracking-wide">{{ t("anomalies") }}</h3>
+      <p class="text-lg font-bold text-[#f4a261] mt-1">{{ anomalies.length }}</p>
+    </div>
       </div>
     </div>
   </div>
