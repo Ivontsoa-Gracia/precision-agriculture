@@ -39,7 +39,7 @@
       <button
         @click="markTasksDone"
         :disabled="selectedTasks.length === 0"
-        class="px-4 py-2 bg-[#10b481] text-white rounded disabled:opacity-0"
+        class="px-4 py-2 bg-[#10b481] text-sm text-white rounded disabled:opacity-0"
       >
         {{ t("markDone") }}
       </button>
@@ -47,14 +47,14 @@
 
     <div class="hidden md:block overflow-x-auto bg-white">
       <table class="min-w-[700px] w-full text-left border-collapse">
-        <thead class="bg-gray-100 text-gray-800">
+        <thead class="bg-[#FAFAF9]">
           <tr>
-            <th class="px-14 py-2 border-b">{{ t("taskname") }}</th>
-            <th class="px-6 py-2 border-b">{{ t("due") }}</th>
-            <th class="px-6 py-2 border-b">{{ t("parcelcrop") }}</th>
-            <th class="px-6 py-2 border-b text-center">{{ t("priority") }}</th>
-            <th class="px-6 py-2 border-b text-center">{{ t("status") }}</th>
-            <th class="px-6 py-2 border-b text-center">{{ t("thactions") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("taskname") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("due") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">{{ t("parcelcrop") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center">{{ t("priority") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center">{{ t("status") }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center">{{ t("thactions") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -63,7 +63,7 @@
             :key="task.id"
             class="hover:bg-gray-50 text-gray-800"
           >
-            <td class="px-6 py-2 border-b">
+            <td class="px-6 py-2 border-b text-sm text-gray-900">
               <div class="flex items-center gap-3">
                 <label
                   v-if="statuses[task.status] !== 'Done'"
@@ -128,19 +128,19 @@
             </td>
 
             <td
-              class="px-6 py-2 border-b"
+              class="px-6 py-2 border-b text-sm text-gray-900"
               :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
             >
               {{ new Date(task.due_date).toLocaleDateString() }}
             </td>
 
             <td
-              class="px-6 py-2 border-b"
+              class="px-6 py-2 border-b text-sm text-gray-900"
               :class="statuses[task.status] === 'Done' ? 'text-gray-500' : ''"
             >
               {{ task.parcelCropFull || "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-center">
+            <td class="px-6 py-2 border-b text-sm text-gray-900 text-center">
               <span
                 v-if="priorities[task.priority]"
                 :class="[
@@ -156,7 +156,7 @@
               </span>
               <span v-else>-</span>
             </td>
-            <td class="px-6 py-2 border-b text-center">
+            <td class="px-6 py-2 border-b text-sm text-gray-900 text-center">
               <span
                 v-if="statuses[task.status]"
                 :class="[
@@ -212,28 +212,28 @@
       <div
         v-for="task in paginatedTasks"
         :key="task.id"
-        class="bg-white p-4 rounded-xl shadow flex flex-col gap-3 hover:shadow-lg transition"
+        class="bg-white p-4 rounded-xl shadow flex flex-col gap-2 hover:shadow-lg transition"
       >
         <div class="flex justify-between items-start">
           <h3 class="font-bold text-[#212121] text-lg">{{ task.name }}</h3>
           <div class="flex gap-2">
             <button
               @click="showTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#10b481]/20"
+              class="py-1 px-2 rounded-full hover:bg-[#10b481]/20"
             >
-              <i class="bx bx-show text-[#10b481] text-xl"></i>
+              <i class="bx bx-show text-[#10b481] text-lg"></i>
             </button>
             <button
               @click="editTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#f4a261]/10"
+              class="py-1 px-2 rounded-full hover:bg-[#f4a261]/10"
             >
-              <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+              <i class="bx bx-edit text-[#f4a261] text-lg"></i>
             </button>
             <button
               @click="deleteTask(task.id)"
-              class="p-2 rounded-full hover:bg-[#e63946]/10"
+              class="py-1 px-2 rounded-full hover:bg-[#e63946]/10"
             >
-              <i class="bx bx-trash text-[#e63946] text-xl"></i>
+              <i class="bx bx-trash text-[#e63946] text-lg"></i>
             </button>
           </div>
         </div>

@@ -17,6 +17,7 @@
 
       <form @submit.prevent="submit" class="space-y-4">
         <div v-for="field in fields" :key="field" class="relative">
+          <div class="relative">
           <i
             :class="
               icons[field] +
@@ -52,6 +53,17 @@
             @click="togglePassword"
           ></i>
         </div>
+
+          <p v-if="errors[field]" class="text-red-500 text-sm mt-2 flex items-center gap-1">
+            <i class="bx bx-error-circle text-red-500"></i>
+            {{ errors[field] }}
+          </p>
+
+        </div>
+
+        <p v-if="errors.general" class="text-red-500 text-sm mt-2 text-center">
+          {{ errors.general }}
+        </p>
 
         <div
           v-if="
@@ -114,6 +126,7 @@ const props = defineProps<{
   buttonText: string;
   fields: string[];
   passwordLabel?: string;
+  errors?: any;
 }>();
 
 const emit = defineEmits<{
@@ -153,6 +166,20 @@ function getInputType(field: string) {
       : "password"
     : "text";
 }
+const errors = reactive<Record<string, string>>({ ...props.errors });
+
+// Watch pour mettre à jour les erreurs quand elles changent côté parent
+watch(
+  () => props.errors,
+  (newErrors) => {
+    if (!newErrors) return;
+    // Supprime d'abord les anciennes clés
+    Object.keys(errors).forEach((key) => delete errors[key]);
+    // Copie les nouvelles
+    Object.assign(errors, newErrors);
+  },
+  { deep: true, immediate: true } // immediate: prend en compte les erreurs au montage
+);
 
 function submit() {
   emit("submit", { ...formData });

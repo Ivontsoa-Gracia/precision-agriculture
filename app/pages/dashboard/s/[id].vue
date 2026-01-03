@@ -203,7 +203,7 @@
         href="#"
         @click.prevent="selectMenu(menu.name)"
         :class="[
-          'relative px-3 py-2 font-medium transition-colors after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-[#10b481] after:transition-all hover:after:w-full focus:after:w-full',
+          'relative px-3 py-2 font-medium transition-colors text-sm after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-[#10b481] after:transition-all hover:after:w-full focus:after:w-full',
           activeMenu === menu.name
             ? 'text-[#10b481] after:w-full'
             : 'text-gray-800',
@@ -215,9 +215,9 @@
 
     <button
       @click="goToAddPage"
-      class="flex items-center gap-2 bg-[#10b481] hover:bg-[#10b481] focus:bg-[#10b481] text-white px-4 py-2 rounded transition"
+      class="flex items-center gap-2 bg-[#10b481] text-sm hover:bg-[#10b481] focus:bg-[#10b481] text-white px-4 py-2 rounded transition"
     >
-      <i class="bx bx-plus text-lg"></i>
+      <i class="bx bx-plus "></i>
       <span>{{ t("add") }}</span>
     </button>
   </div>

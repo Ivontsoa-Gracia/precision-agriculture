@@ -1,96 +1,118 @@
 <template>
   <div class="p-4 sm:p-6">
-    <div class="mb-6">
-      <h2
-        class="text-2xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
-      >
-        <i class="bxr bx-list-ul"></i>
-        {{ t("titleparcellist") }}
-      </h2>
+    <Breadcrumb />
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-8">
+        <h2
+          class="text-xl sm:test-2xl font-semibold text-gray-900 tracking-tight"
+        >
+          {{ t("titleparcellist") }}
+        </h2>
+
+        <NuxtLink
+          to="/parcels/create"
+          class="inline-flex flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+        >
+          <i class="bx bx-plus"></i>
+          {{ t("add") }}
+        </NuxtLink>
+      </div>
 
       <div
-        class="flex flex-col sm:flex-row justify-between items-center flex-wrap gap-4 p-4"
+        class="flex items-center gap-3 border border-gray-200 rounded px-3 py-2 bg-white"
       >
-        <div class="flex items-center space-x-2 flex-wrap w-full sm:w-auto">
-          <label for="rows" class="text-sm text-gray-600 font-medium">{{
-            t("rowperpage")
-          }}</label>
-          <select
-            id="rows"
-            v-model.number="rowsPerPage"
-            class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
-          >
-            <option :value="4">4</option>
-            <option :value="8">8</option>
-            <option :value="12">12</option>
-            <option :value="16">16</option>
-          </select>
-
+        <div class="relative flex-1">
+          <i
+            class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          ></i>
           <input
             v-model="filters.parcel_name"
             type="text"
+            class="w-full pl-10 pr-3 py-2 text-sm bg-transparent focus:outline-none"
             :placeholder="t('filterbyparcel')"
-            class="p-2 border border-gray-300 rounded w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-[#10b481] transition"
           />
-          <button
-            @click="resetFilters"
-            class="p-2 px-4 bg-gray-100 rounded hover:bg-gray-200 flex items-center justify-center transition"
-            aria-label="Refresh Filters"
-          >
-            <i class="bx bx-refresh text-xl text-gray-700"></i>
-          </button>
         </div>
 
-        <div class="flex space-x-3 mt-4 sm:mt-0 flex-nowrap">
-          <div class="relative inline-block group">
-            <button
-              class="flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition"
-            >
-              <i class="bx bx-export mr-2 text-xl"></i> {{ t("export") }}
-              <i class="bx bx-chevron-down ml-2 text-sm"></i>
-            </button>
-            <div
-              class="absolute mt-2 bg-white rounded shadow-lg w-32 hidden group-hover:block z-50"
-            >
-              <button
-                @click="exportData('pdf')"
-                class="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100 transition rounded-t-lg"
-              >
-                PDF
-              </button>
-              <button
-                @click="exportData('csv')"
-                class="block px-4 py-2 w-full text-left text-gray-700 hover:bg-gray-100 transition rounded-b-lg"
-              >
-                CSV
-              </button>
-            </div>
-          </div>
+        <div class="w-px h-6 bg-gray-200"></div>
 
-          <NuxtLink
-            to="/parcels/create"
-            class="flex items-center bg-[#10b481] text-white px-6 py-2 rounded shadow-sm hover:bg-[#0da06a] transition"
+        <select
+          v-model.number="rowsPerPage"
+          class="text-sm text-gray-700 px-3 bg-transparent focus:outline-none"
+        >
+          <option :value="4">4</option>
+          <option :value="8">8</option>
+          <option :value="12">12</option>
+          <option :value="16">16</option>
+        </select>
+
+        <div class="w-px h-6 bg-gray-200"></div>
+
+        <button
+          @click="resetFilters"
+          class="text-sm text-gray-500 px-3 hover:text-gray-900 transition"
+        >
+          {{ t("reset") }}
+        </button>
+
+        <div class="w-px h-6 bg-gray-200"></div>
+
+        <div class="relative group px-3">
+          <button
+            class="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition"
           >
-            <i class="bx bx-plus mr-2 text-xl"></i> {{ t("addparcel") }}
-          </NuxtLink>
+            Export
+            <i class="bx bx-chevron-down text-xs"></i>
+          </button>
+
+          <div
+            class="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition"
+          >
+            <button
+              @click="exportData('pdf')"
+              class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-100"
+            >
+              PDF
+            </button>
+            <button
+              @click="exportData('csv')"
+              class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-100"
+            >
+              CSV
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <div class="pb-2">
       <div class="overflow-x-auto bg-white">
         <table class="min-w-[700px] w-full text-left border-collapse">
-          <thead class="bg-gray-100">
+          <thead class="bg-[#FAFAF9]">
             <tr>
-              <th class="px-6 py-2 border-b hidden">Owner</th>
-              <th class="px-6 py-2 border-b">{{ t("thparcelname") }}</th>
-              <th class="px-6 py-2 border-b hidden sm:table-cell">
-                {{ t("thlatitude") }}
+              <th
+                @click="sortBy('parcel_name')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              >
+                {{ t("thparcelname") }}
+                <i class="bxr bx-carets-up-down"></i>
               </th>
-              <th class="px-6 py-2 border-b hidden sm:table-cell">
-                {{ t("thlongitude") }}
+              <th
+                @click="sortBy('weatherMeta.location')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+              >
+                {{ t("locations") }}
+                <i class="bxr bx-carets-up-down"></i>
               </th>
-              <th class="px-6 py-2 border-b text-center">
+              <th
+                @click="sortBy('area_m2')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+              >
+                {{ t("area") }}
+                <i class="bxr bx-carets-up-down"></i>
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              >
                 {{ t("thactions") }}
               </th>
             </tr>
@@ -101,9 +123,11 @@
               :key="field.id"
               class="hover:bg-gray-50"
             >
-              <td class="px-6 py-2 border-b hidden">{{ field.owner }}</td>
+              <td class="px-6 py-2 border-b text-sm text-gray-900 hidden">
+                {{ field.owner }}
+              </td>
 
-              <td class="px-6 py-2 border-b">
+              <td class="px-6 py-2 border-b text-sm text-gray-900">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
                   class="hover:text-[#10b481] transition-colors"
@@ -112,32 +136,36 @@
                 </NuxtLink>
               </td>
 
-              <td class="px-6 py-2 border-b hidden sm:table-cell">
-                {{ field.latitude.toFixed(6) }}
+              <td
+                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+              >
+                {{ field.weatherMeta.location }}
               </td>
-              <td class="px-6 py-2 border-b hidden sm:table-cell">
-                {{ field.longitude.toFixed(6) }}
+              <td
+                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+              >
+                {{ formatM2(field.area_m2) }}
               </td>
 
               <td class="p-3 border-b text-center flex justify-center gap-2">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
-                  class="p-2 px-4 rounded hover:bg-[#10b481]/20"
+                  class="p-2 px-2 rounded hover:bg-[#10b481]/10"
                 >
-                  <i class="bx bx-show text-[#10b481] text-xl"></i>
+                  <i class="bx bx-show text-[#10b481] text-lg"></i>
                 </NuxtLink>
 
                 <NuxtLink
                   :to="`/parcels/edit/${field.fieldId}`"
-                  class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
+                  class="p-2 px-2 rounded hover:bg-[#f4a261]/10"
                 >
-                  <i class="bx bx-edit text-[#f4a261] text-xl"></i>
+                  <i class="bx bx-edit text-[#f4a261] text-lg"></i>
                 </NuxtLink>
                 <button
                   @click="confirmDelete(field.fieldId)"
-                  class="p-2 px-4 rounded hover:bg-[#e63946]/10"
+                  class="p-2 px-2 rounded hover:bg-[#e63946]/10"
                 >
-                  <i class="bx bx-trash text-[#e63946] text-xl"></i>
+                  <i class="bx bx-trash text-[#e63946] text-lg"></i>
                 </button>
               </td>
             </tr>
@@ -150,40 +178,75 @@
         </table>
       </div>
 
-      <div class="flex justify-between items-center mt-4 mb-2">
-        <button
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-        >
-          <i class="bx bx-chevron-left"></i> {{ t("prev") }}
-        </button>
-
-        <div class="flex items-center space-x-2">
+      <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
           <button
-            v-for="page in visiblePages"
-            :key="page"
-            @click="goToPage(page)"
-            :class="[
-              'px-3 py-1 rounded',
-              currentPage === page
-                ? 'bg-[#10b481] text-white'
-                : 'bg-gray-100 hover:bg-gray-200',
-            ]"
-            v-if="page !== '...'"
+            @click="prevPage"
+            :disabled="currentPage === 1"
+            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
-            {{ page }}
+            {{ t("prev") }}
           </button>
-          <span v-else class="px-2">...</span>
+          <button
+            @click="nextPage"
+            :disabled="currentPage === totalPages"
+            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            {{ t("next") }}
+          </button>
         </div>
-
-        <button
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+        <div
+          class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
         >
-          {{ t("next") }} <i class="bx bx-chevron-right"></i>
-        </button>
+          <div>
+            <p class="text-sm text-gray-700">
+              {{ t("affichage") }}
+              <span class="font-medium">{{ currentPage }}</span> {{ t("a") }}
+              <span class="font-medium">{{ totalPages }}</span> {{ t("sur") }}
+              <span class="font-medium">{{ result }}</span> {{ t("résultats") }}
+            </p>
+          </div>
+          <div>
+            <nav
+              class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+              aria-label="Pagination"
+            >
+              <button
+                @click="prevPage"
+                :disabled="currentPage === 1"
+                class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                <span class="sr-only">{{ t("prev") }}</span>
+                <i class="bx bx-chevron-left"></i>
+              </button>
+
+              <button
+                v-for="page in visiblePages"
+                :key="page"
+                @click="goToPage(page)"
+                :class="[
+                  'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                  currentPage === page
+                    ? 'z-10 bg-[#10b481]/10 border-[#10b481] text-[#10b481]'
+                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
+                ]"
+                v-if="page !== '...'"
+              >
+                {{ page }}
+              </button>
+              <span v-else class="px-2">...</span>
+
+              <button
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+                class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                <span class="sr-only">{{ t("next") }}</span>
+                <i class="bx bx-chevron-right"></i>
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -269,11 +332,16 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: "dashboard" });
 import { ref, reactive, computed, onMounted } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import * as turf from "@turf/turf";
+import Breadcrumb from "~/components/Breadcrumb.vue";
+
 const router = useRouter();
 
 const languageStore = useLanguageStore();
@@ -282,10 +350,6 @@ const showFilters = ref(false);
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
-
-definePageMeta({
-  layout: "dashboard",
-});
 
 const isLoading = ref(false);
 
@@ -307,13 +371,24 @@ const showNotification = (
 };
 
 async function exportData(type: "pdf" | "csv") {
-  const data = filteredFields.value.map((f) => ({
-    Owner: f.owner,
-    FieldID: f.fieldId,
-    ParcelName: f.parcel_name,
-    Latitude: f.latitude,
-    Longitude: f.longitude,
-  }));
+  const data = filteredFields.value.map((f) => {
+    const pointsStr = f.parcel_points
+      ? f.parcel_points
+          .map(
+            (p: { latitude: any; longitude: any }) =>
+              `${p.latitude},${p.longitude}`
+          )
+          .join("; ")
+      : "-";
+
+    return {
+      Owner: f.owner,
+      ParcelName: f.parcel_name,
+      Points: pointsStr,
+      Area_m2: formatM2(f.area_m2),
+      Location: f.weatherMeta.location,
+    };
+  });
 
   if (type === "pdf") {
     if (process.client) {
@@ -322,7 +397,7 @@ async function exportData(type: "pdf" | "csv") {
 
       const doc = new jsPDF();
       autoTableModule.default(doc, {
-        head: [["Owner", "FieldID", "ParcelName", "Latitude", "Longitude"]],
+        head: [["Owner", "ParcelName", "Points", "Area_m2", "Location"]],
         body: data.map(Object.values),
         startY: 20,
       });
@@ -357,11 +432,25 @@ const rowsPerPage = ref(4);
 const currentPage = ref(1);
 const activeMenu = ref<string | null>(null);
 const menuPosition = reactive({ top: 0, right: 0 });
+const sortKey = ref<string | null>(null);
+const sortAsc = ref(true);
+
+function sortBy(key: string) {
+  if (sortKey.value === key) {
+    sortAsc.value = !sortAsc.value;
+  } else {
+    sortKey.value = key;
+    sortAsc.value = true;
+  }
+  currentPage.value = 1;
+}
 
 const fieldsState = useState("fieldsData", () => ({
   data: [] as any[],
   timestamp: 0,
 }));
+
+const result = ref(0);
 
 onMounted(async () => {
   const token = sessionStorage.getItem("token");
@@ -375,6 +464,7 @@ onMounted(async () => {
     const response = await fetch(`${API_URL}/api/parcels/`, {
       headers: { Authorization: `Token ${token}` },
     });
+
     if (!response.ok) {
       const err = await response.json();
       console.error("Erreur API:", err);
@@ -382,6 +472,8 @@ onMounted(async () => {
     }
 
     const parcels = await response.json();
+    result.value = parcels.length;
+    console.log("Parcels fetched:", parcels);
     if (!Array.isArray(parcels)) {
       console.error("La réponse n'est pas un tableau :", parcels);
       return;
@@ -389,26 +481,135 @@ onMounted(async () => {
 
     fields.value = parcels
       .filter((parcel: any) => parcel.owner === userUUID)
-      .map((parcel: any, idx: number) => ({
-        id: idx + 1,
-        fieldId: parcel.uuid,
-        owner: "Moi",
-        parcel_name: parcel.parcel_name,
-        latitude: parcel.parcel_points?.[0]?.latitude ?? "-",
-        longitude: parcel.parcel_points?.[0]?.longitude ?? "-",
-      }));
+      .map((parcel: any, idx: number) => {
+        const points = parcel.parcel_points;
+
+        return {
+          id: idx + 1,
+          fieldId: parcel.uuid,
+          owner: "Moi",
+          parcel_points: points,
+          parcel_name: parcel.parcel_name,
+          latitude: points?.[0]?.latitude ?? "-",
+          longitude: points?.[0]?.longitude ?? "-",
+          area_m2: points ? calculateParcelArea(points) : 0,
+          fullData: null,
+          weatherMeta: null,
+        };
+      });
+
+    // ✅ Fetch full data pour chaque parcelle
+    for (const field of fields.value) {
+      await fetchParcelFullData(field);
+    }
   } catch (err) {
     console.error("Erreur réseau:", err);
   }
 });
 
-const filteredFields = computed(() =>
-  fields.value.filter(
+function extractWeatherMeta(parcelData: any) {
+  const meta = parcelData?.weather_data?.metadata;
+  if (!meta) return null;
+
+  return {
+    location: meta.location_name,
+    forecast_period: `${meta.start_date} → ${meta.end_date}`,
+    forecast_days: meta.forecast_days,
+    risk_level: meta.risk_level,
+    last_update: meta.created_at,
+  };
+}
+
+async function fetchParcelFullData(parcel: any) {
+  const token = sessionStorage.getItem("token");
+  if (!token) return;
+
+  if (!parcel.fieldId) {
+    console.warn("Parcel fieldId manquant", parcel);
+    return;
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${API_URL}/api/parcels-full/${parcel.fieldId}/full_data/`,
+      {
+        headers: { Authorization: `Token ${token}` },
+      }
+    );
+
+    parcel.fullData = data;
+    parcel.weatherMeta = extractWeatherMeta(data);
+  } catch (error) {
+    console.error(`Erreur full data parcel ${parcel.fieldId}:`, error);
+  }
+}
+
+function calculateParcelArea(points: any[]) {
+  if (!points || points.length < 3) return 0;
+
+  // Turf attend des coordonnées [lng, lat]
+  const coords = points.map((p: { longitude: any; latitude: any }) => [
+    p.longitude,
+    p.latitude,
+  ]);
+
+  // Fermer le polygone
+  coords.push([points[0].longitude, points[0].latitude]);
+
+  // Créer le polygone GeoJSON
+  const polygon = turf.polygon([coords]);
+
+  // Calculer la surface en m²
+  const areaM2 = turf.area(polygon);
+
+  // Convertir en hectares
+  const areaHa = areaM2 / 10000;
+
+  // Retourner avec 2 décimales
+  return areaHa.toFixed(2);
+}
+
+const formatM2 = (areaInHa: number) => {
+  if (!areaInHa) return "- m²";
+  return `${(areaInHa * 10000).toLocaleString()} m²`;
+};
+
+const filteredFields = computed(() => {
+  let data = fields.value.filter(
     (f) =>
       f.owner.toLowerCase().includes(filters.owner.toLowerCase()) &&
       f.parcel_name.toLowerCase().includes(filters.parcel_name.toLowerCase())
-  )
-);
+  );
+
+  if (sortKey.value) {
+    data.sort((a, b) => {
+      let valA: any;
+      let valB: any;
+
+      if (sortKey.value.includes(".")) {
+        // Pour nested keys comme "weatherMeta.location"
+        const keys = sortKey.value.split(".");
+        valA = keys.reduce((acc, k) => acc?.[k], a);
+        valB = keys.reduce((acc, k) => acc?.[k], b);
+      } else {
+        valA = a[sortKey.value];
+        valB = b[sortKey.value];
+      }
+
+      if (valA == null) valA = "";
+      if (valB == null) valB = "";
+
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+
+      if (valA < valB) return sortAsc.value ? -1 : 1;
+      if (valA > valB) return sortAsc.value ? 1 : -1;
+      return 0;
+    });
+  }
+
+  return data;
+});
 
 const totalPages = computed(() =>
   Math.ceil(filteredFields.value.length / rowsPerPage.value)
@@ -499,8 +700,7 @@ async function deleteParcelConfirmed() {
     parcelToDelete.value = null;
 
     showNotification("Parcel deleted successfully!", "success");
-    setTimeout(() => {
-    }, 3000);
+    setTimeout(() => {}, 3000);
   } catch (err) {
     console.error(err);
     alert("Failed to delete parcel");

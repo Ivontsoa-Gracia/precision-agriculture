@@ -1,26 +1,25 @@
 <template>
   <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[90vw] mb-10 sm:mb-1">
+    <Breadcrumb />
+
     <div class="flex flex-col lg:flex-row gap-6">
-      <div class="flex-1 lg:flex-[2] flex flex-col space-y-6 w-full lg:w-2/3">
+      <div class="w-full lg:w-2/3 space-y-4">
         <div
-          class="flex flex-col md:flex-row gap-6 w-full max-w-4xl mx-auto mt-6 mb-6"
+          class="w-full max-w-5xl mx-auto mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6"
         >
           <div
             v-if="currentWeather && todayForecast"
-            class="flex-1 bg-gradient-to-br from-[#219ebc]/40 to-[#219ebc]/60 text-white rounded p-6 shadow-sm flex flex-col justify-between"
+            class="lg:col-span-2 bg-[#112830] text-white rounded p-7 shadow-sm flex flex-col justify-between"
           >
-            <div class="flex justify-between items-center">
-              <div class="flex flex-col">
-                <div class="flex justify-between items-center w-full mb-2">
-                  <p class="text-xl font-medium opacity-90">
-                    {{ getDayName(todayForecast.date) }}
-                  </p>
-                </div>
-
-                <p class="text-5xl font-bold">
-                  {{ currentWeather.temperature }}°C
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm uppercase tracking-wide opacity-70 mb-1">
+                  {{ getDayName(todayForecast.date) }}
                 </p>
-                <p class="text-sm opacity-80 capitalize">
+                <p class="text-[56px] font-semibold leading-none">
+                  {{ currentWeather.temperature }}°
+                </p>
+                <p class="text-sm opacity-80 capitalize mt-1">
                   {{
                     translatedCurrentCondition ||
                     currentWeather.conditionOriginal ||
@@ -29,94 +28,186 @@
                   }}
                 </p>
               </div>
-              <div>
-                <p class="text-xl font-medium opacity-90 mb-2">
+
+              <div class="text-right">
+                <p class="text-sm text-[#10b481] mb-2">
                   {{ currentTime }}
                 </p>
                 <Icon
                   :icon="getWeatherIcon(currentWeather.condition)"
-                  class="text-7xl drop-shadow-sm"
+                  class="text-7xl"
                 />
               </div>
             </div>
 
-            <div
-              class="mt-4 flex justify-start items-center gap-4 text-md opacity-90"
-            >
-              <p class="leading-tight">
-                <strong
-                  >{{ todayForecast.min_temp }}°C -
-                  {{ todayForecast.max_temp }}°C</strong
-                >
-              </p>
+            <div class="mt-6 flex items-center gap-4 text-sm opacity-90">
+              <span class="px-3 py-1 rounded-full bg-white/10">
+                {{ todayForecast.min_temp }}°C - {{ todayForecast.max_temp }}°C
+              </span>
             </div>
 
-            <div class="mt-4 grid grid-cols-2 gap-2 text-sm opacity-90">
-              <p class="leading-tight">
-                {{ t("precipitation") }}:
-                <strong>{{ todayForecast.total_precip }} mm</strong>
-              </p>
-              <p class="leading-tight">
-                {{ t("humidity") }}:
-                <strong>{{ currentWeather.humidity }}%</strong>
-              </p>
-              <p class="leading-tight">
-                {{ t("vent") }}:
-                <strong>{{ currentWeather.wind_speed }} km/h</strong>
-              </p>
-              <p class="leading-tight">
-                {{ t("uvIndex") }}:
-                <strong>{{ currentWeather.uv_index }}</strong>
-              </p>
+            <div
+              class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs opacity-90"
+            >
+              <div class="flex flex-col gap-1">
+                <span class="opacity-70">{{ t("precipitation") }}</span>
+                <strong class="text-sm"
+                  >{{ todayForecast.total_precip }} mm</strong
+                >
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="opacity-70">{{ t("humidity") }}</span>
+                <strong class="text-sm">{{ currentWeather.humidity }}%</strong>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="opacity-70">{{ t("vent") }}</span>
+                <strong class="text-sm"
+                  >{{ currentWeather.wind_speed }} km/h</strong
+                >
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="opacity-70">{{ t("uvIndex") }}</span>
+                <strong class="text-sm">{{ currentWeather.uv_index }}</strong>
+              </div>
             </div>
           </div>
 
-          <div v-if="forecastDays.length" class="flex-1 flex flex-col gap-4">
-            <h2 class="text-xl font-bold mb-2 text-gray-700">
+          <div
+            v-if="futureForecastDays.length"
+            class="bg-white rounded p-6 shadow-sm flex flex-col"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
               {{ t("prevision") }}
             </h2>
 
-            <div class="flex flex-col md:flex-row gap-4">
+            <div class="space-y-4">
               <div
-                v-for="day in forecastDays"
+                v-for="day in futureForecastDays"
                 :key="day.date"
-                class="flex-1 bg-[#219ebc]/20 text-[#219ebc] rounded p-4 flex flex-col items-center shadow-sm"
+                class="flex items-center justify-between rounded px-5 py-4 bg-white shadow hover:shadow-md transition cursor-pointer"
               >
-                <p class="font-semibold">{{ getDayNameShort(day.date) }}</p>
+                <div class="flex items-center gap-4">
+                  <Icon
+                    :icon="getWeatherIcon(day.condition)"
+                    class="text-4xl text-[#10b481]"
+                  />
 
-                <Icon
-                  :icon="getWeatherIcon(day.condition)"
-                  class="text-5xl my-2"
-                />
+                  <div class="flex flex-col">
+                    <p class="text-sm font-semibold text-gray-800">
+                      {{ getDayNameShort(day.date) }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      Min: {{ day.min_temp }}° Max: {{ day.max_temp }}°
+                    </p>
+                  </div>
+                </div>
 
-                <p class="text-sm">
-                  {{ day.min_temp }}°C - {{ day.max_temp }}°C
-                </p>
-                <p class="text-sm">
-                  {{ day.chance_of_rain }}% {{ t("pluie") }}
-                </p>
+                <div class="flex flex-col items-end text-sm text-gray-600">
+                  <span class="font-medium">{{ day.chance_of_rain }}%</span>
+                  <span class="opacity-70">{{ t("pluie") }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
+      <div class="w-full lg:w-1/3 flex flex-col">
+        <div
+          v-if="metadata.location"
+          class="bg-white rounded p-6 flex flex-col gap-2"
+        >
+          <div class="flex items-center gap-4 rounded">
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                t("locations")
+              }}</span>
+              <span class="text-sm font-medium text-gray-800">{{
+                metadata.location
+              }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 rounded">
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                t("forecastPeriod")
+              }}</span>
+              <span class="text-sm font-medium text-gray-800">{{
+                metadata.forecast_period
+              }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 rounded">
+            <div class="flex flex-col">
+              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+                t("riskLevel")
+              }}</span>
+              <span class="text-sm font-medium text-gray-800">{{
+                metadata.risk_level
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="translatedAlerts.length" class="mt-6">
+          <ul class="space-y-3">
+            <li
+              v-for="alert in translatedAlerts"
+              :key="alert.type"
+              class="flex items-start gap-3 p-4 rounded shadow-sm bg-yellow-50 border-l-4 border-[#FFC107]"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-[#FFC107] flex-shrink-0 mt-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-800 mb-1">
+                  {{
+                    alert.message ||
+                    alert.messageOriginal ||
+                    "No message available"
+                  }}
+                </p>
+                <p class="text-xs text-gray-600">
+                  {{ alert.action || alert.actionOriginal || "-" }}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+      <div class="w-full lg:w-2/3 space-y-4">
         <div
           class="bg-white rounded shadow-sm overflow-hidden border border-gray-100 mb-6"
         >
-          <div class="bg-gray-100 p-6 text-[#222831]">
+          <div class="p-6 text-[#222831]">
             <h2 class="text-2xl font-bold flex items-center gap-2">
               <i class="bx bx-map-pin text-2xl"></i>
               {{ t("parceldetail") }}
             </h2>
-            <p class="text-sm opacity-90 mt-1">
-              {{ parcelData.parcel_name || "N/A" }}
-            </p>
           </div>
 
           <div class="flex flex-col lg:flex-row">
-            <div
-              class="w-full lg:w-1/3 p-6 bg-gray-50 border-r border-gray-100"
-            >
+            <div class="w-full lg:w-1/3 p-6 border-r border-gray-100">
               <div class="space-y-5">
                 <div
                   class="bg-white shadow-sm rounded p-4 border border-gray-200"
@@ -124,7 +215,7 @@
                   <p class="text-xs text-gray-500 uppercase tracking-wide">
                     {{ t("owner") }}
                   </p>
-                  <p class="text-gray-800 font-semibold mt-1">
+                  <p class="text-gray-800 font-medium text-sm mt-1">
                     {{ ownerData.first_name || "N/A" }}
                     {{ ownerData.last_name || "N/A" }}
                   </p>
@@ -136,8 +227,20 @@
                   <p class="text-xs text-gray-500 uppercase tracking-wide">
                     {{ t("thparcelname") }}
                   </p>
-                  <p class="text-gray-800 font-semibold mt-1">
+                  <p class="text-gray-800 font-medium text-sm mt-1">
                     {{ parcelData.parcel_name || "N/A" }}
+                  </p>
+                </div>
+
+                <div
+                  v-if="metadata.location"
+                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                >
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    {{ t("locations") }}
+                  </p>
+                  <p class="text-gray-800 font-medium text-sm mt-1">
+                    {{ metadata.location }}
                   </p>
                 </div>
 
@@ -147,7 +250,7 @@
                   <p class="text-xs text-gray-500 uppercase tracking-wide">
                     {{ t("Area") }}
                   </p>
-                  <p class="text-gray-800 font-semibold mt-1">
+                  <p class="text-gray-800 font-medium text-sm mt-1">
                     {{ formatM2(parcelAreaHa) }}
                   </p>
                 </div>
@@ -197,7 +300,6 @@
                 <h3
                   class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
                 >
-                  <i class="bx bx-target-lock text-xl"></i>
                   {{ t("pointsParcel") }}
                 </h3>
 
@@ -258,7 +360,6 @@
                 <h3
                   class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
                 >
-                  <i class="bxr bx-leaf-alt text-lg"></i>
                   {{ t("croptype") }}
                 </h3>
                 <table
@@ -309,93 +410,11 @@
             </div>
           </div>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
-          <div class="bg-white rounded shadow p-4">
-            <h3 class="font-semibold text-gray-800 mb-2">
-              {{ t("charttitleweather") }}
-            </h3>
-            <canvas id="weatherConditionChart"></canvas>
-          </div>
-
-          <div class="bg-white rounded shadow p-4">
-            <h3 class="font-semibold text-gray-800 mb-2">
-              {{ t("chartprecipitation") }}
-            </h3>
-            <canvas id="precipitationChart"></canvas>
-          </div>
-        </div>
-
-        <div class="bg-white rounded shadow p-4 max-h-[350px] pb-16">
-          <h3 class="font-semibold text-gray-800 mb-2">
-            {{ t("charttitleyield") }}
-          </h3>
-          <canvas id="yieldEvolutionChart"></canvas>
-        </div>
       </div>
 
-      <div class="flex-1 flex flex-col space-y-6 w-full lg:w-1/3 text-gary-800">
+      <div class="w-full lg:w-1/3 flex flex-col">
         <div
-          v-if="metadata.location"
-          class="p-6 rounded mt-4 border border-gray-100 bg-gray-100"
-        >
-          <h3 class="text-lg font-semibold mb-2 text-[#222831]">
-            {{ t("forecastInfo") }}
-          </h3>
-          <ul class="text-sm text-[#222831] space-y-1">
-            <li>
-              <strong>{{ t("locations") }}:</strong> {{ metadata.location }}
-            </li>
-            <li>
-              <strong>{{ t("forecastPeriod") }}:</strong>
-              {{ metadata.forecast_period }}
-            </li>
-            <li>
-              <strong>{{ t("riskLevel") }}:</strong> {{ metadata.risk_level }}
-            </li>
-          </ul>
-        </div>
-
-        <div v-if="translatedAlerts.length" class="mt-6">
-          <ul class="space-y-3">
-            <li
-              v-for="alert in translatedAlerts"
-              :key="alert.type"
-              class="flex items-start gap-3 p-4 rounded shadow-sm bg-gradient-to-r from-yellow-100 to-yellow-200 border-l-4 border-yellow-400"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-
-              <div class="flex-1">
-                <p class="text-sm font-medium text-gray-800 mb-1">
-                  {{
-                    alert.message ||
-                    alert.messageOriginal ||
-                    "No message available"
-                  }}
-                </p>
-                <p class="text-xs text-gray-600">
-                  {{ alert.action || alert.actionOriginal || "-" }}
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div
-          class="bg-white rounded shadow-sm p-6 space-y-4 border border-gray-100 mt-12"
+          class="bg-white rounded shadow-sm p-6 space-y-4 border border-gray-100"
         >
           <h3 class="text-lg font-semibold">{{ t("soilinfo") }}</h3>
           <div class="mt-4 space-y-3">
@@ -413,8 +432,8 @@
               }"
             >
               <div class="flex flex-col">
-                <span class="font-semibold">{{ quality.name }}</span>
-                <span class="text-gray-700 text-sm">{{ quality.unit }}</span>
+                <span class="font-semibold text-sm">{{ quality.name }}</span>
+                <span class="text-gray-700 text-xs">{{ quality.unit }}</span>
               </div>
               <div class="font-bold text-lg">
                 {{ quality.value }}
@@ -422,9 +441,22 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div v-if="selectedParcel" class="grid grid-cols-1 gap-6 mt-10">
-          <h3 class="text-gray-800 mb-2 text-3xl font-semibold">
+    <div class="flex flex-col lg:flex-row gap-6 mt-10">
+      <div class="w-full lg:w-2/3 space-y-4">
+        <div class="bg-white rounded shadow p-4 max-h-[350px] pb-16">
+          <h3 class="font-semibold text-2xl text-gray-800 mb-6">
+            {{ t("charttitleyield") }}
+          </h3>
+          <canvas id="yieldEvolutionChart"></canvas>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-1/3 flex flex-col">
+        <div v-if="selectedParcel" class="grid grid-cols-1 gap-4">
+          <h3 class="text-gray-800 mb-2 text-2xl font-semibold">
             {{ t("titleanalytics") }}
           </h3>
           <div
@@ -494,7 +526,7 @@
               </h3>
               <NuxtLink
                 to="/tasks"
-                class="text-sm font-medium text-gray-600 hover:text-black hover:underline mt-4"
+                class="text-sm font-medium text-[#10b481] hover:underline mt-4"
               >
                 {{ t("seeall") }}
               </NuxtLink>
@@ -598,12 +630,15 @@
           <h3 class="text-lg font-semibold text-gray-800 mb-4">
             {{ t("charttitletask") }}
           </h3>
-          <canvas id="taskPerformanceChart" class="w-full aspect-square"></canvas>
+          <canvas
+            id="taskPerformanceChart"
+            class="w-full aspect-square"
+          ></canvas>
         </div>
       </div>
 
-      <div class="bg-white rounded space-y-4">
-        <div class="flex justify-between items-center mb-4">
+      <div class="rounded">
+        <div class="flex justify-between items-center mb-4 space-y-4">
           <h3 class="text-lg font-semibold text-[#212121]">
             {{ t("harvesthistory") }}
           </h3>
@@ -611,7 +646,7 @@
           <div class="flex space-x-3">
             <button
               @click="exportCSV"
-              class="flex items-center px-3 py-2 bg-gray-100 text-gray-900 rounded hover:bg-gray-200"
+              class="flex items-center px-3 py-2 bg-white text-gray-900 rounded text-sm"
             >
               <i class="bx bx-export mr-2"></i> {{ t("export") }}
             </button>
@@ -620,14 +655,26 @@
 
         <div class="overflow-x-auto bg-white">
           <table class="min-w-[700px] w-full text-left border-collapse">
-            <thead class="bg-gray-100">
+            <thead class="bg-[#FAFAF9]">
               <tr>
-                <th class="px-6 py-2 border-b">{{ t("thdate") }}</th>
-                <th class="px-6 py-2 border-b">{{ t("thyield") }}</th>
-                <th class="px-6 py-2 border-b hidden sm:table-cell">
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                >
+                  {{ t("thdate") }}
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                >
+                  {{ t("thyield") }}
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+                >
                   {{ t("thtendance") }}
                 </th>
-                <th class="px-6 py-2 border-b text-center hidden sm:table-cell">
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center hidden sm:table-cell"
+                >
                   {{ t("thactions") }}
                 </th>
               </tr>
@@ -638,9 +685,15 @@
                 :key="record.id"
                 class="hover:bg-gray-50"
               >
-                <td class="px-6 py-2 border-b">{{ record.date }}</td>
-                <td class="px-6 py-2 border-b">{{ record.quantity }}</td>
-                <td class="px-6 py-2 border-b hidden sm:table-cell">
+                <td class="px-6 py-2 border-b text-sm text-gray-900">
+                  {{ record.date }}
+                </td>
+                <td class="px-6 py-2 border-b text-sm text-gray-900">
+                  {{ record.quantity }}
+                </td>
+                <td
+                  class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                >
                   <i
                     v-if="record.trend === 'up'"
                     class="bx bx-trending-up text-[#10b481] text-xl"
@@ -665,9 +718,9 @@
                 <td class="p-3 border-b text-center hidden sm:table-cell">
                   <button
                     @click="deleteRecord(record.id)"
-                    class="p-2 rounded-full hover:bg-red-100"
+                    class="py-1 px-2 rounded hover:bg-red-100"
                   >
-                    <i class="bx bx-trash text-[#e63946] text-xl"></i>
+                    <i class="bx bx-trash text-[#e63946] text-lg"></i>
                   </button>
                 </td>
               </tr>
@@ -680,40 +733,76 @@
           </table>
         </div>
 
-        <div class="flex justify-between items-center mt-4 mb-2">
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="flex items-center px-3 py-1 rounded disabled:opacity-50"
-          >
-            <i class="bx bx-chevron-left"></i> {{ t("prev") }}
-          </button>
-
-          <div class="flex items-center space-x-2">
+        <div
+          class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
+        >
+          <div class="flex-1 flex justify-between sm:hidden">
             <button
-              v-for="page in visiblePages"
-              :key="page"
-              @click="goToPage(page)"
-              :class="[
-                'px-3 py-1 rounded',
-                currentPage === page
-                  ? 'bg-[#10b481] text-white'
-                  : 'bg-gray-100 hover:bg-gray-200',
-              ]"
-              v-if="page !== '...'"
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
             >
-              {{ page }}
+              {{ t("prev") }}
             </button>
-            <span v-else class="px-2">...</span>
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              {{ t("next") }}
+            </button>
           </div>
-
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="flex items-center px-3 py-1 rounded disabled:opacity-50"
+          <div
+            class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
           >
-            {{ t("next") }} <i class="bx bx-chevron-right"></i>
-          </button>
+            <div>
+              <p class="text-sm text-gray-700">
+                {{ t("affichage") }}
+                <span class="font-medium">{{ currentPage }}</span> {{ t("a") }}
+                <span class="font-medium">{{ totalPages }}</span>
+              </p>
+            </div>
+            <div>
+              <nav
+                class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                aria-label="Pagination"
+              >
+                <button
+                  @click="prevPage"
+                  :disabled="currentPage === 1"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  <span class="sr-only">{{ t("prev") }}</span>
+                  <i class="bx bx-chevron-left"></i>
+                </button>
+
+                <button
+                  v-for="page in visiblePages"
+                  :key="page"
+                  @click="goToPage(page)"
+                  :class="[
+                    'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
+                    currentPage === page
+                      ? 'z-10 bg-[#10b481]/10 border-[#10b481] text-[#10b481]'
+                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
+                  ]"
+                  v-if="page !== '...'"
+                >
+                  {{ page }}
+                </button>
+                <span v-else class="px-2">...</span>
+
+                <button
+                  @click="nextPage"
+                  :disabled="currentPage === totalPages"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  <span class="sr-only">{{ t("next") }}</span>
+                  <i class="bx bx-chevron-right"></i>
+                </button>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -730,7 +819,6 @@
 
 <script setup>
 definePageMeta({ layout: "dashboard" });
-
 import { useRoute } from "vue-router";
 import { reactive, ref, computed, onMounted, watch } from "vue";
 import axios from "axios";
@@ -739,8 +827,9 @@ import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
 import { useRouter } from "vue-router";
-
+import * as turf from "@turf/turf";
 import { Icon } from "@iconify/vue";
+import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const router = useRouter();
 
@@ -790,6 +879,11 @@ function updateWeatherForecast(data) {
     last_update: meta.created_at,
   };
 }
+
+const futureForecastDays = computed(() => {
+  const today = new Date().toISOString().split("T")[0];
+  return forecastDays.value.filter((day) => day.date !== today);
+});
 
 const todayForecast = computed(() => {
   if (!forecastDays.value.length) return null;
@@ -1501,25 +1595,15 @@ watch(
 function calculateParcelArea(points) {
   if (!points || points.length < 3) return 0;
 
-  let area = 0;
-  const n = points.length;
+  const coords = points.map((p) => [p.longitude, p.latitude]);
 
-  for (let i = 0; i < n; i++) {
-    const { latitude: x1, longitude: y1 } = points[i];
-    const { latitude: x2, longitude: y2 } = points[(i + 1) % n];
-    area += x1 * y2 - x2 * y1;
-  }
+  coords.push([points[0].longitude, points[0].latitude]);
 
-  area = Math.abs(area / 2);
+  const polygon = turf.polygon([coords]);
 
-  const latitudes = points.map((p) => p.latitude);
-  const avgLat = latitudes.reduce((a, b) => a + b, 0) / latitudes.length;
-  const meterPerDegLat = 111_000;
-  const meterPerDegLng = 111_000 * Math.cos((avgLat * Math.PI) / 180);
+  const areaM2 = turf.area(polygon);
 
-  const areaMeters2 = area * meterPerDegLat * meterPerDegLng;
-
-  const areaHa = areaMeters2 / 10_000;
+  const areaHa = areaM2 / 10000;
 
   return areaHa.toFixed(2);
 }

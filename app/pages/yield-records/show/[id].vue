@@ -8,7 +8,7 @@
     </button>
 
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl sm:text-3xl font-bold text-gray-800 flex items-center gap-3">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
         {{ t("yielddetail") }}
       </h2>
       <button
@@ -24,28 +24,28 @@
       <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
         <div>
           <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thdate") }}</p>
-          <p class="font-semibold text-gray-800">{{ formatDate(yieldRecord.date) }}</p>
+          <p class="font-medium text-gray-800 text-sm">{{ formatDate(yieldRecord.date) }}</p>
         </div>
       </div>
 
       <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
         <div>
           <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thyield") }}</p>
-          <p class="font-semibold text-gray-800">{{ yieldRecord.yield_amount }}</p>
+          <p class="font-medium text-gray-800 text-sm">{{ yieldRecord.yield_amount }}</p>
         </div>
       </div>
 
       <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
         <div>
           <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("area") }} (m²)</p>
-          <p class="font-semibold text-gray-800">{{ yieldRecord.area }}</p>
+          <p class="font-medium text-gray-800 text-sm">{{ yieldRecord.area }}</p>
         </div>
       </div>
 
       <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
         <div>
           <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("parcelcrop") }}</p>
-          <p class="font-semibold text-gray-800">
+          <p class="font-medium text-gray-800 text-sm">
             {{ parcelCropData && parcelData ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}` : "-" }}
           </p>
         </div>
@@ -54,7 +54,7 @@
       <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
         <div>
           <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("notes") }}</p>
-          <p class="font-semibold text-gray-800">
+          <p class="font-medium text-gray-800 text-sm">
             {{ yieldRecord.notes || "-" }}
           </p>
         </div>

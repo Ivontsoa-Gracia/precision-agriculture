@@ -1,18 +1,18 @@
 <template>
   <div class="mb-12">
     <header class="mb-6 flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-gray-800">{{ t("tasks") }}</h1>
+      <!-- <h1 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">{{ t("tasks") }}</h1> -->
     </header>
     <div class="flex flex-col lg:flex-row gap-6">
       <div
-        class="w-full lg:w-[350px] p-4 rounded shadow-md flex flex-col border border-gray-100 bg-gray-100"
+        class="w-full lg:w-[350px] p-4 rounded shadow-md flex flex-col border border-gray-100 bg-[#112830]"
       >
         <div class="flex justify-between items-center mb-3">
-          <button @click="prevMonth" class="text-gray-500 hover:text-gray-900">
+          <button @click="prevMonth" class="text-gray-50 hover:text-white">
             <i class="bxr bx-chevron-left"></i>
           </button>
-          <h3 class="text-lg font-semibold">{{ currentMonthYear }}</h3>
-          <button @click="nextMonth" class="text-gray-500 hover:text-gray-900">
+          <h3 class="text-md text-gray-50 font-medium">{{ currentMonthYear }}</h3>
+          <button @click="nextMonth" class="text-gray-50 hover:text-white">
             <i class="bxr bx-chevron-right"></i>
           </button>
         </div>
@@ -25,7 +25,7 @@
           <div
             v-for="day in calendarDays"
             :key="day.dateKey"
-            class="relative h-12 flex items-center justify-center rounded cursor-pointer hover:bg-gray-100 transition"
+            class="relative h-12 flex items-center justify-center rounded cursor-pointer transition"
             @click="selectDay(day)"
           >
             <span
@@ -37,9 +37,9 @@
                     : priorities[day.events[0].priority] === 'Medium'
                     ? 'bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]/50'
                     : 'bg-[#10b481]/10 text-[#10b481] border border-[#10b481]/50'
-                  : 'text-gray-900',
+                  : 'text-white',
                 !day.isCurrentMonth && 'text-gray-400 opacity-50',
-                isToday(day.date) && 'bg-gray-200 p-2 text-gray-900',
+                isToday(day.date) && 'bg-gray-200/20 p-2 text-gray-100',
               ]"
             >
               {{ day.date.getDate() }}
@@ -54,11 +54,11 @@
             class="flex-1 p-6 bg-white rounded shadow-md flex flex-col justify-center items-center border border-gray-100"
           >
             <h2
-              class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-2"
+              class="text-gray-500 uppercase tracking-wide text-sm font-medium mb-2"
             >
               {{ t("totalTask") }}
             </h2>
-            <div class="text-5xl font-bold text-gray-800">
+            <div class="text-5xl font-bold text-[#112830]">
               {{ totalTasks }}
             </div>
             <div
@@ -78,7 +78,7 @@
             class="flex-1 p-6 bg-white rounded shadow-md flex flex-col border border-gray-100 justify-center"
           >
             <h2
-              class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-6"
+              class="text-gray-500 uppercase tracking-wide text-sm font-medium mb-8"
             >
               {{ t("taskByPriority") }}
             </h2>
@@ -88,10 +88,10 @@
                 :key="prio"
                 class="flex justify-between items-center"
               >
-                <span class="text-gray-700 font-medium">{{
+                <span class="text-gray-700 text-sm font-medium">{{
                   t(priorityKeyMap[prio])
                 }}</span>
-                <span class="font-semibold text-gray-900">{{ count }}</span>
+                <span class="font-semibold text-sm text-[#10b481]">{{ count }}</span>
               </li>
             </ul>
           </div>
@@ -101,7 +101,7 @@
           class="p-6 bg-white rounded shadow-sm max-h-[180px] border border-gray-100"
         >
           <h2
-            class="text-gray-500 uppercase tracking-wide text-sm font-semibold mb-8"
+            class="text-gray-500 uppercase tracking-wide text-sm font-medium mb-8"
           >
             {{ t("taskProgression") }}
           </h2>
@@ -120,7 +120,7 @@
                 class="relative flex items-center justify-center"
               >
                 <span
-                  class="text-xs font-medium text-white truncate px-1"
+                  class="text-sm font-medium text-white truncate px-1"
                   :title="
                     t(statusKeyMap[statusNames[statusId]]) + ' : ' + count
                   "
@@ -150,7 +150,7 @@
           <i class="bxr bx-x text-xl"></i>
         </button>
 
-        <h2 class="text-xl font-bold mb-6 text-gray-800">
+        <h2 class="text-md font-bold mb-6 text-gray-800">
           {{ t("tasks_for") }}
           <span class="text-[#10b481]">{{ formatDate(selectedDay) }}</span>
         </h2>
@@ -166,7 +166,7 @@
           >
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="font-semibold text-gray-900 text-lg">
+                <h3 class="font-semibold text-gray-900 text-sm">
                   {{ ev.name }}
                 </h3>
                 <p class="text-gray-500 text-sm mt-1">{{ ev.description }}</p>
@@ -182,7 +182,7 @@
             <button
               v-if="!ev.completed_at"
               @click="markDone(ev)"
-              class="mt-3 w-full text-white bg-[#10b481] transition py-2 rounded font-semibold shadow"
+              class="mt-3 w-full text-sm text-white bg-[#10b481] transition py-2 rounded shadow"
             >
               {{ t("markDone") }}
             </button>
@@ -195,7 +195,7 @@
         >
           <button
             @click="showAddForm = true"
-            class="inline-flex items-center px-3 py-1 text-[#222831] bg-gray-100 rounded transition"
+            class="inline-flex items-center text-sm px-3 py-2 text-gray-600 border border-gray-400 rounded transition"
           >
             <i class="bx bx-plus mr-1"></i> {{ t("addtask") }}
           </button>
@@ -213,7 +213,7 @@
               v-model="newTask.name"
               type="text"
               placeholder="Enter task name"
-              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+              class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
             />
           </div>
 
@@ -225,7 +225,7 @@
               v-model="newTask.description"
               placeholder="Enter task description"
               rows="3"
-              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+              class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
             ></textarea>
           </div>
 
@@ -237,7 +237,7 @@
               <input
                 v-model="newTask.due_date"
                 type="date"
-                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               />
             </div>
 
@@ -247,7 +247,7 @@
               }}</label>
               <select
                 v-model="newTask.priority"
-                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="p in priorities" :key="p.id" :value="p.id">
                   {{ t(priorityKeyMap[p.name]) }}
@@ -263,7 +263,7 @@
               }}</label>
               <select
                 v-model="newTask.status"
-                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="s in statuses" :key="s.id" :value="s.id">
                   {{ t(statusKeyMap[s.name]) }}
@@ -277,7 +277,7 @@
               }}</label>
               <select
                 v-model="newTask.parcelCrop"
-                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
+                class="w-full p-3 border border-gray-300 text-sm rounded focus:ring-2 focus:ring-[#10b481] focus:border-transparent transition"
               >
                 <option v-for="c in parcelCrops" :key="c.id" :value="c.id">
                   {{ c.fullName }}
@@ -288,7 +288,7 @@
 
           <button
             @click="createTask"
-            class="w-full py-3 rounded bg-[#10b481] text-white font-semibold hover:opacity-90 transition shadow-md"
+            class="w-full py-3 rounded bg-[#10b481] text-white text-sm hover:opacity-90 transition shadow-md"
           >
             {{ t("addtask") }}
           </button>

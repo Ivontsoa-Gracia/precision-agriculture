@@ -1,7 +1,9 @@
 <template>
-  <div class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 items-center justify-center">
-
-    <br>
+  <div
+    class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 items-center justify-center"
+  >
+    <!-- <Breadcrumb /> -->
+    <br />
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
       <div
         class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
@@ -307,6 +309,7 @@ import { nextTick } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+// import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const languageStore = useLanguageStore();
 
@@ -987,6 +990,41 @@ async function loadFireCSV(L: any) {
 onMounted(async () => {
   await initMap();
   await fetchDashboard();
+});
+
+function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // rayon de la Terre en km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // distance en km
+}
+
+dashboard.value.parcels.forEach((parcel: any) => {
+  parcel.points.forEach((pt: any) => {
+    fires.forEach((fire: any) => {
+      const distance = getDistanceKm(
+        pt.lat,
+        pt.lng,
+        parseFloat(fire.latitude),
+        parseFloat(fire.longitude)
+      );
+      if (distance <= 2) {
+        showNotification(
+          `⚠️ Incendie à ${distance.toFixed(2)} km de la parcelle ${
+            parcel.name
+          }!`,
+          "error"
+        );
+      }
+    });
+  });
 });
 </script>
 

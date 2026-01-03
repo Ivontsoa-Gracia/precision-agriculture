@@ -1,154 +1,147 @@
 <template>
-  <div class="max-w-3xl mx-auto mt-1 sm:mt-16 mb-10 sm:mb-1">
-    <h2
-      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3"
-    >
-      {{ t("newyield") }}
-    </h2>
+  <section>
+    <Breadcrumb />
 
-    <form @submit.prevent="createYieldRecord" class="space-y-4">
-      <div>
-        <label class="text-gray-700 text-sm font-medium mb-1">{{
-          t("parcelcrop")
-        }}</label>
-        <select
-          v-model="form.parcelCrop"
-          @change="onParcelCropChange"
-          class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"
-          required
-        >
-          <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
-            {{ crop.parcel.parcel_name }} - {{ crop.crop.name }}
-          </option>
-        </select>
-      </div>
+    <div class="max-w-3xl mx-auto mt-1 sm:mt-16 mb-10 sm:mb-1">
+      <h2
+        class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2"
+      >
+        {{ t("newyield") }}
+      </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <form @submit.prevent="createYieldRecord" class="space-y-4">
         <div>
           <label class="text-gray-700 text-sm font-medium mb-1">{{
-            t("thdate")
+            t("parcelcrop")
           }}</label>
-          <input
-            v-model="form.date"
-            type="date"
-            class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"
+          <select
+            v-model="form.parcelCrop"
+            @change="onParcelCropChange"
+            class="border rounded px-3 py-2 w-full bg-transparent focus:ring-2 focus:ring-[#10b481]"
             required
-          />
-        </div>
-
-        <div>
-          <label class="text-gray-700 text-sm font-medium mb-1">{{
-            t("thyield")
-          }}</label>
-          <input
-            v-model.number="form.yield_amount"
-            type="number"
-            class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"
-            required
-          />
-        </div>
-
-        <div>
-          <label class="text-gray-700 text-sm font-medium mb-1"
-            >{{ t("area") }} (m²)</label
           >
-          <input
-            v-model.number="form.area"
-            type="number"
-            :max="areaInM2(maxArea)"
-            step="1"
-            @input="checkArea"
-            class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"
-            required
-          />
+            <option v-for="crop in parcelCrops" :key="crop.id" :value="crop.id">
+              {{ crop.parcel.parcel_name }} - {{ crop.crop.name }}
+            </option>
+          </select>
         </div>
-      </div>
 
-      <div>
-        <label class="text-gray-700 text-sm font-medium mb-1">{{
-          t("notes")
-        }}</label>
-        <textarea
-          v-model="form.notes"
-          class="border rounded px-3 py-2 w-full focus:ring-2 focus:ring-[#10b481]"
-        ></textarea>
-      </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-gray-700 text-sm font-medium mb-1">{{
+              t("thdate")
+            }}</label>
+            <input
+              v-model="form.date"
+              type="date"
+              class="border rounded px-3 py-2 w-full bg-transparent focus:ring-2 focus:ring-[#10b481]"
+              required
+            />
+          </div>
 
-      <div class="text-right">
-        <button
-          type="submit"
-          class="w-full bg-[#10b481] text-white px-6 py-2 rounded font-bold transition transform"
-        >
-          {{ t("btnsaveyield") }}
-        </button>
-      </div>
-    </form>
-  </div>
-  <div
-    v-if="isLoading"
-    class="absolute inset-0 bg-black/50 flex items-center justify-center"
-  >
+          <div>
+            <label class="text-gray-700 text-sm font-medium mb-1">{{
+              t("thyield")
+            }}</label>
+            <input
+              v-model.number="form.yield_amount"
+              type="number"
+              class="border rounded px-3 py-2 w-full bg-transparent focus:ring-2 focus:ring-[#10b481]"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="text-gray-700 text-sm font-medium mb-1"
+              >{{ t("area") }} (m²)</label
+            >
+            <input
+              v-model.number="form.area"
+              type="number"
+              :max="areaInM2(maxArea)"
+              step="1"
+              @input="checkArea"
+              class="border rounded px-3 py-2 w-full bg-transparent focus:ring-2 focus:ring-[#10b481]"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-gray-700 text-sm font-medium mb-1">{{
+            t("notes")
+          }}</label>
+          <textarea
+            v-model="form.notes"
+            class="border rounded px-3 py-2 w-full bg-transparent focus:ring-2 focus:ring-[#10b481]"
+          ></textarea>
+        </div>
+
+        <div class="text-right">
+          <button
+            type="submit"
+            class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-sm flex justify-center items-center gap-2"
+          >
+            {{ t("btnsaveyield") }}
+          </button>
+        </div>
+      </form>
+    </div>
     <div
-      class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
-    ></div>
-  </div>
-
-  <transition name="fade">
-    <div
-      v-if="notification.visible"
-      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
+      v-if="isLoading"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center"
     >
       <div
-        :class="[
-          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+        class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
+      ></div>
+    </div>
+
+    <transition name="slide-right">
+      <div
+        v-if="notification.visible"
+        class="fixed bottom-4 right-4 z-[9999] bg-[#112830] rounded shadow-xl px-6 py-4 flex items-center gap-4 w-80 text-left border-l-4 transition-all duration-300"
+        :class="
           notification.type === 'success'
-            ? 'border-t-4 border-[#10b481]'
-            : 'border-t-4 border-red-500',
-        ]"
+            ? 'border-[#10b481]'
+            : 'border-red-500'
+        "
       >
         <div
-          v-if="notification.type === 'success'"
-          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+          :class="
+            notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500'
+          "
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl"
         >
-          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+          <i
+            :class="notification.type === 'success' ? 'bx bx-check' : 'bx bx-x'"
+          ></i>
         </div>
-        <div
-          v-else
-          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
-        >
-          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        <div>
+          <p class="font-medium text-sm text-gray-100">
+            {{ notification.message }}
+          </p>
+          <p class="text-gray-300 text-xs">
+            {{
+              notification.type === "success"
+                ? "Success!"
+                : "Something went wrong."
+            }}
+          </p>
         </div>
-
-        <p
-          :class="[
-            'text-lg font-semibold',
-            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
-          ]"
-        >
-          {{ notification.message }}
-        </p>
-
-        <p class="text-gray-500 text-sm">
-          {{
-            notification.type === "success"
-              ? "Redirecting to your dashboard..."
-              : "Please try again."
-          }}
-        </p>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </section>
 </template>
 
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
-
 import { onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import * as turf from "@turf/turf";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
+import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const languageStore = useLanguageStore();
 const t = (key) => translate[languageStore.lang][key] || key;
@@ -175,7 +168,11 @@ const form = ref({
 
 let token: string | null = null;
 
-const showNotification = (message: string, type = "success", duration = 3000) => {
+const showNotification = (
+  message: string,
+  type = "success",
+  duration = 3000
+) => {
   notification.value.message = message;
   notification.value.type = type;
   notification.value.visible = true;
@@ -226,7 +223,9 @@ function calculateParcelArea(points: { lng: number; lat: number }[]) {
 }
 
 function onParcelCropChange() {
-  const selected = parcelCrops.value.find(pc => pc.id === form.value.parcelCrop);
+  const selected = parcelCrops.value.find(
+    (pc) => pc.id === form.value.parcelCrop
+  );
   if (selected?.parcel?.points) {
     const area = calculateParcelArea(selected.parcel.points);
     maxArea.value = area.toFixed(2) as unknown as number;
@@ -279,4 +278,3 @@ const areaInM2 = (areaInHa: number | null) => {
   return areaInHa * 10000;
 };
 </script>
-

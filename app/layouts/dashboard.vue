@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen bg-[#fefefe] flex flex-col">
+  <div class="h-screen bg-[#FAFAF9] flex flex-col">
     <header
-      class="fixed top-0 left-0 right-0 z-50 flex items-center px-4 sm:px-8 h-20 bg-[#fefefe] backdrop-blur-md shadow-sm"
+      class="fixed top-0 left-0 right-0 z-50 flex items-center px-4 sm:px-8 h-20 bg-[#FAFAF9] backdrop-blur-md shadow-sm"
     >
       <div class="flex items-center gap-2">
         <button class="sm:hidden p-2 text-gray-800" @click="toggleMobileMenu">
@@ -28,7 +28,7 @@
         <div class="relative inline-block w-40">
           <button
             @click="open = !open"
-            class="w-full bg-gray-100 rounded p-2 flex items-center justify-between shadow-inner"
+            class="w-full rounded p-2 flex items-center justify-between"
           >
             <span class="flex items-center gap-2">
               <img
@@ -62,12 +62,12 @@
         <div class="relative">
           <button
             @click="userMenuOpen = !userMenuOpen"
-            class="flex items-center gap-1 p-1 bg-white/90 backdrop-blur-sm rounded transition"
+            class="flex items-center gap-1 p-1"
           >
             <div
-              class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center"
+              class="w-10 h-10 bg-[#10b481] text-white flex items-center justify-center font-semibold rounded-full"
             >
-              <i class="bx bxs-user text-white text-lg"></i>
+              {{ user?.username?.charAt(0).toUpperCase() }}
             </div>
             <div class="ml-2 text-left">
               <p class="font-semibold text-[#222831] text-sm">
@@ -113,9 +113,9 @@
           <h2 class="text-white font-bold text-lg">
             <div class="flex items-center gap-3">
               <div
-                class="h-10 w-10 rounded-full bg-gradient-to-br from-[#f4a261] to-[#f4a261] flex items-center justify-center"
+                class="w-10 h-10 bg-[#10b481] text-white flex items-center justify-center font-semibold rounded-full"
               >
-                <i class="bx bxs-user text-white text-lg"></i>
+                {{ user?.username?.charAt(0).toUpperCase() }}
               </div>
               <div class="flex flex-col">
                 <p class="text-white font-semibold text-sm">
@@ -147,7 +147,6 @@
         </div>
 
         <nav class="flex-1 overflow-y-auto py-4 px-2 flex flex-col gap-2">
-
           <button
             @click="router.push('/assistant')"
             class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
@@ -208,12 +207,16 @@
             v-for="item in sidebarMenu"
             :key="item.to"
             @click="router.push(item.to)"
-            class="group relative flex items-center gap-3 px-4 py-2 text-white transition-all duration-300 hover:bg-white/10"
-            active-class="bg-white/10"
+            :class="[
+              'group relative flex items-center gap-3 px-4 py-2 text-white transition-all duration-300 hover:bg-white/10',
+              isActive(item.to) ? 'bg-white/10' : ''
+            ]"
           >
-            <span
-              class="absolute left-0 top-1/2 -translate-y-1/2 h-[60%] border-l-[3px] border-white opacity-0 hover:opacity-100 group-focus:opacity-100 transition-all duration-300"
-            ></span>
+          <span
+            class="absolute left-0 top-1/2 -translate-y-1/2 h-[100%] border-l-[3px] border-white transition-all duration-300"
+            :class="isActive(item.to) ? 'opacity-100' : 'opacity-0'"
+          ></span>
+
             <i :class="item.icon + ' text-xl ml-2 font-light'"></i>
             <span
               class="font-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -250,8 +253,53 @@
       </aside>
 
       <main
-        class="flex-1 p-6 sm:ml-20 transition-all duration-300 peer-hover:ml-56"
+        class="flex-1 p-6 sm:ml-20 transition-all duration-300 bg-[#FAFAF9] peer-hover:ml-56"
       >
+        <!-- <div
+          v-if="
+            showGroupCTA &&
+            userStore.serverStore &&
+            !userStore.serverStore.groupInfo &&
+            !router.currentRoute.value.path.startsWith('/group')
+          "
+          class="ml-6 flex items-center gap-4 bg-gradient-to-r from-[#10b481]/20 to-[#0fa37a]/20 backdrop-blur-md border border-[#10b481]/30 px-4 py-2 rounded shadow-md relative"
+        >
+          <div class="flex-1 text-center sm:text-left">
+            <h2 class="text-[#112830] font-semibold text-base">
+              Do you work as a team?
+            </h2>
+            <p class="text-[#112830]/90 text-md mt-1">
+              Create or join a group to access collaborative tracking and
+              evaluation.
+            </p>
+          </div>
+
+          <div class="flex gap-3 mt-3 sm:mt-0">
+            <button
+              @click="router.push('/group/create-group')"
+              class="flex items-center gap-2 px-4 py-2 bg-[#112830] text-white rounded shadow hover:bg-[#10b481] transition transform"
+            >
+              <i class="bxr bx-plus text-md"></i>
+              Create Group
+            </button>
+
+            <button
+              @click="router.push('/group/join-group')"
+              class="flex items-center gap-2 px-4 py-2 bg-[#112830] text-white rounded shadow hover:bg-[#10b481] transition transform"
+            >
+              <i class="bxr bx-link text-md"></i>
+              Join Group
+            </button>
+
+            <button
+              @click="hideGroupCTA"
+              class="text-gray-700 hover:text-gray-900 p-1 rounded-full transition hover:bg-gray-200"
+            >
+              <i class="bxr bx-x text-lg"></i>
+            </button>
+          </div>
+        </div> -->
+
         <slot />
       </main>
     </div>
@@ -275,7 +323,7 @@ import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
-// import { useUserStore } from "~/stores/userStore";
+import { useUserStore } from "~/stores/userStore";
 const userMenuOpen = ref(false);
 
 const languageStore = useLanguageStore();
@@ -285,6 +333,11 @@ const t = (key: string) => {
 };
 
 const open = ref(false);
+// const isActive = (to: string) => router.currentRoute.value.path === to;
+
+const isActive = (parentPath: string) => {
+  return router.currentRoute.value.path.startsWith(parentPath);
+};
 
 const locales = [
   { code: "en", name: "English", flag: "/flags/en.png" },
@@ -296,8 +349,22 @@ const logout = () => {
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("uuid");
   localStorage.removeItem("serverStore");
+  localStorage.removeItem("hideGroupCTA");
+  userStore.clearUserData();
   router.push("/");
 };
+
+const showGroupCTA = ref(true);
+
+const hideGroupCTA = () => {
+  showGroupCTA.value = false;
+  localStorage.setItem("hideGroupCTA", "true");
+};
+
+onMounted(() => {
+  const hidden = localStorage.getItem("hideGroupCTA");
+  if (hidden === "true") showGroupCTA.value = false;
+});
 
 const userMenuItems = [
   {
@@ -335,12 +402,20 @@ const selectLocale = (code: string) => {
 const state = reactive({
   uuid: "",
 });
+const userStore = useUserStore();
 
-const groupInfo = false;
+const isGroup = computed(() => {
+  if (!userStore.serverStore.value?.groupInfo) return [];
+  return userStore.serverStore.value.groupInfo || [];
+});
+
+const groupInfo = computed(
+  () => userStore.serverStore.value?.groupInfo || null
+);
 
 const baseMenu = computed(() => [
   {
-    to: state.uuid ? `/dashboard/s/${state.uuid}` : "/dashboard",
+    to: "/dashboard/s",
     icon: "bxr bx-home-alt-2",
     label: t("home"),
   },
@@ -351,26 +426,41 @@ const baseMenu = computed(() => [
   { to: "/parcel-crops", icon: "bx bx-box", label: t("crops") },
 ]);
 
-onMounted(() => {
-  if (typeof window !== "undefined") {
-    state.uuid = sessionStorage.getItem("uuid") || "";
-  }
-});
-
 const fullMenu = [
+  {
+    to: `/dashboard/s`,
+    icon: "bxr bx-home-alt-2",
+    label: t("home"),
+  },
   {
     to: "/dashboard/dashboardbi",
     icon: "bxr  bx-dashboard",
     label: t("dashboard"),
   },
-  { to: "/group", icon: "bx bx-group", label: t("groups") },
+  { to: "/group", icon: "bxr  bx-community", label: t("groups") },
+  {
+    to: "/organisations",
+    icon: "bxr  bx-enterprise",
+    label: t("organisations"),
+  },
+  { to: "/reporting", icon: "bxr  bx-folder", label: t("reporting") },
   {
     to: "/management",
     icon: "bx bx-chart-stacked-rows",
     label: t("datamanagement"),
   },
   { to: "/profil", icon: "bx bx-user-circle", label: "Profil" },
-  { to: "/certification", icon: "bx bx-badge-check", label: "Certification" },
+  {
+    to: "/certifications/evaluation",
+    icon: "bx bx-badge-check",
+    label: "Certification",
+  },
+  { to: "/certifications/audit", icon: "bx bx-badge-check", label: "Audit" },
+  {
+    to: "/certifications/type",
+    icon: "bx bx-badge-check",
+    label: "Certification type",
+  },
   { to: "/rapports", icon: "bx bx-folder-open", label: "Rapports" },
   { to: "/parcels", icon: "bx bx-location-alt-2", label: t("parcels") },
   { to: "/tasks", icon: "bx bx-task", label: t("tasks") },
@@ -382,13 +472,65 @@ const sidebarMenu = computed(() => {
   return groupInfo.value ? fullMenu : baseMenu.value;
 });
 
+onMounted(() => {
+  if (typeof window !== "undefined") {
+    state.uuid = sessionStorage.getItem("uuid") || "";
+  }
+});
+
 const user = ref<{ username: string; email: string } | null>(null);
 const router = useRouter();
+
+const checkGroupMembership = async (uuid: string, token: string) => {
+  try {
+    const userRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!userRes.ok) return null;
+    const userData = await userRes.json();
+    const username = userData.username;
+    console.log("Username", username);
+
+    const membersRes = await fetch(`${API_URL}/api/groups/member-groups/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!membersRes.ok) return null;
+    const members = await membersRes.json();
+    console.log("Membres", members);
+
+    const match = members.find((m: { user: string }) => m.user === username);
+    if (!match) return null;
+    console.log("Groupe trouvé", match.group.uuid);
+
+    const groupRes = await fetch(
+      `${API_URL}/api/groups/groups/${match.group.uuid}/`,
+      {
+        headers: { Authorization: `Token ${token}` },
+      }
+    );
+    if (!groupRes.ok) return null;
+
+    const groupInfo = await groupRes.json();
+    console.log("Groupe info", groupInfo);
+
+    userStore.serverStore.value = {
+      token,
+      uuid,
+      groupId: match.group.uuid,
+      groupInfo,
+    };
+
+    return groupInfo;
+  } catch (e) {
+    console.error("Erreur lors de la vérification du groupe :", e);
+    return null;
+  }
+};
 
 onMounted(async () => {
   const uuid = sessionStorage.getItem("uuid");
   const token = sessionStorage.getItem("token");
-
+  await checkGroupMembership(uuid, token);
   if (!uuid || !token) {
     router.push("/login");
     return;

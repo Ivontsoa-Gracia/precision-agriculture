@@ -23,6 +23,7 @@
           title="Log in"
           buttonText="Log in"
           :fields="['username', 'password']"
+          :errors="errors"
           passwordLabel="Password"
           @submit="handleLogin"
         >
@@ -141,7 +142,7 @@
     >
       <div
         :class="[
-          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+          'bg-white rounded shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
           notification.type === 'success'
             ? 'border-t-4 border-[#10b481]'
             : 'border-t-4 border-red-500',
@@ -186,6 +187,8 @@ import { ref, onMounted } from "vue";
 import AuthForm from "~/components/AuthForm.vue";
 import { API_URL } from "~/config";
 import { useRouter } from "vue-router";
+import { useUserStore } from "~/stores/userStore";
+const userStore = useUserStore();
 const slides = [
   {
     title: "Meet Sesily AI",
@@ -233,6 +236,7 @@ const router = useRouter();
 const isLoading = ref(false);
 const notification = ref({ visible: false, message: "", type: "success" });
 const googleLoaded = ref(false);
+const errors = ref({ username: "", password: "", general: "" });
 
 const showNotification = (
   message: string,
@@ -243,14 +247,63 @@ const showNotification = (
   setTimeout(() => (notification.value.visible = false), duration);
 };
 
+const checkGroupMembership = async (uuid: string, token: string) => {
+  try {
+    const userRes = await fetch(`${API_URL}/api/users/${uuid}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!userRes.ok) return null;
+    const userData = await userRes.json();
+    const username = userData.username;
+    console.log("Username", username);
+
+    const membersRes = await fetch(`${API_URL}/api/groups/member-groups/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!membersRes.ok) return null;
+    const members = await membersRes.json();
+    console.log("Membres", members);
+
+    const match = members.find((m: { user: string }) => m.user === username);
+    if (!match) return null;
+    console.log("Groupe trouvé", match.group.uuid);
+
+    const groupRes = await fetch(
+      `${API_URL}/api/groups/groups/${match.group.uuid}/`,
+      {
+        headers: { Authorization: `Token ${token}` },
+      }
+    );
+    if (!groupRes.ok) return null;
+
+    const groupInfo = await groupRes.json();
+    console.log("Groupe info", groupInfo);
+
+    userStore.serverStore.value = {
+      token,
+      uuid,
+      groupId: match.group.uuid,
+      groupInfo,
+    };
+
+    return groupInfo;
+  } catch (e) {
+    console.error("Erreur lors de la vérification du groupe :", e);
+    return null;
+  }
+};
+
 const handleLogin = async (formData: {
   username: string;
   password: string;
 }) => {
-  if (!formData.username || !formData.password) {
-    alert("Veuillez remplir tous les champs");
-    return;
-  }
+  errors.value = { username: "", password: "", general: "" };
+
+  if (!formData.username) errors.value.username = "Please enter your username";
+  if (!formData.password) errors.value.password = "Please enter your password";
+
+  if (errors.value.username || errors.value.password) return;
+
   isLoading.value = true;
   try {
     const res = await fetch(`${API_URL}/api/login/`, {
@@ -260,16 +313,32 @@ const handleLogin = async (formData: {
     });
     const data = await res.json();
     if (!res.ok) {
-      showNotification(data.detail || JSON.stringify(data), "error");
-      setTimeout(() => {}, 3000);
+      if (res.status === 400) {
+        errors.value.username = "Incorrect username ";
+        errors.value.password = "Incorrect password";
+      } else {
+        errors.value.general = "Login failed. Please try again.";
+      }
+
       return;
     }
+
+    const token = data.token;
+    const uuid = data.user.uuid;
     sessionStorage.setItem("token", data.token);
     sessionStorage.setItem("uuid", data.user.uuid);
-    showNotification("You're signed in successfully.", "success");
-    setTimeout(() => {
-      router.push(`/dashboard/s/${data.user.uuid}`);
-    }, 3000);
+    const groupInfo = await checkGroupMembership(uuid, token);
+    if (groupInfo) {
+      showNotification("You're signed in successfully.", "success");
+      setTimeout(() => {
+        router.push("/dashboard/dashboardbi");
+      }, 3000);
+    } else {
+      showNotification("You're signed in successfully.", "success");
+      setTimeout(() => {
+        router.push("/dashboard/s");
+      }, 3000);
+    }
   } catch (error) {
     console.error(error);
     showNotification("Network error", "error");
@@ -316,12 +385,24 @@ const renderGoogleButton = () => {
           setTimeout(() => {}, 3000);
           return;
         }
+        const token = data.token;
+        const uuid = data.user.uuid;
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("uuid", data.user.uuid);
-        showNotification("You're signed in successfully.", "success");
-        setTimeout(() => {
-          router.push(`/dashboard/s/${data.user.uuid}`);
-        }, 3000);
+
+        const groupInfo = await checkGroupMembership(uuid, token);
+
+        if (groupInfo) {
+          showNotification("You're signed in successfully.", "success");
+          setTimeout(() => {
+            router.push("/dashboard/dashboardbi");
+          }, 3000);
+        } else {
+          showNotification("You're signed in successfully.", "success");
+          setTimeout(() => {
+            router.push("/dashboard/s");
+          }, 3000);
+        }
       } catch (err) {
         console.error(err);
         showNotification("Google login failed", "error");
