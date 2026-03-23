@@ -1,50 +1,50 @@
 <template>
-  <div class="px-6 md:px-20 mt-12">
+  <div class="mt-12 p-4 sm:p-6 max-w-3xl mx-auto mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
     <div
       class="max-w-3xl mx-auto"
     >
-      <h1 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
+      <h2 class="mb-6">
         {{ t("editProfile") }}
-      </h1>
+      </h2>
 
       <form
         @submit.prevent="updateProfile"
         class="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         <div class="col-span-2">
-          <label class="text-gray-700 text-sm font-medium mb-1">{{ t("username") }}</label>
+          <label class="label mb-1">{{ t("username") }}</label>
           <input
             v-model="form.username"
             type="text"
-            class="w-full p-3 border rounded"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             required
           />
         </div>
 
         <div>
-          <label class="text-gray-700 text-sm font-medium mb-1">{{ t("firstName") }}</label>
+          <label class="label mb-1">{{ t("firstName") }}</label>
           <input
             v-model="form.first_name"
             type="text"
-            class="w-full p-3 border rounded"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
           />
         </div>
 
         <div>
-          <label class="text-gray-700 text-sm font-medium mb-1">{{ t("lastName") }}</label>
+          <label class="label mb-1">{{ t("lastName") }}</label>
           <input
             v-model="form.last_name"
             type="text"
-            class="w-full p-3 border rounded"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
           />
         </div>
 
         <div class="col-span-2">
-          <label class="text-gray-700 text-sm font-medium mb-1">{{ t("email") }}</label>
+          <label class="label mb-1">{{ t("email") }}</label>
           <input
             v-model="form.email"
             type="email"
-            class="w-full p-3 border rounded"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             required
           />
         </div>
@@ -52,7 +52,7 @@
         <div class="col-span-2 flex justify-between mt-4">
           <button
             type="submit"
-            class="px-6 py-2 bg-[#10b481] text-white rounded hover:bg-[#0e9b6c] transition"
+            class="btn-primary"
           >
             {{ t("saveChanges") }}
           </button>
@@ -60,7 +60,7 @@
           <button
             type="button"
             @click="goBack"
-            class="px-6 py-2 bg-gray-100 text-gray-900 rounded hover:bg-gray-200 transition"
+            class="btn-neutre"
           >
             {{ t("back") }}
           </button>

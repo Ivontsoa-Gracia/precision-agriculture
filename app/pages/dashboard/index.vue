@@ -1,108 +1,28 @@
 <template>
   <div
-    class="p-1 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 items-center justify-center"
+    class="p-1 sm:p-8 space-y-4 sm:space-y-6 mb-10 sm:mb-1 items-center justify-center"
   >
-    <!-- <Breadcrumb /> -->
-    <br />
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 hidden">
-      <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
-      >
-        <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#10b481]/10"
-        >
-          <i class="bx bx-map text-4xl text-[#10b481]"></i>
-        </div>
-        <div class="flex flex-col text-left">
-          <p class="text-3xl font-bold text-[#10b481]">{{ totalParcels }}</p>
-          <p class="text-sm font-medium text-[#10b481]">
-            {{ t("activeparcels") }}
-          </p>
-        </div>
-        <div
-          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#10b481]"
-        ></div>
-      </div>
-
-      <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
-      >
-        <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#c99383]/10"
-        >
-          <i class="bx bx-task text-4xl text-[#c99383]"></i>
-        </div>
-        <div class="flex flex-col text-left">
-          <p class="text-3xl font-bold text-[#c99383]">
-            {{ taskCompletionRate }}%
-          </p>
-          <p class="text-sm font-medium text-[#c99383]">
-            {{ t("completedtasks") }}
-          </p>
-        </div>
-        <div
-          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#c99383]"
-        ></div>
-      </div>
-
-      <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
-      >
-        <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#112830]/10"
-        >
-          <i class="bx bx-bar-chart-alt-2 text-4xl text-[#112830]"></i>
-        </div>
-        <div class="flex flex-col text-left">
-          <p class="text-3xl font-bold text-[#112830]">{{ yieldTotal }} kg</p>
-          <p class="text-sm font-medium text-[#112830]">
-            {{ t("totalyield") }}
-          </p>
-        </div>
-        <div
-          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#112830]"
-        ></div>
-      </div>
-
-      <div
-        class="relative flex items-center gap-4 p-6 bg-white rounded border border-gray-100 hover:shadow-lg transition"
-      >
-        <div
-          class="flex items-center justify-center w-16 h-16 rounded-full bg-[#6d4c41]/10"
-        >
-          <i class="bx bx-line-chart text-4xl text-[#6d4c41]"></i>
-        </div>
-        <div class="flex flex-col text-left">
-          <p class="text-3xl font-bold text-[#6d4c41]">{{ yieldAvg }} kg</p>
-          <p class="text-sm font-medium text-[#6d4c41]">
-            {{ t("averageyield") }}
-          </p>
-        </div>
-        <div
-          class="absolute right-0 top-6 bottom-6 border-r-4 border-[#6d4c41]"
-        ></div>
-      </div>
-    </div>
+    
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div
-        class="col-span-1 md:col-span-2 bg-white rounded border border-gray-100 p-1 z-40"
+        class="col-span-1 md:col-span-2 bg-white rounded-3xl border border-gray-200 p-1 z-40"
       >
         <client-only>
-          <div id="map" class="h-64 sm:h-80 md:h-[450px] rounded w-full"></div>
+          <div id="map" class="h-64 sm:h-80 md:h-[450px] rounded-2xl w-full"></div>
         </client-only>
       </div>
 
       <div class="col-span-1">
         <div
-          class="p-6 bg-white rounded border border-gray-100 flex flex-col h-[400px] sm:h-[500px] md:h-[500px]"
+          class="p-6 bg-white rounded-2xl border border-gray-200 flex flex-col h-[400px] sm:h-[500px] md:h-[500px]"
         >
           <div class="flex items-center justify-between mb-5">
-            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+            <h3 class="subtitle flex items-center gap-2">
               <i class="bx bx-fullscreen text-xl"></i>
               {{ t("zoomonparcel") }}
             </h3>
-            <span class="text-sm text-gray-500"
+            <span class="text-sm text-gray-400 small"
               >{{ totalParcels }} {{ t("parcel") }}(s)</span
             >
           </div>
@@ -113,7 +33,7 @@
                 type="text"
                 v-model="parcelSearch"
                 :placeholder="t('search')"
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
+                class="w-full content pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#212121] transition"
               />
               <i
                 class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -123,7 +43,7 @@
             <div class="relative">
               <button
                 @click="showSortMenu = !showSortMenu"
-                class="px-3 py-2 rounded hover:bg-gray-100 transition text-gray-700 font-medium"
+                class="px-3 py-2 rounded-lg hover:bg-[#fafaf9] transition text-gray-700 font-medium"
               >
                 <i class="bx bx-dots-vertical-rounded text-2xl"></i>
               </button>
@@ -131,7 +51,7 @@
               <transition name="fade-scale">
                 <div
                   v-if="showSortMenu"
-                  class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-xl z-50"
+                  class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-xl shadow-xl z-50"
                 >
                   <p
                     class="px-4 py-2 text-gray-500 font-semibold border-b border-gray-200"
@@ -171,128 +91,24 @@
             <li
               v-for="p in sortedParcels"
               :key="p.id"
-              class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-gray-100 rounded hover:bg-gray-100 transition shadow-sm"
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border border-gray-200 rounded-xl hover:bg-gray-100 transition shadow-sm"
             >
               <div class="flex flex-col items-start gap-1">
-                <span class="text-gray-800 font-semibold">{{ p.name }}</span>
+                <span class="small-medium text-gray-700">{{ p.name }}</span>
 
-                <span class="text-xs text-gray-500">
+                <span class="text-xs small text-gray-400">
                   {{ t("yields") }}: <strong>{{ getParcelYield(p) }} kg</strong>
                 </span>
               </div>
 
               <button
                 @click="zoomParcel(p)"
-                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30 mt-2 sm:mt-0"
+                class="flex items-center gap-2 text-sm font-medium text-white px-3 py-1.5 rounded-full bg-[#10b481] hover:bg-[#0d8a66] transition-colors duration-200 shadow-sm shadow-[#10b481]/30 mt-2 sm:mt-0"
               >
                 <i class="bx bx-zoom-in text-base"></i>
               </button>
             </li>
           </ul>
-        </div>
-      </div>
-    </div>
-
-    <div
-      v-if="analyticsData && Object.keys(analyticsData).length"
-      class="space-y-6 hidden"
-    >
-      <h2 class="text-3xl font-extrabold text-gray-900 mb-6">
-        {{ t("titleanalytics") }}
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div
-          class="col-span-1 md:col-span-2 bg-white rounded border border-gray-100 p-6"
-        >
-          <h3 class="font-bold text-lg mb-4 text-gray-900">
-            {{ t("charttitleyield") }}
-          </h3>
-          <canvas
-            id="parcelYieldChart"
-            class="h-64 sm:h-80 md:h-96 w-full rounded"
-          ></canvas>
-        </div>
-
-        <div
-          class="col-span-1 bg-white rounded border border-gray-100 p-5 hover:shadow-xl transition flex-1 min-w-[200px]"
-        >
-          <h3
-            class="font-bold text-lg text-gray-900 flex items-center gap-2 mb-4"
-          >
-            <i class="bx bx-bar-chart text-[#10b481] text-xl"></i>
-            {{ t("parcelanalytics") }}
-          </h3>
-
-          <div
-            v-for="(parcel, key) in analyticsData"
-            :key="key"
-            class="bg-white rounded-md border border-gray-100 mb-4 overflow-hidden transition hover:shadow-xl"
-          >
-            <button
-              @click="parcel.open = !parcel.open"
-              class="w-full p-4 flex justify-between items-center border border-gray-200 bg-[#fafafa] hover:bg-[#f9f9f9] transition-colors font-medium text-gray-800"
-            >
-              <span class="text-lg">{{ parcel.parcel_name }}</span>
-              <i
-                :class="
-                  parcel.open
-                    ? 'bx bx-chevron-up text-gray-600'
-                    : 'bx bx-chevron-down text-gray-600'
-                "
-                class="text-xl"
-              ></i>
-            </button>
-
-            <div
-              v-if="parcel.open"
-              class="p-4 border-t border-gray-200 bg-gray-50 space-y-3"
-            >
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
-                  <span class="text-gray-500 text-sm">{{
-                    t("meanyield")
-                  }}</span>
-                  <span class="text-lg font-bold text-[#10b481]"
-                    >{{ parcel.mean_yield.toFixed(2) }} kg</span
-                  >
-                </div>
-                <div class="bg-white rounded-md p-3 shadow-sm flex flex-col">
-                  <span class="text-gray-500 text-sm">{{
-                    t("meanyieldperarea")
-                  }}</span>
-                  <span class="text-lg font-bold text-[#c99383]"
-                    >{{ parcel.mean_yield_per_area.toFixed(2) }} kg/ha</span
-                  >
-                </div>
-              </div>
-
-              <div class="space-y-2 mt-3">
-                <div
-                  v-for="(date, i) in parcel.dates"
-                  :key="i"
-                  class="bg-white p-3 rounded-md shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center hover:border border-gray-100 transition"
-                >
-                  <div class="flex flex-col">
-                    <span class="text-gray-500 text-sm"
-                      >{{ date }} ({{ parcel.years[i] }})</span
-                    >
-                    <span class="text-gray-800 font-medium"
-                      >{{ parcel.yield_amount[i].toFixed(2) }} kg</span
-                    >
-                  </div>
-                  <div class="flex flex-col text-right mt-2 sm:mt-0">
-                    <span class="text-gray-400 text-xs mb-1">{{
-                      t("yieldperarea")
-                    }}</span>
-                    <span class="text-[#10b481] font-medium text-lg"
-                      >{{ parcel.yield_per_area[i].toFixed(2) }} kg/ha</span
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -309,13 +125,11 @@ import { nextTick } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
-// import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const languageStore = useLanguageStore();
 
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
-const currentLocale = computed(() => languageStore.lang);
 
 const showSortMenu = ref(false);
 
@@ -369,40 +183,8 @@ let yieldChart: Chart | null = null;
 let map: any = null;
 let parcelLayer: any = null;
 
-const soilColors: Record<string, string> = {
-  nitrogen: "bg-[#10b481]",
-  soc: "bg-[#c99383]",
-  clay: "bg-[#6d4c41]",
-  phh2o: "bg-[#5fd4a2]",
-  sand: "bg-[#f4a261]",
-  silt: "bg-[#219ebc]",
-};
 
 const totalParcels = computed(() => dashboard.value.parcels?.length || 0);
-const taskCompletionRate = computed(() => {
-  let total = 0,
-    done = 0;
-  dashboard.value.task_summary?.forEach((t: any) => {
-    total += t.task_summary?.total_tasks || 0;
-    done += t.task_summary?.completed_tasks || 0;
-  });
-  return total > 0 ? Math.round((done / total) * 100) : 0;
-});
-const yieldTotal = computed(
-  () =>
-    dashboard.value.yield_summary?.reduce(
-      (sum: number, y: any) => sum + (y.summary?.total_yield || 0),
-      0
-    ) || 0
-);
-const yieldAvg = computed(() => {
-  const vals =
-    dashboard.value.yield_summary?.map((y: any) => y.summary?.avg_yield || 0) ||
-    [];
-  return vals.length
-    ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
-    : 0;
-});
 
 const soilTargets = computed(() => {
   const res: Record<string, number> = {
@@ -419,26 +201,6 @@ const soilTargets = computed(() => {
       ...dashboard.value.soil_summary.map((s: any) => s.soil_summary?.[k] || 0)
     );
     res[k] = Math.round(maxVal * 1.1);
-  });
-  return res;
-});
-const soilSummary = computed(() => {
-  const soils =
-    dashboard.value.soil_summary?.filter((s: any) => s.soil_summary) || [];
-  const res: Record<string, number> = {
-    nitrogen: 0,
-    soc: 0,
-    clay: 0,
-    phh2o: 0,
-    sand: 0,
-    silt: 0,
-  };
-  soils.forEach((s: any) => {
-    Object.keys(res).forEach((k) => (res[k] += s.soil_summary?.[k] || 0));
-  });
-  Object.keys(res).forEach((k) => {
-    const avg = res[k] / (soils.length || 1);
-    res[k] = Math.min(Math.round((avg / soilTargets.value[k]) * 100), 100);
   });
   return res;
 });
@@ -1006,36 +768,29 @@ function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   return R * c; // distance en km
 }
 
-dashboard.value.parcels.forEach((parcel: any) => {
-  parcel.points.forEach((pt: any) => {
-    fires.forEach((fire: any) => {
-      const distance = getDistanceKm(
-        pt.lat,
-        pt.lng,
-        parseFloat(fire.latitude),
-        parseFloat(fire.longitude)
-      );
-      if (distance <= 2) {
-        showNotification(
-          `⚠️ Incendie à ${distance.toFixed(2)} km de la parcelle ${
-            parcel.name
-          }!`,
-          "error"
-        );
-      }
-    });
-  });
-});
+// dashboard.value.parcels.forEach((parcel: any) => {
+//   parcel.points.forEach((pt: any) => {
+//     fires.forEach((fire: any) => {
+//       const distance = getDistanceKm(
+//         pt.lat,
+//         pt.lng,
+//         parseFloat(fire.latitude),
+//         parseFloat(fire.longitude)
+//       );
+//       if (distance <= 2) {
+//         showNotification(
+//           `⚠️ Incendie à ${distance.toFixed(2)} km de la parcelle ${
+//             parcel.name
+//           }!`,
+//           "error"
+//         );
+//       }
+//     });
+//   });
+// });
 </script>
 
 <style>
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: #d0d0d0;
-  border-radius: 10px;
-}
 
 .fade-scale-enter-active,
 .fade-scale-leave-active {

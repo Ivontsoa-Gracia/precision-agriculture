@@ -1,10 +1,8 @@
 <template>
   <section>
-    <Breadcrumb />
-
-    <div class="p-4 sm:p-6 max-w-3xl mx-auto mt-6 mb-10 sm:mb1">
+    <div class="p-4 sm:p-6 max-w-3xl mx-auto mt-6 mb-10 sm:mb1 p-8 bg-white rounded-2xl border border-gray-200">
       <h2
-        class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3"
+        class="mb-6"
       >
         {{ t("edityield") }}
       </h2>
@@ -12,56 +10,56 @@
       <form @submit.prevent="update" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("thdate")
             }}</label>
             <input
               v-model="form.date"
               type="date"
-              class="px-3 py-2 rounded border border-gray-300 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
 
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("thyield")
             }}</label>
             <input
               v-model.number="form.yield_amount"
               type="number"
               step="0.01"
-              class="px-3 py-2 rounded border border-gray-300 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("area") }} (m²)</label
             >
             <input
               v-model.number="form.area"
               type="number"
               step="0.01"
-              class="px-3 py-2 rounded border border-gray-300 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
 
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("notes")
             }}</label>
             <textarea
               v-model="form.notes"
-              class="px-3 py-2 rounded border border-gray-300 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             ></textarea>
           </div>
         </div>
 
         <button
           type="submit"
-          class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-sm flex justify-center items-center gap-2"
+          class="w-full btn-primary flex justify-center items-center gap-2"
         >
           {{ t("btnsaveyield") }}
         </button>

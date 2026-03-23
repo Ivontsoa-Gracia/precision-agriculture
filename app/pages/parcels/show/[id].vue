@@ -1,6 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 max-w-[85vw] sm:max-w-[90vw] mb-10 sm:mb-1">
-    <Breadcrumb />
+  <div class="p-1 sm:p-8 max-w-[85vw] sm:max-w-[90vw] mb-10 sm:mb-1">
 
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="w-full lg:w-2/3 space-y-4">
@@ -9,17 +8,17 @@
         >
           <div
             v-if="currentWeather && todayForecast"
-            class="lg:col-span-2 bg-[#112830] text-white rounded p-7 shadow-sm flex flex-col justify-between"
+            class="lg:col-span-2 bg-[#112830] text-white rounded-2xl p-7 shadow-sm flex flex-col justify-between"
           >
             <div class="flex items-start justify-between">
               <div>
-                <p class="text-sm uppercase tracking-wide opacity-70 mb-1">
+                <p class="text-sm small-medium text-[#fafaf9] uppercase tracking-wide opacity-70 mb-1">
                   {{ getDayName(todayForecast.date) }}
                 </p>
-                <p class="text-[56px] font-semibold leading-none">
+                <p class="text-[42px] small font-semibold leading-none">
                   {{ currentWeather.temperature }}°
                 </p>
-                <p class="text-sm opacity-80 capitalize mt-1">
+                <p class="text-sm small opacity-80 capitalize mt-1">
                   {{
                     translatedCurrentCondition ||
                     currentWeather.conditionOriginal ||
@@ -30,18 +29,18 @@
               </div>
 
               <div class="text-right">
-                <p class="text-sm text-[#10b481] mb-2">
+                <p class="text-sm small text-[#10b481] mb-2">
                   {{ currentTime }}
                 </p>
                 <Icon
                   :icon="getWeatherIcon(currentWeather.condition)"
-                  class="text-7xl"
+                  class="text-[50px]"
                 />
               </div>
             </div>
 
             <div class="mt-6 flex items-center gap-4 text-sm opacity-90">
-              <span class="px-3 py-1 rounded-full bg-white/10">
+              <span class="px-3 py-1 small rounded-full bg-white/10">
                 {{ todayForecast.min_temp }}°C - {{ todayForecast.max_temp }}°C
               </span>
             </div>
@@ -49,45 +48,45 @@
             <div
               class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs opacity-90"
             >
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 small">
                 <span class="opacity-70">{{ t("precipitation") }}</span>
-                <strong class="text-sm"
-                  >{{ todayForecast.total_precip }} mm</strong
+                <span class="text-sm small-medium"
+                  >{{ todayForecast.total_precip }} mm</span
                 >
               </div>
 
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 small">
                 <span class="opacity-70">{{ t("humidity") }}</span>
-                <strong class="text-sm">{{ currentWeather.humidity }}%</strong>
+                <span class="text-sm small-medium">{{ currentWeather.humidity }}%</span>
               </div>
 
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 small">
                 <span class="opacity-70">{{ t("vent") }}</span>
-                <strong class="text-sm"
-                  >{{ currentWeather.wind_speed }} km/h</strong
+                <span class="text-sm small-medium"
+                  >{{ currentWeather.wind_speed }} km/h</span
                 >
               </div>
 
-              <div class="flex flex-col gap-1">
+              <div class="flex flex-col gap-1 small">
                 <span class="opacity-70">{{ t("uvIndex") }}</span>
-                <strong class="text-sm">{{ currentWeather.uv_index }}</strong>
+                <span class="text-sm small-medium">{{ currentWeather.uv_index }}</span>
               </div>
             </div>
           </div>
 
           <div
             v-if="futureForecastDays.length"
-            class="bg-white rounded p-6 shadow-sm flex flex-col"
+            class="flex flex-col"
           >
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            <h3 class="subtitle mb-4">
               {{ t("prevision") }}
-            </h2>
+            </h3>
 
             <div class="space-y-4">
               <div
                 v-for="day in futureForecastDays"
                 :key="day.date"
-                class="flex items-center justify-between rounded px-5 py-4 bg-white shadow hover:shadow-md transition cursor-pointer"
+                class="flex items-center justify-between rounded-xl px-5 py-4 bg-white border border-gray-200 transition cursor-pointer"
               >
                 <div class="flex items-center gap-4">
                   <Icon
@@ -96,18 +95,18 @@
                   />
 
                   <div class="flex flex-col">
-                    <p class="text-sm font-semibold text-gray-800">
+                    <p class="text-sm small font-semibold text-gray-700">
                       {{ getDayNameShort(day.date) }}
                     </p>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs text-gray-700 small">
                       Min: {{ day.min_temp }}° Max: {{ day.max_temp }}°
                     </p>
                   </div>
                 </div>
 
-                <div class="flex flex-col items-end text-sm text-gray-600">
-                  <span class="font-medium">{{ day.chance_of_rain }}%</span>
-                  <span class="opacity-70">{{ t("pluie") }}</span>
+                <div class="flex flex-col items-end text-xs text-gray-700 small">
+                  <span class="font-semibold">{{ day.chance_of_rain }}%</span>
+                  <span class="text-gray-700">{{ t("pluie") }}</span>
                 </div>
               </div>
             </div>
@@ -118,36 +117,36 @@
       <div class="w-full lg:w-1/3 flex flex-col">
         <div
           v-if="metadata.location"
-          class="bg-white rounded p-6 flex flex-col gap-2"
+          class="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col gap-2"
         >
-          <div class="flex items-center gap-4 rounded">
+          <div class="flex items-center gap-4 rounded-xl">
             <div class="flex flex-col">
-              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+              <span class="text-xs text-gray-400 small uppercase tracking-wide">{{
                 t("locations")
               }}</span>
-              <span class="text-sm font-medium text-gray-800">{{
+              <span class="text-sm text-gray-700 small font-semibold">{{
                 metadata.location
               }}</span>
             </div>
           </div>
 
-          <div class="flex items-center gap-4 rounded">
+          <div class="flex items-center gap-4 rounded-xl">
             <div class="flex flex-col">
-              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+              <span class="text-xs text-gray-400 small uppercase tracking-wide">{{
                 t("forecastPeriod")
               }}</span>
-              <span class="text-sm font-medium text-gray-800">{{
+              <span class="text-sm text-gray-700 small font-semibold">{{
                 metadata.forecast_period
               }}</span>
             </div>
           </div>
 
-          <div class="flex items-center gap-4 rounded">
+          <div class="flex items-center gap-4 rounded-xl">
             <div class="flex flex-col">
-              <span class="text-xs text-gray-500 uppercase tracking-wide">{{
+              <span class="text-xs text-gray-400 small uppercase tracking-wide">{{
                 t("riskLevel")
               }}</span>
-              <span class="text-sm font-medium text-gray-800">{{
+              <span class="text-sm text-gray-700 small font-semibold">{{
                 metadata.risk_level
               }}</span>
             </div>
@@ -159,7 +158,7 @@
             <li
               v-for="alert in translatedAlerts"
               :key="alert.type"
-              class="flex items-start gap-3 p-4 rounded shadow-sm bg-yellow-50 border-l-4 border-[#FFC107]"
+              class="flex items-start gap-3 p-4 rounded-xl shadow-sm bg-yellow-50 border-l-4 border-[#FFC107]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -177,14 +176,14 @@
               </svg>
 
               <div class="flex-1">
-                <p class="text-sm font-medium text-gray-800 mb-1">
+                <p class="text-sm text-gray-700 small font-semibold mb-1">
                   {{
                     alert.message ||
                     alert.messageOriginal ||
                     "No message available"
                   }}
                 </p>
-                <p class="text-xs text-gray-600">
+                <p class="text-xs text-gray-700 small">
                   {{ alert.action || alert.actionOriginal || "-" }}
                 </p>
               </div>
@@ -197,49 +196,48 @@
     <div class="flex flex-col lg:flex-row gap-6">
       <div class="w-full lg:w-2/3 space-y-4">
         <div
-          class="bg-white rounded shadow-sm overflow-hidden border border-gray-100 mb-6"
+          class="bg-white rounded-2xl overflow-hidden border border-gray-200 mb-6"
         >
-          <div class="p-6 text-[#222831]">
-            <h2 class="text-2xl font-bold flex items-center gap-2">
-              <i class="bx bx-map-pin text-2xl"></i>
+          <!-- <div class="p-6 text-[#222831]">
+            <h3 class="subtitle flex items-center gap-2">
               {{ t("parceldetail") }}
-            </h2>
-          </div>
+            </h3>
+          </div> -->
 
           <div class="flex flex-col lg:flex-row">
             <div class="w-full lg:w-1/3 p-6 border-r border-gray-100">
               <div class="space-y-5">
                 <div
-                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                  class="bg-white shadow-sm rounded-xl p-4 border border-gray-200"
                 >
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  <p class="text-xs text-gray-400 small uppercase tracking-wide">
                     {{ t("owner") }}
                   </p>
-                  <p class="text-gray-800 font-medium text-sm mt-1">
+                  <p class="text-sm text-gray-700 small-medium mt-1">
                     {{ ownerData.first_name || "N/A" }}
                     {{ ownerData.last_name || "N/A" }}
                   </p>
                 </div>
 
                 <div
-                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                  class="bg-white shadow-sm rounded-xl p-4 border border-gray-200"
                 >
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  <p class="text-xs text-gray-400 small uppercase tracking-wide">
                     {{ t("thparcelname") }}
                   </p>
-                  <p class="text-gray-800 font-medium text-sm mt-1">
+                  <p class="text-sm text-gray-700 small-medium mt-1">
                     {{ parcelData.parcel_name || "N/A" }}
                   </p>
                 </div>
 
                 <div
                   v-if="metadata.location"
-                  class="bg-white shadow-sm rounded p-4 border border-gray-200"
+                  class="bg-white shadow-sm rounded-xl p-4 border border-gray-200"
                 >
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  <p class="text-xs text-gray-400 small uppercase tracking-wide">
                     {{ t("locations") }}
                   </p>
-                  <p class="text-gray-800 font-medium text-sm mt-1">
+                  <p class="text-sm text-gray-700 small-medium mt-1">
                     {{ metadata.location }}
                   </p>
                 </div>
@@ -247,10 +245,10 @@
                 <div
                   class="bg-white shadow-sm rounded p-4 border border-gray-200"
                 >
-                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                  <p class="text-xs text-gray-400 small uppercase tracking-wide">
                     {{ t("Area") }}
                   </p>
-                  <p class="text-gray-800 font-medium text-sm mt-1">
+                  <p class="text-sm text-gray-700 small-medium mt-1">
                     {{ formatM2(parcelAreaHa) }}
                   </p>
                 </div>
@@ -263,11 +261,11 @@
               >
                 <span
                   @click="selectedTab = 'points'"
-                  class="cursor-pointer pb-2 text-sm font-medium transition relative"
+                  class="cursor-pointer pb-2 text-sm small transition relative"
                   :class="
                     selectedTab === 'points'
                       ? 'text-[#10b481]'
-                      : 'text-gray-500 hover:text-gray-700'
+                      : 'text-gray-700 hover:text-gray-700'
                   "
                 >
                   {{ t("pointsParcel") }}
@@ -280,11 +278,11 @@
 
                 <span
                   @click="selectedTab = 'crops'"
-                  class="cursor-pointer pb-2 text-sm font-medium transition relative"
+                  class="cursor-pointer pb-2 text-sm small transition relative"
                   :class="
                     selectedTab === 'crops'
                       ? 'text-[#10b481]'
-                      : 'text-gray-500 hover:text-gray-700'
+                      : 'text-gray-700 hover:text-gray-700'
                   "
                 >
                   {{ t("croptype") }}
@@ -298,7 +296,7 @@
 
               <div v-if="selectedTab === 'points'">
                 <h3
-                  class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
+                  class="subtitle mb-4 flex items-center gap-2"
                 >
                   {{ t("pointsParcel") }}
                 </h3>
@@ -306,7 +304,7 @@
                 <div v-if="parcelPoints.length" class="overflow-x-auto text-sm">
                   <table class="min-w-full border-separate border-spacing-y-2">
                     <thead>
-                      <tr class="text-left text-gray-600">
+                      <tr class="text-left text-gray-500 small">
                         <th
                           class="py-2 px-4 font-medium border-b border-gray-200"
                         >
@@ -329,20 +327,20 @@
                       <tr
                         v-for="(point, i) in parcelPoints"
                         :key="i"
-                        class="bg-white hover:bg-gray-50 transition rounded"
+                        class="bg-white hover:bg-gray-50 transition rounded content"
                       >
                         <td
-                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                          class="py-2 px-4 border-b border-gray-100"
                         >
                           {{ t("point") }} {{ i + 1 }}
                         </td>
                         <td
-                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                          class="py-2 px-4 border-b border-gray-100"
                         >
                           {{ point.lat?.toFixed(6) ?? "N/A" }}
                         </td>
                         <td
-                          class="py-2 px-4 text-gray-700 border-b border-gray-100"
+                          class="py-2 px-4 border-b border-gray-100"
                         >
                           {{ point.lng?.toFixed(6) ?? "N/A" }}
                         </td>
@@ -351,14 +349,14 @@
                   </table>
                 </div>
 
-                <p v-else class="text-gray-500 text-sm mt-4 italic">
+                <p v-else class="text-gray-400 text-sm mt-4 italic small">
                   {{ t("nopoinntsfound") }}
                 </p>
               </div>
 
               <div v-if="selectedTab === 'crops'" class="mt-4">
                 <h3
-                  class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
+                  class="subtitle mb-4 flex items-center gap-2"
                 >
                   {{ t("croptype") }}
                 </h3>
@@ -414,14 +412,14 @@
 
       <div class="w-full lg:w-1/3 flex flex-col">
         <div
-          class="bg-white rounded shadow-sm p-6 space-y-4 border border-gray-100"
+          class="bg-white rounded-2xl border-gray-200 p-6 space-y-4 border border-gray-100"
         >
-          <h3 class="text-lg font-semibold">{{ t("soilinfo") }}</h3>
+          <h3 class="subtitle">{{ t("soilinfo") }}</h3>
           <div class="mt-4 space-y-3">
             <div
               v-for="(quality, index) in soilQualities"
               :key="index"
-              class="p-3 rounded flex justify-between items-center border-l-[4px]"
+              class="p-3 rounded-xl flex justify-between items-center border-l-[4px]"
               :style="{
                 borderColor: colorMap[quality.name] || '#ccc',
                 background: colorMap[quality.name]
@@ -432,10 +430,10 @@
               }"
             >
               <div class="flex flex-col">
-                <span class="font-semibold text-sm">{{ quality.name }}</span>
-                <span class="text-gray-700 text-xs">{{ quality.unit }}</span>
+                <span class="font-semibold small text-sm">{{ quality.name }}</span>
+                <span class="text-gray-700 small text-xs">{{ quality.unit }}</span>
               </div>
-              <div class="font-bold text-lg">
+              <div class="small font-semibold text-lg">
                 {{ quality.value }}
               </div>
             </div>
@@ -446,8 +444,8 @@
 
     <div class="flex flex-col lg:flex-row gap-6 mt-10">
       <div class="w-full lg:w-2/3 space-y-4">
-        <div class="bg-white rounded shadow p-4 max-h-[350px] pb-16">
-          <h3 class="font-semibold text-2xl text-gray-800 mb-6">
+        <div class="bg-white rounded-2xl border p-6 max-h-[350px] pb-16">
+          <h3 class="subtitle mb-6">
             {{ t("charttitleyield") }}
           </h3>
           <canvas id="yieldEvolutionChart"></canvas>
@@ -456,44 +454,44 @@
 
       <div class="w-full lg:w-1/3 flex flex-col">
         <div v-if="selectedParcel" class="grid grid-cols-1 gap-4">
-          <h3 class="text-gray-800 mb-2 text-2xl font-semibold">
+          <h3 class="subtitle font-semibold">
             {{ t("titleanalytics") }}
           </h3>
           <div
-            class="relative flex items-center gap-4 p-6 bg-white rounded shadow-sm hover:shadow-sm transition border border-gray-100"
+            class="relative flex items-center gap-4 p-6 bg-white rounded-xl border- border-gray-200 hover:shadow-sm transition border border-gray-100"
           >
             <div
-              class="flex items-center justify-center w-16 h-16 rounded bg-[#222831]/10"
+              class="flex items-center justify-center w-16 h-16 rounded-lg bg-[#fafaf9]"
             >
-              <i class="bx bx-bar-chart-alt-2 text-4xl text-[#222831]"></i>
+              <i class="bx bx-bar-chart-alt-2 text-4xl text-[#112830]"></i>
             </div>
             <div class="flex flex-col text-left">
-              <p class="text-3xl font-bold text-[#222831]">
+              <p class="text-3xl small font-bold text-[#112830]">
                 {{ selectedParcel.mean_yield?.toFixed(2) ?? "-" }} kg
               </p>
-              <p class="text-sm font-medium text-[#222831]">
+              <p class="text-sm small-medium text-[#112830]">
                 {{ t("meanyield") }}
               </p>
             </div>
             <div
-              class="absolute right-0 top-6 bottom-6 border-r-4 border-[#222831]"
+              class="absolute right-0 top-6 bottom-6 border-r-4 rounded-l-2xl border-[#112830]"
             ></div>
           </div>
 
           <div
-            class="relative flex items-center gap-4 p-6 bg-white rounded shadow-sm hover:shadow-sm transition border border-gray-100"
+            class="relative flex items-center gap-4 p-6 bg-white rounded-xl border- border-gray-200 hover:shadow-sm transition border border-gray-100"
           >
             <div
-              class="flex items-center justify-center w-16 h-16 rounded bg-[#6d4c41]/10"
+              class="flex items-center justify-center w-16 h-16 rounded-lg bg-[#fafaf9]"
             >
               <i class="bx bx-line-chart text-4xl text-[#6d4c41]"></i>
             </div>
             <div class="flex flex-col text-left">
-              <p class="text-3xl font-bold text-[#6d4c41]">
+              <p class="text-3xl small font-bold text-[#6d4c41]">
                 {{ selectedParcel.mean_yield_per_area?.toFixed(2) ?? "-" }}
                 kg/ha
               </p>
-              <p class="text-sm font-medium text-[#6d4c41]">
+              <p class="text-sm small-medium text-[#6d4c41]">
                 {{ t("meanyieldperarea") }}
               </p>
             </div>
@@ -502,31 +500,22 @@
             ></div>
           </div>
         </div>
-        <div
-          v-if="selectedParcel"
-          class="p-6 bg-white rounded shadow-sm hover:shadow-sm transition hidden"
-        >
-          <h3 class="font-semibold text-gray-800 mb-2">
-            {{ t("charttitleyield") }}
-          </h3>
-          <canvas id="analyticsChart"></canvas>
-        </div>
       </div>
     </div>
 
     <div class="flex flex-col space-y-6 mt-12">
       <div class="flex flex-col lg:flex-row gap-6">
         <div
-          class="bg-white rounded shadow-sm p-6 w-full lg:w-2/3 space-y-4 border border-gray-100"
+          class="bg-white rounded-2xl border border-gray-200 p-6 w-full lg:w-2/3 space-y-4 border border-gray-100"
         >
           <div class="flex justify-between items-start">
             <div>
-              <h3 class="text-xl font-bold text-gray-800">
+              <h3 class="subtitle">
                 {{ t("titletaskperform") }}
               </h3>
               <NuxtLink
                 to="/tasks"
-                class="text-sm font-medium text-[#10b481] hover:underline mt-4"
+                class="menu-item hover:underline mt-4"
               >
                 {{ t("seeall") }}
               </NuxtLink>
@@ -535,7 +524,7 @@
             <div>
               <NuxtLink
                 to="/tasks/create"
-                class="flex items-center px-4 py-2 bg-[#10b481] text-white rounded shadow hover:bg-[#0da06a] transition"
+                class="flex items-center btn-primary"
               >
                 <i class="bx bx-plus mr-2"></i>{{ t("addtask") }}
               </NuxtLink>
@@ -546,7 +535,7 @@
             <div
               v-for="task in nearestTasks"
               :key="task.id"
-              class="flex justify-between items-start p-4 rounded border border-gray-100 bg-white shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+              class="flex justify-between items-start p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
               :class="{
                 'border-l-4 border-l-[#10b481]': task.priority === 'Low',
                 'border-l-4 border-l-[#f4a261]': task.priority === 'Medium',
@@ -554,14 +543,14 @@
               }"
             >
               <div class="flex flex-col gap-1">
-                <p class="font-semibold text-gray-900 text-base">
+                <p class="small font-semibold text-gray-700 text-sm">
                   {{ task.name }}
                 </p>
 
                 <div
-                  class="flex flex-col gap-3 text-xs text-gray-500 leading-tight"
+                  class="flex flex-col text-xs text-gray-400 small leading-tight"
                 >
-                  <span class="flex items-center gap-1">
+                  <span class="flex items-center gap-1 ">
                     <i class="bxr bx-calendar-star"></i>
                     <span class="capitalize">
                       {{ t("priority") }}:
@@ -579,16 +568,16 @@
               <div class="flex flex-col items-end gap-2">
                 <span
                   :class="[
-                    'px-3 py-1 rounded-full text-xs font-medium border transition',
+                    'px-3 py-1 rounded-full text-xs small border transition',
                     task.status === 'Pending'
-                      ? 'bg-orange-50 text-orange-600 border-orange-200'
+                      ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]'
                       : task.status === 'In Progress'
-                      ? 'bg-blue-50 text-blue-600 border-blue-200'
+                      ? 'bg-blue-50 text-blue-600 border-blue-500'
                       : task.status === 'Done'
-                      ? 'bg-green-50 text-green-600 border-green-200'
+                      ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]'
                       : task.status === 'Cancelled'
-                      ? 'bg-gray-50 text-gray-600 border-gray-300'
-                      : 'bg-gray-100 text-gray-600 border-gray-300',
+                      ? 'bg-gray-50 text-gray-600 border-gray-500'
+                      : 'bg-gray-100 text-gray-600 border-gray-500',
                   ]"
                 >
                   {{ t("status" + task.status.replace(/ /g, "")) }}
@@ -596,7 +585,7 @@
 
                 <div class="relative">
                   <i
-                    class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-500 hover:text-gray-800 transition"
+                    class="bx bx-dots-vertical-rounded cursor-pointer text-xl text-gray-400 transition"
                     @click="task.showMenu = !task.showMenu"
                   ></i>
 
@@ -606,14 +595,14 @@
                   >
                     <NuxtLink
                       :to="`/tasks/edit/${task.id}`"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                      class="block px-4 py-2 content hover:bg-gray-100 transition"
                     >
                       {{ t("edit") }}
                     </NuxtLink>
 
                     <NuxtLink
                       :to="`/tasks/show/${task.id}`"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                      class="block px-4 py-2 content hover:bg-gray-100 transition"
                     >
                       {{ t("show") }}
                     </NuxtLink>
@@ -625,9 +614,9 @@
         </div>
 
         <div
-          class="bg-white rounded shadow p-6 w-full lg:w-1/3 flex flex-col border border-gray-100"
+          class="bg-white rounded-2xl p-6 w-full lg:w-1/3 flex flex-col border border-gray-200"
         >
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">
+          <h3 class="subtitle mb-4">
             {{ t("charttitletask") }}
           </h3>
           <canvas
@@ -639,14 +628,14 @@
 
       <div class="rounded">
         <div class="flex justify-between items-center mb-4 space-y-4">
-          <h3 class="text-lg font-semibold text-[#212121]">
+          <h3 class="subtitle">
             {{ t("harvesthistory") }}
           </h3>
 
           <div class="flex space-x-3">
             <button
               @click="exportCSV"
-              class="flex items-center px-3 py-2 bg-white text-gray-900 rounded text-sm"
+              class="flex items-center btn-neutre"
             >
               <i class="bx bx-export mr-2"></i> {{ t("export") }}
             </button>
@@ -655,25 +644,25 @@
 
         <div class="overflow-x-auto bg-white">
           <table class="min-w-[700px] w-full text-left border-collapse">
-            <thead class="bg-[#FAFAF9]">
+            <thead class="bg-[#FAFAF9] small">
               <tr>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                  class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider border-b"
                 >
                   {{ t("thdate") }}
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                  class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider border-b"
                 >
                   {{ t("thyield") }}
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+                  class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
                 >
                   {{ t("thtendance") }}
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center hidden sm:table-cell"
+                  class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider border-b text-center hidden sm:table-cell"
                 >
                   {{ t("thactions") }}
                 </th>
@@ -683,16 +672,16 @@
               <tr
                 v-for="record in paginatedHarvest"
                 :key="record.id"
-                class="hover:bg-gray-50"
+                class="hover:bg-gray-50 content"
               >
-                <td class="px-6 py-2 border-b text-sm text-gray-900">
+                <td class="px-6 py-2 border-b">
                   {{ record.date }}
                 </td>
-                <td class="px-6 py-2 border-b text-sm text-gray-900">
+                <td class="px-6 py-2 border-b">
                   {{ record.quantity }}
                 </td>
                 <td
-                  class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                  class="px-6 py-2 border-b small hidden sm:table-cell"
                 >
                   <i
                     v-if="record.trend === 'up'"
@@ -702,7 +691,7 @@
                     v-else-if="record.trend === 'down'"
                     class="bx bx-trending-down text-[#e63946] text-xl"
                   ></i>
-                  <i v-else class="bx bx-minus text-gray-500 text-xl"></i>
+                  <i v-else class="bx bx-minus text-gray-700 text-xl"></i>
                   <span
                     v-if="record.trend !== 'neutral'"
                     :class="
@@ -718,7 +707,7 @@
                 <td class="p-3 border-b text-center hidden sm:table-cell">
                   <button
                     @click="deleteRecord(record.id)"
-                    class="py-1 px-2 rounded hover:bg-red-100"
+                    class="py-2 px-2 rounded-full hover:bg-red-100"
                   >
                     <i class="bx bx-trash text-[#e63946] text-lg"></i>
                   </button>
@@ -734,7 +723,7 @@
         </div>
 
         <div
-          class="bg-white px-4 py-3 flex items-center justify-between sm:px-6"
+          class="bg-white px-4 py-3 flex items-center justify-between content sm:px-6"
         >
           <div class="flex-1 flex justify-between sm:hidden">
             <button
@@ -770,7 +759,7 @@
                 <button
                   @click="prevPage"
                   :disabled="currentPage === 1"
-                  class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span class="sr-only">{{ t("prev") }}</span>
                   <i class="bx bx-chevron-left"></i>
@@ -795,7 +784,7 @@
                 <button
                   @click="nextPage"
                   :disabled="currentPage === totalPages"
-                  class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span class="sr-only">{{ t("next") }}</span>
                   <i class="bx bx-chevron-right"></i>
@@ -1168,11 +1157,11 @@ function updateYieldEvolutionChart() {
         {
           label: t("chartYieldEvolution"),
           data,
-          backgroundColor: "#222831",
+          backgroundColor: "#10b481",
           borderRadius: 0,
           borderSkipped: false,
           barThickness: 30,
-          hoverBackgroundColor: "#222831",
+          hoverBackgroundColor: "#10b481",
         },
       ],
     },
@@ -1182,7 +1171,7 @@ function updateYieldEvolutionChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: "#fafafa",
+          backgroundColor: "#fff",
           titleColor: "#222831",
           bodyColor: "#222831",
           bodyFont: { weight: "bold" },
@@ -1193,7 +1182,7 @@ function updateYieldEvolutionChart() {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { color: "#222831", font: { size: 14, weight: "600" } },
+          ticks: { color: "#9CA3AF" },
         },
         y: {
           beginAtZero: true,
@@ -1202,7 +1191,7 @@ function updateYieldEvolutionChart() {
             drawBorder: false,
             color: "rgba(34, 40, 49, 0.1)",
           },
-          ticks: { color: "#222831", font: { size: 14, weight: "600" } },
+          ticks: { color: "#9CA3AF" },
         },
       },
     },

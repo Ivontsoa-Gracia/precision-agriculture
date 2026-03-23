@@ -1,8 +1,7 @@
 <template>
-  <div class="bg-[#f9f9f9] shadow p-6 space-y-4 rounded-lg">
-    <h2 class="text-3xl font-extrabold text-[#222831] mb-4">
-      <i class="bx bx-edit text-3xl"></i>
-      Edit Crop
+  <div class="max-w-3xl mx-auto mt-1 sm:mt-10 mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
+    <h2 class="mb-4">
+      Edit crop
     </h2>
 
     <form @submit.prevent="submitCrop" class="space-y-5">

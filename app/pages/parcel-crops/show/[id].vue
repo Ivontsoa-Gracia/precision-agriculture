@@ -1,22 +1,22 @@
 <template>
   <div
-    class="p-6 flex flex-col gap-8 md:flex-row md:items-start md:justify-center md:gap-6"
+    class="p-8 flex flex-col gap-8 md:flex-row md:items-start md:justify-center md:gap-6 "
   >
-    <div class="w-full md:w-2/3 mx-auto">
+    <div class="w-full md:w-2/3 mx-auto p-8 bg-white rounded-2xl border border-gray-200">
       <button
-        @click="goBack"
-        class="text-[#222831] hover:underline text-sm font-medium mb-4 inline-flex items-center gap-1"
-      >
-        <i class="bx bx-arrow-left"></i> {{ t("back") }}
-      </button>
+      @click="goBack"
+      class="menu-item hover:underline mb-4 inline-flex items-center gap-1"
+    >
+      <i class="bx bx-arrow-left"></i> {{ t("back") }}
+    </button>
 
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+        <h2 class="flex items-center gap-3">
           {{ t("pareclcropdetail") }}
         </h2>
         <button
           @click="goToEdit(parcelCrop.id)"
-          class="text-[#222831] hover:text-[#10b481] text-2xl flex items-center"
+          class="btn-neutre flex items-center"
           title="Edit"
         >
         <i class="bx bx-edit-alt"></i>
@@ -24,23 +24,23 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="border border-gray-100 p-4 text-sm rounded flex items-center gap-3">
+        <div class="border border-gray-200 p-4 text-sm rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 ">
+            <p class="uppercase tracking-wide text-gray-400 small ">
               {{ t("parcel") }}
             </p>
-            <p class="font-medium text-gray-800">
+            <p class="content">
               {{ parcelCrop.parcel_name }}
             </p>
           </div>
         </div>
 
-        <div class="border border-gray-100 p-4 text-sm rounded flex items-center gap-3">
+        <div class="border border-gray-200 p-4 text-sm rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500">
+            <p class="uppercase tracking-wide text-gray-400 small">
               {{ t("crop") }}
             </p>
-            <p class="font-medium text-gray-800">
+            <p class="content">
               {{ parcelCrop.crop?.name }} ({{
                 parcelCrop.crop?.variety?.name || "-"
               }})
@@ -48,23 +48,23 @@
           </div>
         </div>
 
-        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-200 text-sm p-4 rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 ">
+            <p class="uppercase tracking-wide text-gray-400 small ">
               {{ t("plantingdate") }}
             </p>
-            <p class="font-medium text-gray-800">
+            <p class="content">
               {{ formatDate(parcelCrop.planting_date) }}
             </p>
           </div>
         </div>
 
-        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-200 text-sm p-4 rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-400 small text-sm">
               {{ t("harvestdate") }}
             </p>
-            <p class="font-medium text-gray-800">
+            <p class="content">
               {{
                 parcelCrop.harvest_date
                   ? formatDate(parcelCrop.harvest_date)
@@ -74,18 +74,18 @@
           </div>
         </div>
 
-        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-200 text-sm p-4 rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-400 small text-sm">
               {{ t("area") }} (m²)
             </p>
-            <p class="font-medium text-gray-800">{{ parcelCrop.area }}</p>
+            <p class="content">{{ parcelCrop.area }}</p>
           </div>
         </div>
 
-        <div class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3">
+        <div class="border border-gray-200 text-sm p-4 rounded-xl flex items-center gap-3">
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm mb-2">
+            <p class="uppercase tracking-wide text-gray-400 small text-sm mb-2">
               {{ t("status") }}
             </p>
             <span
@@ -102,13 +102,13 @@
         </div>
 
         <div
-          class="border border-gray-100 text-sm p-4 rounded flex items-center gap-3 col-span-1 md:col-span-2"
+          class="border border-gray-200 text-sm p-4 rounded-xl flex items-center gap-3 col-span-1 md:col-span-2"
         >
           <div>
-            <p class="uppercase tracking-wide text-gray-500 text-sm">
+            <p class="uppercase tracking-wide text-gray-400 small text-sm">
               {{ t("createdat") }}
             </p>
-            <p class="font-medium text-gray-800">
+            <p class="content">
               {{ formatDate(parcelCrop.created_at) }}
             </p>
           </div>
@@ -118,26 +118,26 @@
 
     <div
       v-if="forecastData"
-      class="w-full md:w-1/3 bg-[#112830] rounded shadow-sm p-6 flex flex-col items-center text-white"
+      class="w-full md:w-1/3 bg-[#112830] rounded-2xl shadow-sm p-6 flex flex-col items-center text-white"
     >
       <div
-        class="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded bg-[#f4a261]/20"
+        class="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded bg-[#10b481]/20"
       >
         <i
-          class="bx bx-bar-chart-alt-2 text-2xl md:text-3xl text-[#f4a261]"
+          class="bx bx-bar-chart-alt-2 text-2xl md:text-3xl text-[#10b481]"
         ></i>
       </div>
 
-      <h3 class="text-xl md:text-2xl font-bold mt-4 text-center text-gray-200">
+      <h2 class="mt-4 text-center text-gray-200">
         {{ t("titleyieldforcast") }}
-      </h3>
-      <p class="mt-2 text-center text-gray-300">
+      </h2>
+      <p class="mt-2 text-center text-gray-300 small text-sm">
         {{ t("forecastdate") }}:
-        <span class="font-medium text-gray-200">{{
+        <span class="font-medium text-gray-200 small text-sm">{{
           formatDate(forecastData.forecast_date)
         }}</span>
       </p>
-      <p class="text-xl md:text-3xl font-extrabold text-[#f4a261] mt-4">
+      <p class="text-xl md:text-3xl font-extrabold text-[#10b481] mt-4 small">
         {{ forecastData.predicted_yield.toFixed(2) }} kg
       </p>
 
@@ -240,8 +240,8 @@ const renderChart = () => {
   if (!ctx) return;
 
   const gradient = ctx.createLinearGradient(0, 0, 0, chartRef.value.height);
-  gradient.addColorStop(0, "rgba(244,162,97,0.8)");
-  gradient.addColorStop(1, "rgba(244,162,97,0.3)");
+  gradient.addColorStop(0, "#10b481");
+  gradient.addColorStop(1, "#10b481");
 
   chartInstance = new Chart(ctx, {
     type: "bar",
@@ -254,7 +254,7 @@ const renderChart = () => {
           backgroundColor: gradient,
           borderRadius: 3,
           barThickness: 20,
-          hoverBackgroundColor: "#f4a261",
+          hoverBackgroundColor: "#10b481",
         },
       ],
     },
@@ -300,25 +300,25 @@ const goBack = () => {
 const statusClasses = (statusName: string) => {
   switch (statusName) {
     case "Planned":
-      return "bg-[#219ebc]/10 text-[#219ebc] border border-[#219ebc]/50";
+      return "bg-[#219ebc]/10 text-[#219ebc] border border-[#219ebc]";
     case "Planted":
-      return "bg-[#10b481]/10 text-[#10b481] border border-[#10b481]/50";
+      return "bg-[#10b481]/10 text-[#10b481] border border-[#10b481]";
     case "Germinated":
-      return "bg-[#5fd4a2]/10 text-[#0c9069] border border-[#0c9069]/40";
+      return "bg-[#5fd4a2]/10 text-[#0c9069] border border-[#0c9069]";
     case "Growing":
-      return "bg-[#c99383]/10 text-[#c99383] border border-[#c99383]/50";
+      return "bg-[#c99383]/10 text-[#c99383] border border-[#c99383]";
     case "Flowering":
-      return "bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]/50";
+      return "bg-[#f4a261]/10 text-[#f4a261] border border-[#f4a261]";
     case "Fruiting":
-      return "bg-[#6d4c41]/10 text-[#6d4c41] border border-[#6d4c41]/40";
+      return "bg-[#6d4c41]/10 text-[#6d4c41] border border-[#6d4c41]";
     case "Mature":
-      return "bg-[#10b481]/10 text-[#0c9069] border border-[#10b481]/40";
+      return "bg-[#10b481]/10 text-[#0c9069] border border-[#10b481]";
     case "Harvested":
-      return "bg-[#222831]/10 text-[#222831] border border-[#222831]/40";
+      return "bg-[#222831]/10 text-[#222831] border border-[#222831]";
     case "Post-Harvest":
-      return "bg-[#7a7a7a]/10 text-[#7a7a7a] border border-[#7a7a7a]/40";
+      return "bg-[#7a7a7a]/10 text-[#7a7a7a] border border-[#7a7a7a]";
     case "Failed":
-      return "bg-[#e63946]/10 text-[#e63946] border border-[#e63946]/50";
+      return "bg-[#e63946]/10 text-[#e63946] border border-[#e63946]";
     default:
       return "bg-gray-100 text-gray-600 border border-gray-300";
   }

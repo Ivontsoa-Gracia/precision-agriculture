@@ -4,109 +4,190 @@
   </NuxtLayout>
 </template>
 
-
 <script setup lang="ts">
 useHead({
-  title: "SmartSaha – Agriculture intelligente, durable et connectée à Madagascar",
+  title:
+    "SmartSaha – Agriculture intelligente, durable et connectée à Madagascar",
   meta: [
     {
       name: "description",
       content:
-        "SmartSaha est une plateforme d’agriculture intelligente à Madagascar. Elle aide les agriculteurs à recevoir des recommandations personnalisées sur la santé des sols, les conditions météo, la végétation et les risques environnementaux. SmartSaha intègre aussi un marketplace agricole et un assistant agronome alimenté par l’IA."
+        "SmartSaha est une plateforme d’agriculture intelligente à Madagascar. Elle aide les agriculteurs à recevoir des recommandations personnalisées sur la santé des sols, les conditions météo, la végétation et les risques environnementaux. SmartSaha intègre aussi un marketplace agricole et un assistant agronome alimenté par l’IA.",
     },
     {
       name: "keywords",
       content:
-        "SmartSaha, agriculture intelligente, Madagascar, agriculture de précision, marketplace agricole, traçabilité, assistant agronome IA, gestion des parcelles, prévision météo, durabilité, data management, suivi et évaluation"
+        "SmartSaha, agriculture intelligente, Madagascar, agriculture de précision, marketplace agricole, traçabilité, assistant agronome IA, gestion des parcelles, prévision météo, durabilité, data management, suivi et évaluation",
     },
     {
       name: "author",
-      content: "SmartSaha Team"
+      content: "SmartSaha Team",
     },
     // Open Graph pour Facebook, WhatsApp, LinkedIn
     {
       property: "og:title",
-      content: "SmartSaha – Agriculture intelligente et durable à Madagascar"
+      content: "SmartSaha – Agriculture intelligente et durable à Madagascar",
     },
     {
       property: "og:description",
       content:
-        "SmartSaha relie les petits producteurs, entreprises et coopératives agricoles à des outils d’agriculture de précision, un assistant agronome IA et un marché mondial équitable pour les produits agricoles."
+        "SmartSaha relie les petits producteurs, entreprises et coopératives agricoles à des outils d’agriculture de précision, un assistant agronome IA et un marché mondial équitable pour les produits agricoles.",
     },
     {
       property: "og:type",
-      content: "website"
+      content: "website",
     },
     {
       property: "og:url",
-      content: "https://app.smart-saha.com/"
+      content: "https://app.smart-saha.com/",
     },
     {
       property: "og:image",
-      content: "https://app.smart-saha.com/logo.png"
+      content: "https://app.smart-saha.com/logo.png",
     },
     // Twitter Cards
     {
       name: "twitter:card",
-      content: "summary_large_image"
+      content: "summary_large_image",
     },
     {
       name: "twitter:title",
-      content: "SmartSaha – Plateforme d’agriculture intelligente à Madagascar"
+      content: "SmartSaha – Plateforme d’agriculture intelligente à Madagascar",
     },
     {
       name: "twitter:description",
       content:
-        "Optimisez vos cultures, suivez vos parcelles et accédez à un marché mondial équitable grâce à SmartSaha, la plateforme d’agriculture intelligente pour producteurs et entreprises à Madagascar."
+        "Optimisez vos cultures, suivez vos parcelles et accédez à un marché mondial équitable grâce à SmartSaha, la plateforme d’agriculture intelligente pour producteurs et entreprises à Madagascar.",
     },
     {
       name: "twitter:image",
-      content: "https://app.smart-saha.com/logo.png"
+      content: "https://app.smart-saha.com/logo.png",
     },
     // Langue et géolocalisation
     {
       name: "geo.region",
-      content: "MG"
+      content: "MG",
     },
     {
       name: "geo.placename",
-      content: "Madagascar"
+      content: "Madagascar",
     },
     {
       name: "geo.position",
-      content: "-18.8792;47.5079"
-    }
+      content: "-18.8792;47.5079",
+    },
   ],
   link: [
     {
       rel: "canonical",
-      href: "https://app.smart-saha.com/"
+      href: "https://app.smart-saha.com/",
     },
     {
       rel: "stylesheet",
-      href: "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      href: "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
     },
     {
       rel: "stylesheet",
-      href: "https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
+      href: "https://cdn.boxicons.com/fonts/basic/boxicons.min.css",
     },
     {
       rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;700;800&display=swap"
+      href: "https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;700;800&display=swap",
     },
     {
       rel: "icon",
       type: "image/png",
-      href: "/favicon.ico"
+      href: "/favicon.ico",
     },
     {
       rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    }
+      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Inter_24pt-Regular.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Inter_28pt-Italic.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Inter_28pt-Medium.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Manrope-Bold.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Manrope-SemiBold.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
+    {
+      rel: "preload",
+      as: "font",
+      href: "/fonts/Manrope-ExtraBold.ttf",
+      type: "font/ttf",
+      crossorigin: "anonymous",
+    },
   ],
   htmlAttrs: {
-    lang: "fr"
-  }
+    lang: "fr",
+  },
 });
-
 </script>
+
+<style>
+@font-face {
+  font-family: "Inter-Regular";
+  src: url("/fonts/Inter_24pt-Regular.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "Inter-Italic";
+  src: url("/fonts/Inter_28pt-Italic.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "Inter-Medium";
+  src: url("/fonts/Inter_28pt-Medium.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "Manrope-Bold";
+  src: url("/fonts/Manrope-Bold.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "Manrope-SemiBold";
+  src: url("/fonts/Manrope-SemiBold.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "Manrope-ExtraBold";
+  src: url("/fonts/Manrope-ExtraBold.ttf") format("opentype");
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+}
+</style>

@@ -1,19 +1,19 @@
 <template>
-  <div class="w-full md:w-2/3 mx-auto mt-12">
+  <div class="w-full md:w-2/3 mx-auto mt-12 p-8 bg-white rounded-2xl border border-gray-200">
     <button
       @click="goBack"
-      class="text-[#222831] hover:underline text-sm font-medium mb-4 inline-flex items-center gap-1"
+      class="menu-item hover:underline mb-4 inline-flex items-center gap-1"
     >
       <i class="bx bx-arrow-left"></i> {{ t("back") }}
     </button>
 
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+      <h2 class="">
         {{ t("yielddetail") }}
       </h2>
       <button
         @click="goToEdit"
-        class="text-[#222831] hover:text-[#10b481] text-2xl flex items-center"
+        class="btn-neutre flex items-center"
         title="Edit"
       >
         <i class="bx bx-edit-alt"></i>
@@ -21,40 +21,40 @@
     </div>
 
     <div v-if="yieldRecord" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-2xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thdate") }}</p>
-          <p class="font-medium text-gray-800 text-sm">{{ formatDate(yieldRecord.date) }}</p>
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">{{ t("thdate") }}</p>
+          <p class="content">{{ formatDate(yieldRecord.date) }}</p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-2xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("thyield") }}</p>
-          <p class="font-medium text-gray-800 text-sm">{{ yieldRecord.yield_amount }}</p>
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">{{ t("thyield") }}</p>
+          <p class="content">{{ yieldRecord.yield_amount }}</p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-2xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("area") }} (m²)</p>
-          <p class="font-medium text-gray-800 text-sm">{{ yieldRecord.area }}</p>
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">{{ t("area") }} (m²)</p>
+          <p class="content">{{ yieldRecord.area }}</p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-2xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("parcelcrop") }}</p>
-          <p class="font-medium text-gray-800 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">{{ t("parcelcrop") }}</p>
+          <p class="content">
             {{ parcelCropData && parcelData ? `${parcelData.parcel_name} - ${parcelCropData.crop.name}` : "-" }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-2xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">{{ t("notes") }}</p>
-          <p class="font-medium text-gray-800 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">{{ t("notes") }}</p>
+          <p class="content">
             {{ yieldRecord.notes || "-" }}
           </p>
         </div>

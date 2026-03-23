@@ -1,24 +1,23 @@
 <template>
-  <div class="p-1 sm:p-6">
-    <Breadcrumb />
+  <div class="p-1 sm:p-8">
     <section class="mb-10">
       <div class="flex items-center justify-between mb-8">
         <h2
-          class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2"
+          class=""
         >
           {{ t("yieldlist") }}
         </h2>
 
         <button
           @click="goToCreate"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+          class="flex items-center gap-2 btn-primary"
         >
           <i class="bx bx-plus"></i> {{ t("add") }}
         </button>
       </div>
 
       <div
-        class="flex items-center gap-3 border border-gray-200 rounded px-3 py-2 bg-white"
+        class="flex items-center gap-3 border border-gray-200 rounded-xl content px-3 py-2 bg-white"
       >
         <div class="relative flex-1">
           <i
@@ -43,94 +42,94 @@
       </div>
     </section>
 
-    <div class="hidden md:block overflow-x-auto bg-white">
-      <table class="min-w-[700px] w-full text-left border-collapse">
+    <div class="block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse overflow-y-auto">
         <thead class="bg-[#FAFAF9]">
           <tr>
             <th
               @click="sortBy('date')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("thdate") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('parcel_name')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("thparcelname") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('area')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("area") }} (m²)
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('crop')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("crop") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('yield_amount')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("thyield") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b text-center"
             >
               {{ t("thactions") }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-gray-50">
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+          <tr v-for="y in paginatedYields" :key="y.id" class="hover:bg-[#fafaf9]">
+            <td class="px-6 py-2 border-b content">
               {{ formatDate(y.date) }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ y.parcel_name || "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ y.area }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ y.parcelCrop ? `${y.parcelCrop.crop.name}` : "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ y.yield_amount }}
             </td>
             <td
-              class="px-6 py-3 border-b text-sm text-gray-900 text-center flex justify-center gap-2"
+              class="px-6 py-3 border-b content text-center flex justify-center gap-2"
             >
               <button
                 @click="goToShow(y.id)"
-                class="p-1 px-2 rounded hover:bg-[#10b481]/20"
+                class="p-2 px-2 rounded-full hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-lg"></i>
               </button>
               <button
                 @click="goToEdit(y.id)"
-                class="p-1 px-2 rounded hover:bg-[#f4a261]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-lg"></i>
               </button>
               <button
                 @click="deleteYield(y.id)"
-                class="p-1 px-2 rounded hover:bg-[#e63946]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-lg"></i>
               </button>
             </td>
           </tr>
           <tr v-if="yields.length === 0">
-            <td colspan="6" class="p-6 text-center text-sm text-gray-500">
+            <td colspan="6" class="p-6 text-center text-sm small text-gray-400">
               {{ t("noyieldfound") }}
             </td>
           </tr>
@@ -138,58 +137,8 @@
       </table>
     </div>
 
-    <div class="md:hidden space-y-4 text-md">
-      <div
-        v-for="y in yields"
-        :key="y.id"
-        class="bg-white p-4 rounded-xl shadow flex flex-col gap-3 hover:shadow-lg transition"
-      >
-        <div class="flex justify-between items-start">
-          <h3 class="font-bold text-[#212121] text-lg">
-            {{ y.parcel_name || "-" }}
-          </h3>
-          <div class="flex gap-1">
-            <button
-              @click="goToShow(y.id)"
-              class="p-2 rounded hover:bg-[#10b481]/20"
-            >
-              <i class="bx bx-show text-[#10b481] text-md"></i>
-            </button>
-            <button
-              @click="goToEdit(y.id)"
-              class="p-2 rounded hover:bg-[#f4a261]/10"
-            >
-              <i class="bx bx-edit text-[#f4a261] text-md"></i>
-            </button>
-            <button
-              @click="deleteYield(y.id)"
-              class="p-2 rounded hover:bg-[#e63946]/10"
-            >
-              <i class="bx bx-trash text-[#e63946] text-md"></i>
-            </button>
-          </div>
-        </div>
-        <p>
-          <span class="font-semibold">{{ t("thdate") }}:</span>
-          {{ formatDate(y.date) }}
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("area") }}:</span> {{ y.area }}
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("crop") }}:</span>
-          {{ y.parcelCrop ? y.parcelCrop.crop.name : "-" }}
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("thyield") }}:</span>
-          {{ y.yield_amount }}
-        </p>
-      </div>
-      <p v-if="yields.length === 0" class="text-center text-sm text-gray-500">
-        {{ t("noyieldfound") }}
-      </p>
-    </div>
-    <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+    
+    <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6 content">
       <div class="flex-1 flex justify-between sm:hidden">
         <button
           @click="prevPage"
@@ -223,7 +172,7 @@
             <button
               @click="prevPage"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("prev") }}</span>
               <i class="bx bx-chevron-left"></i>
@@ -248,7 +197,7 @@
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("next") }}</span>
               <i class="bx bx-chevron-right"></i>

@@ -1,6 +1,5 @@
 <template>
-  <div class="p-1 sm:p-6 mb-10 sm:mb-1">
-    <Breadcrumb />
+  <div class="p-1 sm:p-8 mb-10 sm:mb-1">
     <TaskCalendar class="mb-2" />
 
     <h2
@@ -18,10 +17,10 @@
           href="#"
           @click.prevent="activeTab = 'historique'"
           :class="[
-            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm',
+            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 small text-sm',
             activeTab === 'historique'
               ? 'text-[#10b481] border-[#10b481]'
-              : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]',
+              : 'border-transparent text-gray-700 hover:text-[#10b481] hover:border-[#10b481]',
           ]"
         >
           {{ t("history") }}
@@ -30,17 +29,17 @@
           href="#"
           @click.prevent="activeTab = 'upcoming'"
           :class="[
-            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm',
+            'loan-tab border-b-2 whitespace-nowrap py-4 px-1 small text-sm',
             activeTab === 'upcoming'
               ? 'text-[#10b481] border-[#10b481]'
-              : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]',
+              : 'border-transparent text-gray-700 hover:text-[#10b481] hover:border-[#10b481]',
           ]"
         >
           {{ t("upcoming") }}
         </a>
         <select
           v-model="parcelCropFilter"
-          class="border-b-2 border-transparent outline-none text-gray-500 bg-transparent px-2 py-1 font-medium text-sm hover:text-[#10b481] hover:border-[#10b481]"
+          class="border-b-2 border-transparent outline-none text-gray-700 bg-transparent px-2 py-1 small text-sm hover:text-[#10b481] hover:border-[#10b481]"
         >
           <option value="">{{ t("all") }}</option>
           <option
@@ -53,53 +52,60 @@
         </select>
       </nav>
 
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-3">
+        <button
+        @click="markTasksDone"
+        :disabled="selectedTasks.length === 0"
+        class="btn-neutre disabled:opacity-0"
+      >
+        {{ t("markDone") }}
+      </button>
         <NuxtLink
           to="/tasks/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+          class="flex items-center gap-2 btn-primary"
         >
           <i class="bx bx-plus"></i> {{ t("add") }}
         </NuxtLink>
       </div>
     </div>
 
-    <div class="hidden md:block overflow-x-auto bg-white">
-      <table class="min-w-[700px] w-full text-left border-collapse">
+    <div class="block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse overflow-y-auto">
         <thead class="bg-[#FAFAF9]">
           <tr>
             <th
               @click="sortBy('name')"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b"
             >
               {{ t("taskname") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('due_date')"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b"
             >
               {{ t("due") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('parcelCropFull')"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b"
             >
               {{ t("parcelcrop") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b text-center"
             >
               {{ t("priority") }}
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b text-center"
             >
               {{ t("status") }}
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              class="px-6 py-3 text-left text-xs small text-gray-500 uppercase tracking-wider border-b text-center"
             >
               {{ t("thactions") }}
             </th>
@@ -111,42 +117,102 @@
             :key="task.id"
             class="hover:bg-gray-50"
           >
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
-              {{ task.name }}
+          <td class="px-6 py-2 border-b text-sm text-gray-900">
+              <div class="flex items-center gap-3">
+                <label
+                  v-if="statuses[task.status] !== 'Done'"
+                  class="relative flex items-center gap-3 cursor-pointer select-none"
+                >
+                  <div class="relative">
+                    <input
+                      type="checkbox"
+                      v-model="selectedTasks"
+                      :value="task.id"
+                      class="appearance-none w-5 h-5 border border-gray-300 rounded flex items-center justify-center transition-all duration-200 checked:bg-[#10b481] checked:border-gray-400 cursor-pointer"
+                    />
+                    <svg
+                      v-if="selectedTasks.includes(task.id)"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="white"
+                      stroke-width="3"
+                      class="absolute inset-0 m-auto w-3 h-3 pointer-events-none"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                </label>
+
+                <span
+                  v-else
+                  class="flex items-center justify-center w-5 h-5 border border-gray-400 bg-[#fafaf9] rounded"
+                >
+                  <svg
+                    class="w-3 h-3 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="3"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+
+                <!-- Nom de la tâche -->
+                <span
+                  :class="
+                    statuses[task.status] === 'Done'
+                      ? 'line-through small text-gray-400'
+                      : 'content'
+                  "
+                >
+                  {{ task.name }}
+                </span>
+              </div>
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
-              {{ formatDate(task.due_date) }}
+            <td class="px-6 py-2 border-b content">
+                {{ formatDate(task.due_date) }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ task.parcelCropFull || "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900 text-center">
+            <td class="px-6 py-2 border-b text-center">
               <span
                 v-if="priorities[task.priority]"
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-medium border',
+                  'px-3 py-1 rounded-full text-xs small border',
                   priorities[task.priority] === 'High'
-                    ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
+                    ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]'
                     : priorities[task.priority] === 'Medium'
-                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                    : 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50',
+                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]'
+                    : 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]',
                 ]"
               >
                 {{ t(priorityKeyMap[priorities[task.priority]]) }}
               </span>
               <span v-else>-</span>
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900 text-center">
+            <td class="px-6 py-2 border-b text-center">
               <span
                 v-if="statuses[task.status]"
                 :class="[
-                  'px-3 py-1 rounded-full text-xs font-medium border',
+                  'px-3 py-1 rounded-full text-xs small border',
                   statuses[task.status] === 'Pending'
-                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+                    ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]'
                     : statuses[task.status] === 'In Progress'
-                    ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
+                    ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]'
                     : statuses[task.status] === 'Done'
-                    ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+                    ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]'
                     : statuses[task.status] === 'Canceled'
                     ? 'bg-gray-100 text-gray-600 border-gray-500'
                     : 'bg-gray-200 text-gray-700',
@@ -159,26 +225,26 @@
             <td class="p-3 border-b text-center flex justify-center gap-2">
               <button
                 @click="showTask(task.id)"
-                class="p-1 px-2 rounded hover:bg-[#10b481]/20"
+                class="p-2 px-2 rounded-full hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-lg"></i>
               </button>
               <button
                 @click="editTask(task.id)"
-                class="p-1 px-2 rounded hover:bg-[#f4a261]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-lg"></i>
               </button>
               <button
                 @click="deleteTask(task.id)"
-                class="p-1 px-2 rounded hover:bg-[#e63946]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-lg"></i>
               </button>
             </td>
           </tr>
           <tr v-if="paginatedTasks.length === 0">
-            <td colspan="7" class="p-6 text-center text-gray-500">
+            <td colspan="7" class="p-6 text-center text-gray-400 small text-sm">
               {{ t("notaskfound") }}
             </td>
           </tr>
@@ -186,87 +252,8 @@
       </table>
     </div>
 
-    <div class="md:hidden space-y-4">
-      <div
-        v-for="task in paginatedTasks"
-        :key="task.id"
-        class="bg-white p-4 rounded-xl shadow flex flex-col gap-3 hover:shadow-lg transition"
-      >
-        <div class="flex justify-between items-start">
-          <h3 class="font-bold text-[#212121] text-lg">{{ task.name }}</h3>
-          <div class="flex gap-2">
-            <button
-              @click="showTask(task.id)"
-              class="p-2 px-4 rounded hover:bg-[#10b481]/20"
-            >
-              <i class="bx bx-show text-[#10b481] text-xl"></i>
-            </button>
-            <button
-              @click="editTask(task.id)"
-              class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
-            >
-              <i class="bx bx-edit text-[#f4a261] text-xl"></i>
-            </button>
-            <button
-              @click="deleteTask(task.id)"
-              class="p-2 px-4 rounded hover:bg-[#e63946]/10"
-            >
-              <i class="bx bx-trash text-[#e63946] text-xl"></i>
-            </button>
-          </div>
-        </div>
-        <p>
-          <span class="font-semibold">{{ t("due") }}:</span>
-          {{ formatDate(task.due_date) }}
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("parcelcrop") }}:</span>
-          {{ task.parcelCropFull || "-" }}
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("priority") }}: </span>
-          <span
-            v-if="priorities[task.priority]"
-            :class="[
-              'px-2 py-1 rounded-full text-xs font-medium border',
-              priorities[task.priority] === 'High'
-                ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
-                : priorities[task.priority] === 'Medium'
-                ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                : 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50',
-            ]"
-          >
-            {{ t(priorityKeyMap[priorities[task.priority]]) }}
-          </span>
-          <span v-else>-</span>
-        </p>
-        <p>
-          <span class="font-semibold">{{ t("status") }}: </span>
-          <span
-            v-if="statuses[task.status]"
-            :class="[
-              'px-2 py-1 rounded-full text-xs font-medium border',
-              statuses[task.status] === 'Pending'
-                ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
-                : statuses[task.status] === 'In Progress'
-                ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
-                : statuses[task.status] === 'Done'
-                ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
-                : statuses[task.status] === 'Canceled'
-                ? 'bg-gray-100 text-gray-600 border-gray-500'
-                : 'bg-gray-200 text-gray-700',
-            ]"
-          >
-            {{ t(statusKeyMap[statuses[task.status]]) }}
-          </span>
-          <span v-else>-</span>
-        </p>
-      </div>
-      <p v-if="paginatedTasks.length === 0" class="text-center text-gray-500">
-        {{ t("notaskfound") }}
-      </p>
-    </div>
-    <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+    
+    <div class="bg-white px-4 py-3 rounded-b-2xl flex items-center justify-between sm:px-6 content">
       <div class="flex-1 flex justify-between sm:hidden">
         <button
           @click="prevPage"
@@ -300,7 +287,7 @@
             <button
               @click="prevPage"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("prev") }}</span>
               <i class="bx bx-chevron-left"></i>
@@ -325,7 +312,7 @@
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("next") }}</span>
               <i class="bx bx-chevron-right"></i>
@@ -562,15 +549,15 @@ const deleteTask = async (id: number) => {
 
 const editTask = (id: number) => router.push(`/tasks/edit/${id}`);
 const showTask = (id: number) => router.push(`/tasks/show/${id}`);
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
-};
-const prevPage = () => {
+function prevPage() {
   if (currentPage.value > 1) currentPage.value--;
-};
-const goToPage = (page: number) => {
-  currentPage.value = page;
-};
+}
+function nextPage() {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+}
+function goToPage(page: number | string) {
+  if (page !== "...") currentPage.value = page as number;
+}
 
 const fetchTasks = async () => {
   const token = sessionStorage.getItem("token");
@@ -692,4 +679,67 @@ watch([parcelCropFilter, activeTab, filteredTasks], () => {
   currentPage.value = 1;
   updatePaginated();
 });
+
+const selectedTasks = ref<number[]>([]);
+
+const markTasksDone = async () => {
+  const token = sessionStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await Promise.all(
+      selectedTasks.value.map(async (taskId) => {
+        const task = tasks.value.find((t) => t.id === taskId);
+        if (!task) return;
+
+        const updatedTask = {
+          ...task,
+          status: Object.keys(statuses.value).find(
+            (id) => statuses.value[Number(id)] === "Done"
+          ),
+        };
+
+        const res = await fetch(`${API_URL}/api/tasks/${taskId}/mark_done/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+          body: JSON.stringify(updatedTask),
+        });
+
+        if (!res.ok) throw new Error(`Failed to update task ${taskId}`);
+      })
+    );
+
+    // Mettre à jour localement
+    tasks.value.forEach((task) => {
+      if (selectedTasks.value.includes(task.id)) {
+        task.status = Number(
+          Object.keys(statuses.value).find(
+            (id) => statuses.value[Number(id)] === "Done"
+          )
+        );
+      }
+    });
+
+    selectedTasks.value = [];
+    updatePaginated();
+    alert("Selected tasks marked as Done!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update selected tasks");
+  }
+};
 </script>
+
+
+<style>
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+}
+</style>

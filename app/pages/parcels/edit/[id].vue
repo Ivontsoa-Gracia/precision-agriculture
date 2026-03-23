@@ -1,7 +1,7 @@
 <template>
   <div class="p-4 sm:p-6 max-w-4xl mx-auto mt-1 sm:mt-6 mb-10 sm:mb-1">
     <h2
-      class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2"
+      class="mb-6 flex items-center gap-2"
     >
       {{ t("titleeditparcel") }}
     </h2>
@@ -10,46 +10,46 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="flex flex-col gap-4">
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("owner")
             }}</label>
             <input
               v-model="ownerName"
               type="text"
               readonly
-              class="px-3 py-2 rounded border bg-white cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#10b481]"
+              class="px-3 py-2 rounded border bg-white content cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#10b481]"
             />
           </div>
 
           <div class="flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("thparcelname") }} *</label
             >
             <input
               v-model="form.parcel_name"
               type="text"
               required
-              class="px-3 py-2 rounded border bg-white focus:outline-none focus:ring-2 focus:ring-[#10b481]"
+              class="px-3 py-2 rounded border bg-white content focus:outline-none focus:ring-2 focus:ring-[#10b481]"
             />
           </div>
         </div>
 
         <div>
-          <h3 class="text-gray-700 text-sm font-medium mb-1">
+          <h3 class="label mb-1">
             {{ t("pointsParcel") }}
           </h3>
 
           <div class="overflow-x-auto rounded border">
             <table class="min-w-full bg-white">
-              <thead class="bg-gray-100">
+              <thead class="bg-[#fafaf9]">
                 <tr>
-                  <th class="px-4 py-2 text-left font-semibold text-gray-700">
+                  <th class="px-4 py-2 text-left text-gray-500 small text-sm">
                     #
                   </th>
-                  <th class="px-4 py-2 text-left font-semibold text-gray-700">
+                  <th class="px-4 py-2 text-left text-gray-500 small text-sm">
                     {{ t("thlatitude") }}
                   </th>
-                  <th class="px-4 py-2 text-left font-semibold text-gray-700">
+                  <th class="px-4 py-2 text-left text-gray-500 small text-sm">
                     {{ t("thlongitude") }}
                   </th>
                 </tr>
@@ -59,9 +59,9 @@
                 <tr
                   v-for="(point, index) in form.parcel_points"
                   :key="index"
-                  class="border-t"
+                  class="border-t content"
                 >
-                  <td class="px-4 py-2 font-semibold text-gray-900">
+                  <td class="px-4 py-2 font-semibold">
                     {{ index + 1 }}
                   </td>
 
@@ -91,7 +91,7 @@
 
       <button
         type="submit"
-        class="w-full bg-[#10b481] transition-colors py-3 rounded text-white text-lg flex justify-center items-center gap-2"
+        class="w-full btn-primary flex justify-center items-center gap-2"
       >
         {{ t("btnsaveparcel") }}
       </button>

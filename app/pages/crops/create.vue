@@ -1,27 +1,27 @@
 <template>
-  <div class="max-w-2xl mx-auto p-4 sm:p-6 mt-16">
-    <h2 class="text-xl sm:text-3xl font-bold mb-6 text-[#212121] flex items-center gap-3">
+  <div class="max-w-3xl mx-auto mt-1 sm:mt-10 mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
+    <h2 class="mb-6">
       {{ t("newcrop") }}
     </h2>
 
     <form @submit.prevent="submitCrop" class="space-y-5">
       <div class="flex flex-col">
-        <label class="text-gray-700 text-sm font-medium mb-1">{{ t("cropname") }} *</label>
+        <label class="label mb-1">{{ t("cropname") }} *</label>
         <input
           v-model="form.name"
           type="text"
           placeholder="Enter crop name"
           required
-          class="w-full border p-2 rounded focus:ring-[#212121]"
+          class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
         />
       </div>
 
       <div class="flex flex-col">
-        <label class="text-gray-700 text-sm font-medium mb-1">{{ t("variety") }} *</label>
+        <label class="label mb-1">{{ t("variety") }} *</label>
         <select
           v-model="form.variety_id"
           required
-          class="w-full border p-2 rounded focus:ring-[#212121]"
+          class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
         >
           <option v-for="v in varieties" :key="v.id" :value="v.id">
             {{ v.name }}
@@ -31,66 +31,55 @@
 
       <button
         type="submit"
-        class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-lg flex justify-center items-center gap-2"
+        class="w-full btn-primary flex justify-center items-center gap-2"
       >
         {{ t("btnsavecrop") }}
       </button>
     </form>
   </div>
-  <div
+  <!-- <div
     v-if="isLoading"
     class="absolute inset-0 bg-black/50 flex items-center justify-center"
   >
     <div
       class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
     ></div>
-  </div>
+  </div> -->
 
-  <transition name="fade">
-    <div
-      v-if="notification.visible"
-      class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm"
-    >
+  <transition name="slide-right">
       <div
-        :class="[
-          'bg-white rounded-2xl shadow-2xl px-8 py-6 flex flex-col items-center gap-4 w-[340px] text-center transition-all duration-300',
+        v-if="notification.visible"
+        class="fixed bottom-4 right-4 z-[9999] bg-[#112830] rounded shadow-xl px-6 py-4 flex items-center gap-4 w-80 text-left border-l-4 transition-all duration-300"
+        :class="
           notification.type === 'success'
-            ? 'border-t-4 border-[#10b481]'
-            : 'border-t-4 border-red-500',
-        ]"
+            ? 'border-[#10b481]'
+            : 'border-red-500'
+        "
       >
         <div
-          v-if="notification.type === 'success'"
-          class="w-16 h-16 rounded-full bg-[#10b481] flex items-center justify-center"
+          :class="
+            notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500'
+          "
+          class="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl"
         >
-          <i class="bx bx-check text-4xl font-extrabold text-white"></i>
+          <i
+            :class="notification.type === 'success' ? 'bx bx-check' : 'bx bx-x'"
+          ></i>
         </div>
-        <div
-          v-else
-          class="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"
-        >
-          <i class="bx bx-x text-4xl font-extrabold text-white"></i>
+        <div>
+          <p class="font-medium text-sm text-gray-100">
+            {{ notification.message }}
+          </p>
+          <p class="text-gray-300 text-xs">
+            {{
+              notification.type === "success"
+                ? "Success!"
+                : "Something went wrong."
+            }}
+          </p>
         </div>
-
-        <p
-          :class="[
-            'text-lg font-semibold',
-            notification.type === 'success' ? 'text-[#10b481]' : 'text-red-500',
-          ]"
-        >
-          {{ notification.message }}
-        </p>
-
-        <p class="text-gray-500 text-sm">
-          {{
-            notification.type === "success"
-              ? "Redirecting to your dashboard..."
-              : "Please try again."
-          }}
-        </p>
       </div>
-    </div>
-  </transition>
+    </transition>
 </template>
 
 <script setup lang="ts">

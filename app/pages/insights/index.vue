@@ -1,70 +1,74 @@
 <template>
-<div class="p-6 sm:p-6 space-y-4 sm:space-y-6 mb-10 sm:mb-1 pt-12 w-full max-w-[100vw] overflow-x-hidden">
-    <WeatherData />
+  <div
+    class="p-6 sm:p-8 space-y-4 sm:space-y-10 mb-10 sm:mb-1 pt-12 w-full max-w-[100vw] overflow-x-hidden"
+  >
     <YieldAnalitics />
 
-    <div class="space-y-6 mb-20">
+    <div class="space-y-8">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div
-            class="relative flex items-center gap-4 p-3 bg-white rounded shadow-sm transition border border-gray-100"
+            class="relative flex items-center gap-4 p-3 bg-white rounded-2xl transition border border-gray-200"
           >
             <div
-              class="flex items-center justify-center w-20 h-20 rounded bg-[#10b481]/10"
+              class="flex items-center justify-center w-20 h-20 rounded-xl bg-[#10b481]/10"
             >
               <i class="bx bx-location-alt-2 text-4xl text-[#10b481]"></i>
             </div>
             <div class="flex flex-col text-left">
-              <p class="text-3xl font-bold text-[#10b481]">
+              <p class="text-3xl small font-bold text-[#10b481]">
                 {{ totalParcels }}
               </p>
-              <p class="text-sm font-medium text-[#10b481]">
+              <p class="text-sm small text-[#10b481]">
                 {{ t("activeparcels") }}
               </p>
             </div>
             <div
-              class="absolute right-0 top-3 bottom-3 border-r-4 border-[#10b481]"
+              class="absolute right-0 top-3 bottom-3 border-r-4 rounded-l-2xl border-[#10b481]"
             ></div>
           </div>
 
           <div
-            class="relative flex items-center gap-4 p-3 bg-white rounded shadow-sm transition border border-gray-100"
+            class="relative flex items-center gap-4 p-3 bg-white rounded-2xl transition border border-gray-200"
           >
             <div
-              class="flex items-center justify-center w-20 h-20 rounded bg-[#c99383]/10"
+              class="flex items-center justify-center w-20 h-20 rounded-xl bg-[#c99383]/10"
             >
               <i class="bxr bx-calendar-check text-4xl text-[#c99383]"></i>
             </div>
             <div class="flex flex-col text-left">
-              <p class="text-3xl font-bold text-[#c99383]">{{ taskTasks }}</p>
-              <p class="text-sm font-medium text-[#c99383]">
+              <p class="text-3xl small font-bold text-[#c99383]">{{ taskTasks }}</p>
+              <p class="text-sm small text-[#c99383]">
                 {{ t("totalTask") }}
               </p>
             </div>
             <div
-              class="absolute right-0 top-3 bottom-3 border-r-4 border-[#c99383]"
+              class="absolute right-0 top-3 bottom-3 border-r-4 rounded-l-2xl border-[#c99383]"
             ></div>
           </div>
 
           <div
-            class="relative col-span-2 p-6 bg-white rounded shadow-sm transition border border-gray-100 h-64"
+            class="relative col-span-2 p-6 bg-white rounded-2xl transition border border-gray-200 h-64"
           >
-            <canvas ref="taskPerformanceCanvas"></canvas>
+          <p class="subtitle">
+            Task Performance
+          </p>
+            <canvas ref="taskPerformanceCanvas" class="small"></canvas>
           </div>
         </div>
 
         <div
-          class="lg:col-span-1 relative p-6 bg-gray-100 rounded shadow-md border border-gray-100 flex flex-col items-center justify-center"
+          class="lg:col-span-1 relative p-6 bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center"
         >
           <canvas ref="taskChartCanvas" class="w-64 h-64"></canvas>
 
           <div
-            class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+            class="absolute inset-0 flex -mt-8 flex-col items-center justify-center pointer-events-none"
           >
-            <p class="text-5xl font-extrabold text-[#112830]">
-              {{ taskCompletionRate }}%
-            </p>
-            <span class="mt-2 text-xs text-gray-500 font-medium">{{
+            <h2 class=" text-5xl  font-extrabold text-gray-700">
+              {{ taskComh2letionRate }}%
+            </h2>
+            <span class=" text-xs text-gray-400 small">{{
               t("completedtasks")
             }}</span>
           </div>
@@ -74,98 +78,98 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-[#10b481]/10 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-[#10b481]/10 rounded-lg flex items-center justify-center"
         >
           <i class="bx bx-location-pin text-[#10b481] text-lg"></i>
         </div>
 
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("fertility") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ bestSoilParcel?.parcel_name }}
         </h3>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-400 small">
           SOC : {{ bestSoilParcel?.soil_summary.soc }}
         </p>
       </div>
 
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-yellow-100 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center"
         >
           <i class="bxr bx-leaf-alt text-yellow-400 text-lg"></i>
         </div>
 
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("productivity") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ topCrop?.crop_name }}
         </h3>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-400 small">
           {{ t("total") }} : {{ topCrop?.summary.total_yield.toFixed(2) }} kg
         </p>
       </div>
 
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-red-100 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center"
         >
           <i class="bxr bx-thermometer text-red-500 text-xl"></i>
         </div>
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("tempAverage") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ avgTemperature }}°C
         </h3>
       </div>
 
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-orange-100 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"
         >
           <i class="bx bx-error text-orange-600 text-xl"></i>
         </div>
 
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("riskParcel") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ highestRiskParcel?.parcel_name }}
         </h3>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-400 small">
           {{ highestRiskParcel?.alerts_count }} {{ t("alerts") }}
         </p>
       </div>
 
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-[#219ebc]/10 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-[#219ebc]/10 rounded-lg flex items-center justify-center"
         >
           <i
             class="bxr bx-chart-bar-columns absolute text-[#219ebc] text-xl"
           ></i>
         </div>
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("bestRendement") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ bestYieldParcel?.parcel_name }}
         </h3>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-400 small">
           {{ t("moyenne") }} :
           {{
             bestYieldParcel?.summary.avg_yield
@@ -177,24 +181,24 @@
       </div>
 
       <div
-        class="relative p-5 bg-white rounded border border-gray-100 shadow-sm transition-all"
+        class="relative p-5 bg-white rounded-2xl border border-gray-200 transition-all"
       >
         <div
-          class="absolute top-3 right-3 w-8 h-8 bg-gray-100 rounded flex items-center justify-center shadow"
+          class="absolute top-3 right-3 w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center"
         >
           <i class="bxr bx-database text-gray-400 text-xl"></i>
         </div>
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <p class="text-xs small text-gray-400 uppercase tracking-wide">
           {{ t("cultureSansDonnees") }}
         </p>
-        <h3 class="mt-2 text-lg font-semibold text-gray-800">
+        <h3 class="mt-2 text-sm font-semibold text-gray-700 small">
           {{ emptyCrops.length }} {{ t("culture") }}
         </h3>
       </div>
     </div>
   </div>
   <div
-    class="px-6 flex items-center justify-between border-b border-gray-300 mb-2 mt-20 text-sm sm:text-base"
+    class="px-8 flex items-center justify-between border-b border-gray-300 mb-2 text-sm sm:text-base"
   >
     <div class="flex gap-6">
       <a
@@ -203,10 +207,10 @@
         href="#"
         @click.prevent="selectMenu(menu.name)"
         :class="[
-          'relative px-3 py-2 font-medium transition-colors text-sm after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-[#10b481] after:transition-all hover:after:w-full focus:after:w-full',
+          'loan-tab border-b-2 whitespace-nowrap py-4 px-1 font-medium text-sm small',
           activeMenu === menu.name
-            ? 'text-[#10b481] after:w-full'
-            : 'text-gray-800',
+            ? 'text-[#10b481] border-[#10b481]'
+            : 'border-transparent text-gray-500 hover:text-[#10b481] hover:border-[#10b481]',
         ]"
       >
         {{ menu.label }}
@@ -215,14 +219,14 @@
 
     <button
       @click="goToAddPage"
-      class="flex items-center gap-2 bg-[#10b481] text-sm hover:bg-[#10b481] focus:bg-[#10b481] text-white px-4 py-2 rounded transition"
+      class="flex items-center gap-2 btn-primary"
     >
-      <i class="bx bx-plus "></i>
+      <i class="bx bx-plus"></i>
       <span>{{ t("add") }}</span>
     </button>
   </div>
 
-  <div class="p-6">
+  <div class="p-8">
     <component :is="currentComponent" />
   </div>
 
@@ -231,7 +235,7 @@
   <pre
     class="bg-gray-900 text-green-400 text-sm p-4 rounded-xl overflow-auto mt-6 hidden"
     >{{ dashboardJson }}
-</pre
+    </pre
   >
 </template>
 
@@ -246,9 +250,7 @@ import TbTask from "~/components/TbTask.vue";
 import TbYield from "~/components/TbYield.vue";
 import { useLanguageStore } from "~/stores/language";
 import { translate } from "~/utils/translate";
-import WeatherData from "~/components/WeatherData.vue";
 import YieldAnalitics from "~/components/YieldAnalitics.vue";
-// import ActiveAlerte from "~/components/ActiveAlerte.vue";
 import Chart from "chart.js/auto";
 
 const languageStore = useLanguageStore();
@@ -294,7 +296,7 @@ const yieldAvg = computed(() => {
     dashboard.value.yield_summary?.map((y: any) => y.summary?.avg_yield || 0) ||
     [];
   return vals.length
-    ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
+    ? Math.round(vals.reduce((a: any, b: any) => a + b, 0) / vals.length)
     : 0;
 });
 
@@ -328,29 +330,35 @@ onMounted(async () => {
   await fetchDashboard();
 });
 
-const userUUID = sessionStorage.getItem("uuid");
 const activeMenu = ref("parcelles");
+const userUUID = ref(null);
 
-const menus = computed(() => [
-  {
-    name: "parcelles",
-    label: t("parcels"),
-    component: TbParcel,
-    addPath: `/parcels/create/p/${userUUID}`,
-  },
-  {
-    name: "taches",
-    label: t("tasks"),
-    component: TbTask,
-    addPath: "/tasks/create",
-  },
-  {
-    name: "culture",
-    label: t("yields"),
-    component: TbYield,
-    addPath: "/yield-records/create",
-  },
-]);
+onMounted(() => {
+  userUUID.value = sessionStorage.getItem("uuid");
+});
+
+const menus = computed(() => {
+  return [
+    {
+      name: "parcelles",
+      label: t("parcels"),
+      component: TbParcel,
+      addPath: `/parcels/create/p/${userUUID.value}`,
+    },
+    {
+      name: "taches",
+      label: t("tasks"),
+      component: TbTask,
+      addPath: "/tasks/create",
+    },
+    {
+      name: "culture",
+      label: t("yields"),
+      component: TbYield,
+      addPath: "/yield-records/create",
+    },
+  ];
+});
 
 const currentComponent = computed(() => {
   const menu = menus.value.find((m) => m.name === activeMenu.value);
@@ -372,13 +380,13 @@ const bestSoilParcel = computed(() => {
   const soilList = dashboard.value.soil_summary || [];
   if (!soilList.length) return null;
 
-  const best = soilList.reduce((best, curr) => {
+  const best = soilList.reduce((best: { soil_summary: { soc: any; }; }, curr: { soil_summary: { soc: number; }; }) => {
     return curr.soil_summary.soc > (best?.soil_summary.soc || 0) ? curr : best;
   }, null);
 
   if (!best) return null;
 
-  const parcel = dashboard.value.parcels?.find((p) => p.id === best.parcel_id);
+  const parcel = dashboard.value.parcels?.find((p: { id: any; }) => p.id === best.parcel_id);
 
   return {
     ...best,
@@ -388,20 +396,20 @@ const bestSoilParcel = computed(() => {
 
 const topCrop = computed(() => {
   const yields = dashboard.value.yield_summary || [];
-  const valid = yields.filter((y) => y.summary);
+  const valid = yields.filter((y: { summary: any; }) => y.summary);
   return valid.length
-    ? valid.reduce((max, y) =>
+    ? valid.reduce((max: { summary: { total_yield: number; }; }, y: { summary: { total_yield: number; }; }) =>
         y.summary.total_yield > max.summary.total_yield ? y : max
       )
     : null;
 });
 
 const emptyCrops = computed(
-  () => dashboard.value.yield_summary?.filter((y) => !y.summary) || []
+  () => dashboard.value.yield_summary?.filter((y: { summary: any; }) => !y.summary) || []
 );
 
 const highestRiskParcel = computed(() => {
-  return dashboard.value.climate_summary?.parcel_details?.reduce((max, p) =>
+  return dashboard.value.climate_summary?.parcel_details?.reduce((max: { alerts_count: number; }, p: { alerts_count: number; }) =>
     p.alerts_count > max.alerts_count ? p : max
   );
 });
@@ -410,15 +418,15 @@ const avgTemperature = computed(() => {
   const list = dashboard.value.climate_summary?.parcel_details || [];
   if (!list.length) return 0;
   return Math.round(
-    list.reduce((sum, p) => sum + (p.current_temperature || 0), 0) / list.length
+    list.reduce((sum: any, p: { current_temperature: any; }) => sum + (p.current_temperature || 0), 0) / list.length
   );
 });
 
 const bestYieldParcel = computed(() => {
-  const yields = dashboard.value.yield_summary?.filter((y) => y.summary) || [];
+  const yields = dashboard.value.yield_summary?.filter((y: { summary: any; }) => y.summary) || [];
   if (!yields.length) return null;
 
-  return yields.reduce((max, y) =>
+  return yields.reduce((max: { summary: { avg_yield: number; }; }, y: { summary: { avg_yield: number; }; }) =>
     y.summary.avg_yield > max.summary.avg_yield ? y : max
   );
 });
@@ -426,7 +434,7 @@ const bestYieldParcel = computed(() => {
 const totalTasks = computed(
   () =>
     dashboard.value.task_summary?.reduce(
-      (sum, t) => sum + (t.task_summary?.total_tasks || 0),
+      (sum: any, t: { task_summary: { total_tasks: any; }; }) => sum + (t.task_summary?.total_tasks || 0),
       0
     ) || 0
 );
@@ -434,7 +442,7 @@ const totalTasks = computed(
 const completedTasks = computed(
   () =>
     dashboard.value.task_summary?.reduce(
-      (sum, t) => sum + (t.task_summary?.completed_tasks || 0),
+      (sum: any, t: { task_summary: { completed_tasks: any; }; }) => sum + (t.task_summary?.completed_tasks || 0),
       0
     ) || 0
 );
@@ -443,8 +451,8 @@ const pendingTasks = computed(() => totalTasks.value - completedTasks.value);
 
 const tasksByParcel = computed(
   () =>
-    dashboard.value.task_summary?.map((t) => {
-      const parcel = dashboard.value.parcels?.find((p) => p.id === t.parcel_id);
+    dashboard.value.task_summary?.map((t: { parcel_id: any; task_summary: { total_tasks: any; completed_tasks: any; }; }) => {
+      const parcel = dashboard.value.parcels?.find((p: { id: any; }) => p.id === t.parcel_id);
       return {
         parcel_name: parcel?.name || "Inconnu",
         total: t.task_summary?.total_tasks || 0,
@@ -528,12 +536,12 @@ const yieldTrendCanvas = ref<HTMLCanvasElement | null>(null);
 let yieldTrendChart: Chart | null = null;
 
 const yieldTrendData = computed(() => {
-  const yields = dashboard.value.yield_summary?.filter((y) => y.summary) || [];
+  const yields = dashboard.value.yield_summary?.filter((y: { summary: any; }) => y.summary) || [];
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     return {
       day: `Day ${i + 1}`,
       value:
-        yields.reduce((sum, y) => sum + (y.summary?.avg_yield || 0), 0) /
+        yields.reduce((sum: any, y: { summary: { avg_yield: any; }; }) => sum + (y.summary?.avg_yield || 0), 0) /
         (yields.length || 1),
     };
   });
@@ -588,8 +596,8 @@ const taskPerformanceData = computed(() => {
   const parcels = dashboard.value.parcels || [];
   const tasks = dashboard.value.task_summary || [];
 
-  return parcels.map((parcel) => {
-    const summary = tasks.find((t) => t.parcel_id === parcel.id);
+  return parcels.map((parcel: any) => {
+    const summary = tasks.find((t: { parcel_id: any; }) => t.parcel_id === parcel.id);
 
     const total = summary?.task_summary?.total_tasks || 0;
     const completed = summary?.task_summary?.completed_tasks || 0;
@@ -607,8 +615,8 @@ function renderTaskPerformanceChart() {
   if (!taskPerformanceCanvas.value) return;
   if (taskPerformanceChart) taskPerformanceChart.destroy();
 
-  const labels = taskPerformanceData.value.map((p) => p.parcel_name);
-  const values = taskPerformanceData.value.map((p) => p.completion_rate);
+  const labels = taskPerformanceData.value.map((p: { parcel_name: any; }) => p.parcel_name);
+  const values = taskPerformanceData.value.map((p: { completion_rate: any; }) => p.completion_rate);
 
   taskPerformanceChart = new Chart(
     taskPerformanceCanvas.value.getContext("2d")!,
@@ -623,7 +631,7 @@ function renderTaskPerformanceChart() {
             borderRadius: 3,
             barThickness: 18,
             backgroundColor: values.map(
-              (v) => `rgba(16, 180, 129, ${0.3 + v / 300})`
+              (v: number) => `rgba(16, 180, 129, ${0.3 + v / 300})`
             ),
             borderColor: "#10b481",
             borderWidth: 1,
@@ -666,7 +674,7 @@ function renderTaskPerformanceChart() {
             max: 100,
             ticks: {
               stepSize: 10,
-              color: "#6b7280",
+              color: "#9CA3AF",
               font: { size: 12 },
               callback: (v) => v + "%",
             },
@@ -679,8 +687,8 @@ function renderTaskPerformanceChart() {
           y: {
             ticks: {
               autoSkip: false,
-              color: "#374151",
-              font: { size: 13, weight: "500" },
+              color: "#9CA3AF",
+              font: { size: 12 },
             },
             grid: {
               drawTicks: false,
