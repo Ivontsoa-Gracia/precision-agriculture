@@ -1,67 +1,60 @@
 <template>
-  <div class="relative w-full max-w-md mx-auto my-20">
-    <!-- <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 z-10">
-      <img
-        src="/logo.png"
-        alt="Logo"
-        class="h-24 w-auto rounded-full border-4 border-white shadow-lg"
-      />
-    </div> -->
+  <div class="relative w-full">
 
-    <div
-      class=" w-full relative z-0"
-    >
-      <h2 class="text-4xl font-bold mb-6 text-center text-[#112830]">
+    <div class="w-full relative z-0">
+      <h2 class="">
         {{ title }}
       </h2>
 
-      <form @submit.prevent="submit" class="space-y-4">
+      <form @submit.prevent="submit" class="space-y-6">
         <div v-for="field in fields" :key="field" class="relative">
           <div class="relative">
-          <i
-            :class="
-              icons[field] +
-              ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'
-            "
-          ></i>
+            <i
+              :class="
+                icons[field] +
+                ' text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 text-lg'
+              "
+            ></i>
 
-          <input
-            v-model="formData[field]"
-            :type="getInputType(field)"
-            placeholder=" "
-            class="peer w-full p-3 pl-10 pr-10 rounded border border-gray-400 bg-transparent text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#10b481]"
-          />
+            <input
+              v-model="formData[field]"
+              :type="getInputType(field)"
+              placeholder=" "
+              class="peer w-full px-4 py-3 pl-10 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
+            />
 
-          <label
-            :for="field"
-            class="absolute left-10 text-gray-400 text-base pointer-events-none transition-all duration-200"
-            :class="[
-              formData[field] || fieldHasFocus[field]
-                ? '-top-3 text-sm text-[#10b481] bg-[#f9f9f9] px-2 rounded'
-                : 'top-3 text-base text-[#10b481]',
-            ]"
+            <label
+              :for="field"
+              class="absolute left-10 small text-gray-400 text-sm pointer-events-none transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-sm peer-focus:text-emerald-400 bg-white px-2"
+              :class="[
+                formData[field] || fieldHasFocus[field]
+                  ? '-top-2.5 px-2 rounded'
+                  : 'top-2.5 text-[#10b481]',
+              ]"
+            >
+              {{ labels[field] || passwordLabel }}
+            </label>
+
+            <i
+              v-if="field === 'password'"
+              :class="[
+                showPassword ? 'bx bx-hide' : 'bx bx-show',
+                'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg cursor-pointer hover:text-[#10b481] transition',
+              ]"
+              @click="togglePassword"
+            ></i>
+          </div>
+
+          <p
+            v-if="errors[field]"
+            class="text-red-500 text-sm mt-2 flex items-center gap-1 small"
           >
-            {{ labels[field] || passwordLabel }}
-          </label>
-
-          <i
-            v-if="field === 'password'"
-            :class="[
-              showPassword ? 'bx bx-hide' : 'bx bx-show',
-              'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg cursor-pointer hover:text-[#10b481] transition',
-            ]"
-            @click="togglePassword"
-          ></i>
-        </div>
-
-          <p v-if="errors[field]" class="text-red-500 text-sm mt-2 flex items-center gap-1">
             <i class="bx bx-error-circle text-red-500"></i>
             {{ errors[field] }}
           </p>
-
         </div>
 
-        <p v-if="errors.general" class="text-red-500 text-sm mt-2 text-center">
+        <p v-if="errors.general" class="text-red-500 text-sm mt-2 text-center small">
           {{ errors.general }}
         </p>
 
@@ -105,7 +98,7 @@
               buttonText === 'S\'inscrire') &&
             !acceptedPolicy
           "
-          class="w-full py-3 bg-gradient-to-r from-[#10b481] uppercase text-md to-[#0a8f6e] text-white rounded hover:bg-[#0da06a] transition-all duration-300 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
+          class="w-full btn-primary"
         >
           {{ buttonText }}
         </button>
@@ -168,17 +161,14 @@ function getInputType(field: string) {
 }
 const errors = reactive<Record<string, string>>({ ...props.errors });
 
-// Watch pour mettre à jour les erreurs quand elles changent côté parent
 watch(
   () => props.errors,
   (newErrors) => {
     if (!newErrors) return;
-    // Supprime d'abord les anciennes clés
     Object.keys(errors).forEach((key) => delete errors[key]);
-    // Copie les nouvelles
     Object.assign(errors, newErrors);
   },
-  { deep: true, immediate: true } // immediate: prend en compte les erreurs au montage
+  { deep: true, immediate: true } 
 );
 
 function submit() {

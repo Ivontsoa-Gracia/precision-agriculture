@@ -1,134 +1,127 @@
 <template>
   <div
-    class="relative h-screen flex flex-col lg:flex-row bg-white sm:bg-[#fafaf9] p-4 sm:p-12 overflow-hidden"
+    class="min-h-screen flex flex-col md:flex-row bg-gradient-to-tr from-[#0f0f0f] to-[#121212]"
   >
-
     <div
-      class="absolute -top-24 -left-32 w-[500px] h-[500px] sm:bg-blue-500 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
-
-    <div
-      class="absolute -top-48 -left-48 w-[1000px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
-
-    <div
-      class="absolute -top-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
-
-    <div class="hidden lg:flex w-1/2 flex-col p-12 relative overflow-hidden">
-      <div class="flex-1 flex items-center">
-        <div class="relative max-w-md">
-          <h2 class="mb-6 leading-tight">Optimize Your Farm</h2>
-
-          <p class="content leading-relaxed">
-            Sesily AI helps you analyze soil, crops, and weather to maximize
-            your harvest efficiently.
-          </p>
-        </div>
-      </div>
-
-      <div class="relative">
-        <div class="flex items-center justify-between">
-          <div class="relative hidden sm:flex">
-            <button
-              @click="open = !open"
-              class="flex items-center gap-2 px-3 py-2 transition"
-            >
-              <img :src="currentLocale.flag" class="w-5 h-5 rounded-full" />
-              <span class="text-sm text-gray-700 small">
-                {{ currentLocale.name }}
-              </span>
-              <i class="bx bx-chevron-down text-sm text-gray-500"></i>
-            </button>
-
-            <transition name="fade">
-              <ul
-                v-if="open"
-                class="absolute bottom-12 w-44 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden"
-              >
-                <li
-                  v-for="loc in locales"
-                  :key="loc.code"
-                  @click="selectLocale(loc.code)"
-                  class="flex items-center gap-2 px-4 py-3 hover:bg-[#10b481]/10 cursor-pointer transition"
-                >
-                  <img :src="loc.flag" class="w-5 h-5 rounded-full" />
-                  <span class="text-sm text-gray-700">
-                    {{ loc.name }}
-                  </span>
-                </li>
-              </ul>
-            </transition>
-          </div>
-
-          <ul class="flex gap-6 text-sm">
-            <li class="menu-item transition cursor-pointer">
-              {{ t("terms") }}
-            </li>
-            <li class="menu-item transition cursor-pointer">
-              <NuxtLink to="https://www.smart-saha.com/" class="block w-full h-full">
-                {{ t("home") }}
-              </NuxtLink>
-            </li>
-            <li class="menu-item transition cursor-pointer">
-              {{ t("contactus") }}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="flex-1 flex items-center justify-center p-0 sm:px-6 p-2 sm:py-16"
+      class="md:w-1/3 flex flex-col justify-center items-center p-8 bg-[#f9f9f9] relative"
     >
-      <div
-        class="w-full max-w-md bg-transparent sm:bg-white sm:rounded-3xl sm:shadow-xl p-0 sm:p-12 relative overflow-hidden"
-      >
-        <div class="text-left mb-6">
-          <img src="/logo.png" alt="SmartSaha" class="h-16 rounded-xl mb-4" />
-          <h2 class="mb-2">{{ t("login") }}</h2>
-          <p class="content">{{ t("logintext") }}</p>
+      <div class="absolute top-8 left-8 flex items-center gap-3">
+        <img
+          src="/logo.png"
+          alt="Smartsaha Logo"
+          class="w-10 h-10 object-contain"
+        />
+        <div class="flex flex-col">
+          <h1 class="text-md font-bold text-[#112830]">Smartsaha</h1>
+          <p class="text-gray-500 text-xs">Nurture Data, Harvest Impact.</p>
         </div>
+      </div>
 
+      <div class="w-full max-w-sm mt-16 p-6">
         <AuthForm
           class="mt-6"
-          title=""
+          title="Log in"
           buttonText="Log in"
           :fields="['username', 'password']"
           :errors="errors"
           passwordLabel="Password"
           @submit="handleLogin"
         >
-          <template #footer-links> </template>
+          <template #footer-links>
+            <!-- <NuxtLink
+          to="/signup"
+          class="text-gray-400 hover:text-white hover:underline mr-4"
+        >
+          Don’t have an account? Sign up
+        </NuxtLink> -->
+          </template>
         </AuthForm>
 
-        <div class="flex items-center w-full my-4 -mt8">
-          <hr class="flex-grow border-gray-400" />
-          <span class="mx-2 text-gray-400">ou</span>
-          <hr class="flex-grow border-gray-400" />
+        <div class="flex items-center w-full my-4 -mt-16">
+          <hr class="flex-grow border-[#112830]" />
+          <span class="mx-2 text-[#112830]">ou</span>
+          <hr class="flex-grow border-[#112830]" />
         </div>
 
+        <!-- <div
+          id="googleButton"
+          class="w-full bg-gray-100 border border-gray-400 gap-3 hover:scale-2 cursor-pointer flex items-center justify-center py-2 rounded transition-all duration-300"
+        > -->
         <div
           id="googleButton"
-          class="w-full gap-3 hover:scale-2 content cursor-pointer flex items-center justify-center py-2 rounded transition-all duration-300"
+          class="w-full gap-3 hover:scale-2 cursor-pointer flex items-center justify-center py-2 rounded transition-all duration-300"
         >
           <img
             src="/Google__G__logo.svg.png"
             alt="Google"
             class="w-5 h-5 mr-2"
           />
-          <span class="content">Sign in with Google</span>
+          <span class="text-gray-900">Sign in with Google</span>
         </div>
+      </div>
+    </div>
 
-        <p class="text-center small text-sm text-gray-500 mt-8">
-          {{ t("dontaccount") }}
-          <NuxtLink
-            to="/signup"
-            class="text-[#10b481] font-medium hover:underline"
-          >
-            {{ t("createone") }}
-          </NuxtLink>
+    <div
+      class="hidden md:flex md:w-2/3 flex-col justify-between p-10 relative shadow-xl overflow-hidden bg-gray-900"
+    >
+      <canvas ref="aiCanvas" class="absolute inset-0 w-full h-full"></canvas>
+
+      <div
+        class="absolute inset-0 bg-[#10b481]/10 backdrop-blur-xs pointer-events-none"
+      ></div>
+
+      <div class="relative flex justify-end items-center mb-10 z-10 gap-4">
+        <p class="text-sm text-gray-300 font-medium">
+          Ready to revolutionize your farm?
         </p>
+        <NuxtLink
+          to="/signup"
+          class="px-6 py-2 bg-transparent border border-white text-gray-50 text-sm rounded hover:scale-105 transition-transform transform hover:-translate-y-0.5 duration-300"
+        >
+          Sign Up
+        </NuxtLink>
+      </div>
+
+      <div
+        class="slider relative flex-1 flex flex-col justify-center items-center left-6"
+      >
+        <div
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="slide absolute left-8 flex flex-col justify-end items-start transition-opacity duration-700 opacity-0 text-gray-50 max-w-xl"
+        >
+          <h2 class="text-3xl md:text-4xl font-extrabold mb-3 leading-tight">
+            {{ slide.title }}
+          </h2>
+          <p class="text-lg md:text-xl mb-6 text-gray-200">
+            {{ slide.text }}
+          </p>
+          <a
+            :href="$router.resolve(slide.link).href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 text-white"
+          >
+            <span class="underline decoration-1 decoration-white"
+              >Learn More</span
+            >
+            <i class="bx bx-right-arrow-alt text-lg"></i>
+          </a>
+
+          <div class="mb-24"></div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-6 left-16 flex gap-2">
+        <span
+          v-for="(_, i) in slides"
+          :key="i"
+          :class="{
+            'bg-[#10b481] w-6 h-1 transition-all duration-300': true,
+            'opacity-100 scale-125': i === currentIndex,
+            'opacity-50 scale-100': i !== currentIndex,
+          }"
+        ></span>
       </div>
     </div>
   </div>
@@ -195,30 +188,6 @@ import AuthForm from "~/components/AuthForm.vue";
 import { API_URL } from "~/config";
 import { useRouter } from "vue-router";
 import { useUserStore } from "~/stores/userStore";
-import { useLanguageStore } from "~/stores/language";
-import { translate } from "~/utils/translate";
-const languageStore = useLanguageStore();
-const t = (key: string) => {
-  const lang = languageStore.lang;
-  return translate[lang][key] || key;
-};
-
-const locales = [
-  { code: "en", name: "English", flag: "/flags/en.png" },
-  { code: "fr", name: "Français", flag: "/flags/fr.png" },
-  { code: "mg", name: "Malagasy", flag: "/flags/mg.png" },
-];
-
-const open = ref(false);
-const currentLocale = computed(
-  () => locales.find((l) => l.code === languageStore.lang) || locales[0]
-);
-
-const selectLocale = (code: string) => {
-  languageStore.setLang(code);
-  open.value = false;
-};
-
 const userStore = useUserStore();
 const slides = [
   {
@@ -367,7 +336,7 @@ const handleLogin = async (formData: {
     } else {
       showNotification("You're signed in successfully.", "success");
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/dashboard/s");
       }, 3000);
     }
   } catch (error) {
@@ -431,7 +400,7 @@ const renderGoogleButton = () => {
         } else {
           showNotification("You're signed in successfully.", "success");
           setTimeout(() => {
-            router.push("/dashboard");
+            router.push("/dashboard/s");
           }, 3000);
         }
       } catch (err) {
@@ -481,9 +450,9 @@ onMounted(() => {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1,
-      vy: (Math.random() - 0.5) * 1,
-      size: Math.random() * 2 + 1,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5,
+      size: Math.random() * 3 + 1,
     });
   }
 

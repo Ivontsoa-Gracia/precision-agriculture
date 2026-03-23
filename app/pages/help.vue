@@ -1,26 +1,20 @@
 <template>
   <div class="p-6 flex flex-col h-full space-y-6">
     <div class="flex items-center mb-4">
-      <h2 class="text-3xl font-bold text-[#212121] flex items-center gap-3">
-        <i class="bx bx-help-circle text-3xl text-[#10b481]"></i>
+      <h2 class="t flex items-center gap-3">
         {{ t("helpcenter") }}
       </h2>
     </div>
 
     <div
-      class="bg-white p-6 rounded shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-md transition"
+      class="bg-white p-6 rounded-2xl border border-gray-200 flex items-start gap-4 hover:shadow-md transition"
     >
-      <div
-        class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
-      >
-        <i class="bx bx-info-circle"></i>
-      </div>
 
       <div>
-        <h3 class="text-xl font-semibold text-[#212121] mb-2">
+        <h3 class="subtitle mb-2">
           {{ t("welcomehelp") }}
         </h3>
-        <p class="text-gray-600 leading-relaxed">
+        <p class="content leading-relaxed">
           {{ t("introhelp") }}
           <a
             href="https://www.smart-saha.com"
@@ -34,8 +28,8 @@
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
-      <h3 class="text-xl font-semibold text-[#212121] mb-4">
+    <div class="bg-white p-6 rounded-2xl border border-gray-200">
+      <h3 class="subtitle mb-4">
         {{ t("howitworks") }}
       </h3>
 
@@ -79,26 +73,26 @@
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
-      <h3 class="text-xl font-semibold text-[#212121] mb-3">
+    <div class="bg-white p-6 rounded-2xl border border-gray-200">
+      <h3 class="subtitle mb-3">
         {{ t("needhelp") }}
       </h3>
-      <p class="text-gray-600 mb-6">{{ t("contactteam") }}</p>
+      <p class="content mb-6">{{ t("contactteam") }}</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- WhatsApp -->
         <div
-          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 transition"
         >
           <div
-            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+            class="w-10 h-10 bg-[#10b481]/10 p-4 rounded flex items-center justify-center text-[#10b481] font-bold text-lg"
           >
             <i class="bx bx-message-circle-plus"></i>
           </div>
           <a
             href="https://wa.me/261327114865"
             target="_blank"
-            class="text-gray-800 font-medium"
+            class="content"
           >
             +261 32 71 148 65
           </a>
@@ -106,16 +100,16 @@
 
         <!-- Email -->
         <div
-          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 transition"
         >
           <div
-            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+            class="w-10 h-10 bg-[#10b481]/10 p-4 rounded flex items-center justify-center text-[#10b481] font-bold text-lg"
           >
             <i class="bx bx-envelope"></i>
           </div>
           <a
             href="mailto:contact@smart-saha.com"
-            class="text-gray-800 font-medium"
+            class="content"
           >
             contact@smart-saha.com
           </a>
@@ -123,14 +117,14 @@
 
         <!-- Location -->
         <div
-          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 transition"
         >
           <div
-            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+            class="w-10 h-10 bg-[#10b481]/10 p-4 rounded flex items-center justify-center text-[#10b481] font-bold text-lg"
           >
             <i class="bx bx-location-plus"></i>
           </div>
-          <span class="text-gray-800 font-medium">
+          <span class="content">
             {{ t("location") }}
           </span>
         </div>
@@ -139,32 +133,32 @@
     <div class="bg-white p-6 rounded shadow-sm border border-gray-100">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div
-          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 transition"
         >
           <div
-            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+            class="w-10 h-10 bg-[#10b481]/10 p-4 rounded flex items-center justify-center text-[#10b481] font-bold text-lg"
           >
             <i class="bx bx-shield-quarter"></i>
           </div>
           <a
             href="/conditions/privacy-policy"
-            class="text-gray-800 font-medium"
+            class="content"
           >
             {{ t("policy") }}
           </a>
         </div>
 
         <div
-          class="flex items-center gap-4 p-4 rounded border border-gray-200 bg-gray-50 hover:bg-gray-100 transition"
+          class="flex items-center gap-4 p-4 rounded-2xl border border-gray-200 transition"
         >
           <div
-            class="w-10 h-10 bg-[#10b481] p-4 rounded flex items-center justify-center text-white font-bold text-lg"
+            class="w-10 h-10 bg-[#10b481]/10 p-4 rounded flex items-center justify-center text-[#10b481] font-bold text-lg"
           >
             <i class="bx bx-file"></i>
           </div>
           <a
             href="/conditions/terms-of-service"
-            class="text-gray-800 font-medium"
+            class="content"
           >
             {{ t("terms") }}
           </a>

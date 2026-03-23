@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-white text-[#141414]/90 py-14 px-6 md:px-20">
-    <div class="max-w-5xl mx-auto p-8 md:p-12 bg-white">
+  <div class="">
+    <div class="max-w-5xl mx-auto p-8 md:p-12 bg-white border border-gray-200">
       <h1 class="text-4xl font-bold text-[#10b481] mb-2">Privacy Policy</h1>
       <p class="text-gray-400 mb-10">Last Updated: September 30, 2025</p>
 

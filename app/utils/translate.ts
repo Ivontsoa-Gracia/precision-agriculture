@@ -362,6 +362,12 @@ export const translate = {
     résultats: "results",
     reset: "Reset",
     searchPlaceholder: "Search by parcel name or crop...",
+    login: "Login",
+    logintext: "Log in to access your account.",
+    dontaccount: "Don't have an account?",
+    createone: "Create one",
+
+    create: "Create",
   },
   fr: {
     dashboard: "Tableau",
@@ -728,6 +734,11 @@ export const translate = {
     résultats: "résultats",
     reset: "Réinitialiser",
     searchPlaceholder: "Rechercher par nom de parcelle ou culture...",
+    login: "Connexion",
+    logintext: "Connectez-vous pour accéder à votre compte.",
+    dontaccount: "Vous n’avez pas de compte ?",
+    createone: "Créez-en un",
+    create: "Créer",
   },
   mg: {
     dashboard: "Tabilao",
@@ -1093,5 +1104,10 @@ export const translate = {
     résultats: "vokatra",
     reset: "Averina",
     searchPlaceholder: "Mitadiava amin'ny anaran'ny saha na zavamaniry...",
+    login: "Midira",
+    logintext: "Midira mba hahazoana miditra amin’ny kaontinao.",
+    dontaccount: "Tsy manana kaonty ve ianao ?",
+    createone: "Mamoròna iray",
+    create: "Hamorona",
   },
 };

@@ -1,318 +1,461 @@
 <template>
-  <div class="h-screen bg-[#FAFAF9] flex flex-col">
-    <header
-      class="fixed top-0 left-0 right-0 z-50 flex items-center px-4 sm:px-8 h-20 bg-[#FAFAF9] backdrop-blur-md shadow-sm"
+  <div class="flex h-screen bg-[#fafaf9] overflow-hidden">
+    <aside
+      :class="[
+        'fixed md:relative z-40 h-full bg-[#112830] text-white flex flex-col transition-all duration-300 ease-in-out',
+        isCollapsed && !isMobile ? 'w-22' : 'w-64',
+        isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+      ]"
     >
-      <div class="flex items-center gap-2">
-        <button class="sm:hidden p-2 text-gray-800" @click="toggleMobileMenu">
-          <i class="bx bx-menu text-2xl"></i>
-        </button>
+      <div class="flex items-center py-6 px-2 relative">
+        <div
+          :class="[
+            'flex items-center w-full gap-1',
+            isCollapsed && !isMobile ? 'justify-between' : 'justify-between',
+          ]"
+        >
+          <div class="flex items-center justify-center px-3 relative gap-3">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              class="w-11 h-11 object-contain flex-shrink-0 rounded-xl"
+            />
 
-        <div class="flex items-center gap-4 -ml-0 sm:-ml-5">
-          <div
-            class="h-12 w-12 sm:h-14 sm:w-14 rounded flex items-center justify-center"
+            <div v-if="!isCollapsed || isMobile" class="leading-tight">
+              <h1 class="text-xl light-logo">SmartSaha</h1>
+              <p class="text-xs light-sous-logo tracking-wide">
+                Agricultural Marketplace
+              </p>
+            </div>
+          </div>
+
+          <button
+            v-if="!isMobile"
+            @click="toggleCollapse"
+            class="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-50 flex items-center justify-center w-6 h-6 rounded-full bg-[#10b481] text-white shadow-lg hover:bg-[#10b481] hover:text-white transition-all duration-200"
           >
-            <img src="/logo.png" alt="Logo" />
-          </div>
+            <i
+              :class="[
+                'bx text-sm',
+                isCollapsed ? 'bx-chevron-right' : 'bx-chevron-left',
+              ]"
+            ></i>
+          </button>
 
-          <div class="hidden sm:flex flex-col text-left">
-            <h1 class="text-xl font-extrabold text-[#112830] tracking-tight">
-              SmartSaha
-            </h1>
-            <p class="text-sm text-gray-500">{{ t("slogan") }}</p>
-          </div>
+          <button
+            v-if="isMobile"
+            @click="isMobileOpen = false"
+            class="md:hidden p-1 rounded hover:bg-[#10b481]"
+          >
+            <i class="bx bx-chevron-left text-lg"></i>
+          </button>
         </div>
       </div>
 
-      <div class="hidden sm:flex items-center gap-6 ml-auto">
-        <div class="relative inline-block w-40">
+      <nav class="flex-1 px-2 space-y-1 overflow-y-auto">
+        <div
+          class="flex md:hidden items-center gap-2 py-3 border-b border-white/20 relative"
+        >
           <button
             @click="open = !open"
-            class="w-full rounded p-2 flex items-center justify-between"
+            class="flex items-center gap-3 py-1.5 px-3 w-full rounded transition bg-transparent"
           >
-            <span class="flex items-center gap-2">
-              <img
-                :src="currentLocale.flag"
-                alt=""
-                class="w-5 h-5 rounded-full"
-              />
-              <span class="text-sm font-medium">{{ currentLocale.name }}</span>
-            </span>
-            <i class="bx bx-chevron-down text-lg"></i>
+            <img
+              :src="currentLocale.flag"
+              class="w-5 h-5 rounded-full ring-1 ring-white"
+            />
+            <span class="text-sm light-menu">{{ currentLocale.name }}</span>
+            <i class="bx bx-chevron-down ml-auto"></i>
           </button>
 
           <transition name="fade">
             <ul
               v-if="open"
-              class="absolute mt-1 w-full bg-white rounded shadow-lg overflow-hidden z-50"
+              class="absolute top-full left-0 mt-2 w-full bg-[#112830] border border-white/20 rounded shadow-md overflow-hidden z-50"
             >
               <li
                 v-for="loc in locales"
                 :key="loc.code"
                 @click="selectLocale(loc.code)"
-                class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-[#10b481]/10 transition-colors"
+                class="flex items-center gap-2 px-3 py-2 hover:bg-[#10B481]/10 cursor-pointer"
               >
-                <img :src="loc.flag" alt="" class="w-5 h-5 rounded-full" />
-                <span class="text-sm font-medium">{{ loc.name }}</span>
+                <img :src="loc.flag" class="w-5 h-5 rounded-full" />
+                <span class="text-sm">{{ loc.name }}</span>
               </li>
             </ul>
           </transition>
         </div>
 
-        <div class="relative">
-          <button
-            @click="userMenuOpen = !userMenuOpen"
-            class="flex items-center gap-1 p-1"
-          >
-            <div
-              class="w-10 h-10 bg-[#10b481] text-white flex items-center justify-center font-semibold rounded-full"
-            >
-              {{ user?.username?.charAt(0).toUpperCase() }}
-            </div>
-            <div class="ml-2 text-left">
-              <p class="font-semibold text-[#222831] text-sm">
-                {{ user?.username }}
-              </p>
-              <p class="text-xs text-gray-500">{{ user?.email }}</p>
-            </div>
-            <i class="bx bx-chevron-down ml-auto text-sm"></i>
-          </button>
-
-          <transition name="fade">
-            <ul
-              v-if="userMenuOpen"
-              class="absolute right-0 mt-2 w-52 bg-white rounded shadow-lg border border-gray-200 overflow-hidden z-50"
-            >
-              <li
-                v-for="item in userMenuItems"
-                :key="item.labelKey"
-                @click="handleMenuClick(item)"
-                :class="
-                  item.danger
-                    ? 'text-red-500 hover:bg-red-500/10'
-                    : 'hover:bg-gray-100'
-                "
-                class="px-4 py-3 cursor-pointer transition-colors"
-              >
-                {{ t(item.labelKey) }}
-              </li>
-            </ul>
-          </transition>
-        </div>
-      </div>
-    </header>
-
-    <transition name="slide">
-      <aside
-        v-if="isMobileMenuOpen"
-        class="fixed inset-0 z-50 bg-[#112830]/95 backdrop-blur-sm flex flex-col sm:hidden"
-      >
-        <div
-          class="flex justify-between items-center p-4 border-b border-gray-700"
+        <NuxtLink
+          to="/insights"
+          :class="[
+            'flex items-center transition-all duration-200 cursor-pointer',
+            isCollapsed && !isMobile
+              ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+              : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+          ]"
         >
-          <h2 class="text-white font-bold text-lg">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 bg-[#10b481] text-white flex items-center justify-center font-semibold rounded-full"
-              >
-                {{ user?.username?.charAt(0).toUpperCase() }}
-              </div>
-              <div class="flex flex-col">
-                <p class="text-white font-semibold text-sm">
-                  {{ user?.username }}
-                </p>
-                <p class="text-gray-300 text-xs font-light">
-                  {{ user?.email }}
-                </p>
-              </div>
-            </div>
-          </h2>
-          <button @click="toggleMobileMenu" class="text-white text-2xl">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
+          <i class="bxr bx-home-alt-2 text-xl"></i>
+          <span v-if="!isCollapsed || isMobile" class="light-menu">
+            {{ t("home") }}
+          </span>
+        </NuxtLink>
 
-        <div class="flex flex-col gap-4 px-4 py-4 border-b border-gray-700">
-          <div>
-            <label class="text-white text-sm mb-1 block">Language</label>
-            <select
-              v-model="languageStore.lang"
-              class="w-full p-2 rounded bg-[#112830] text-white"
-            >
-              <option v-for="loc in locales" :key="loc.code" :value="loc.code">
-                {{ loc.name }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <nav class="flex-1 overflow-y-auto py-4 px-2 flex flex-col gap-2">
-          <button
-            @click="router.push('/assistant')"
-            class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
-          >
-            <i class="bx bx-robot text-xl text-white"></i>
-            <span>Sesily</span>
-          </button>
-
-          <button
-            v-for="item in sidebarMenu"
-            :key="item.to"
-            @click="
-              router.push(item.to);
-              toggleMobileMenu();
-            "
-            class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
-          >
-            <i :class="item.icon + ' text-xl'"></i>
-            <span>{{ item.label }}</span>
-          </button>
-
-          <button
-            v-for="item in userMenuItems.slice(0, 3)"
-            :key="item.labelKey"
-            @click="
-              handleMenuClick(item);
-              toggleMobileMenu();
-            "
-            class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
-          >
-            <i :class="item.icon + ' text-xl'"></i>
-            <span>{{ t(item.labelKey) }}</span>
-          </button>
-          <button
-            @click="router.push('/help')"
-            class="flex items-center gap-3 px-4 py-3 text-white hover:bg-[#10b481]/20 rounded w-full text-left"
-          >
-            <i class="bxr bx-info-circle text-xl text-white"></i>
-            <span>{{ t("help") }}</span>
-          </button>
-          <button
-            @click="logout"
-            class="flex items-center gap-3 px-3 py-2 hover:bg-red-500/20 rounded text-white"
-          >
-            <i class="bx-light bx bx-log-out text-xl"></i>
-            <span>{{ t("logout") }}</span>
-          </button>
-        </nav>
-      </aside>
-    </transition>
-
-    <div class="flex flex-1 pt-20">
-      <aside
-        class="hidden sm:flex peer group fixed top-20 left-0 h-[calc(100vh-5rem)] flex flex-col bg-[#112830] shadow-lg w-20 hover:w-56 transition-all duration-300 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
-      >
-        <nav class="flex flex-col space-y-2 py-4">
-          <button
-            v-for="item in sidebarMenu"
-            :key="item.to"
-            @click="router.push(item.to)"
+        <!-- menu groupe -->
+        <template v-if="isGroup" class="light-menu">
+          <NuxtLink
+            to="/dashboard/dashboardbi"
             :class="[
-              'group relative flex items-center gap-3 px-4 py-2 text-white transition-all duration-300 hover:bg-white/10',
-              isActive(item.to) ? 'bg-white/10' : ''
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
             ]"
           >
-          <span
-            class="absolute left-0 top-1/2 -translate-y-1/2 h-[100%] border-l-[3px] border-white transition-all duration-300"
-            :class="isActive(item.to) ? 'opacity-100' : 'opacity-0'"
-          ></span>
+            <i class="bx bx-bar-chart-alt-2 text-xl"></i>
 
-            <i :class="item.icon + ' text-xl ml-2 font-light'"></i>
-            <span
-              class="font-light opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              >{{ item.label }}</span
-            >
-          </button>
-        </nav>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("dashboard") }}
+            </span>
+          </NuxtLink>
 
-        <div
-          class="flex flex-col space-y-2 px-2 py-4 border-t border-gray-600 mb-6"
+          <NuxtLink
+            to="/group"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bxr bx-community text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("groups") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/organisations"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bxr bx-enterprise text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("organisations") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/reporting"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bxr bx-folder text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("reporting") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/management"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-chart-stacked-row text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("datamanagement") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/certifications/evaluation"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-badge-check text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              Certification
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/certifications/audit"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-badge-check text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              Audit
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/certifications/type"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-badge-check text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              Certification Type
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/rapports"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-folder-open text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              Rapports
+            </span>
+          </NuxtLink>
+        </template>
+
+        <template v-else class="">
+          <!-- menu utilisateur -->
+          <NuxtLink
+            to="/dashboard"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481] '
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-bar-chart-alt-2 text-xl"></i>
+
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("dashboard") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/parcels"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-location-alt-2 text-xl"></i>
+
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("parcels") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/tasks"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-task text-xl"></i>
+
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("tasks") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/yield-records"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-bar-chart text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("yields") }}
+            </span>
+          </NuxtLink>
+        </template>
+
+        <NuxtLink
+          to="/parcel-crops"
+          :class="[
+            'flex items-center relative transition-all duration-200 cursor-pointer mb-4',
+            isCollapsed && !isMobile
+              ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+              : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+          ]"
         >
-          <button
-            @click="router.push('/help')"
-            class="flex items-center gap-3 px-3 py-2 hover:bg-[#10b481]/20 rounded transition"
-          >
-            <i class="bxr bx-info-circle text-xl text-white"></i>
-            <span
-              class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              >{{ t("help") }}</span
-            >
-          </button>
+          <i class="bx bx-box text-xl"></i>
 
-          <button
-            @click="logout"
-            class="flex items-center gap-3 px-3 py-2 hover:bg-red-500/20 rounded transition"
+          <!-- Texte -->
+          <span v-if="!isCollapsed || isMobile" class="light-menu">
+            {{ t("crops") }}
+          </span>
+        </NuxtLink>
+
+        <div class="border-t border-white/10 pt-2">
+          <NuxtLink
+            to="/profil"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
           >
-            <i class="bx-light bx bx-log-out text-xl text-white"></i>
-            <span
-              class="text-white font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              >{{ t("logout") }}</span
-            >
-          </button>
+            <i class="bx bx-user-circle text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t('account') }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/help"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-cog text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("help") }}
+            </span>
+          </NuxtLink>
+
+          <NuxtLink
+            @click="logout"
+            :class="[
+              'flex items-center transition-all duration-200 cursor-pointer',
+              isCollapsed && !isMobile
+                ? 'justify-center w-12 h-12 mx-auto rounded-2xl hover:bg-[#10b481] focus:bg-[#10b481]'
+                : 'gap-3 px-3 py-3 rounded-lg hover:bg-[#10b481] focus:bg-[#10b481]',
+            ]"
+          >
+            <i class="bx bx-log-out text-xl"></i>
+            <span v-if="!isCollapsed || isMobile" class="light-menu">
+              {{ t("logout") }}
+            </span>
+          </NuxtLink>
         </div>
-      </aside>
+      </nav>
+    </aside>
+
+    <div class="flex-1 flex flex-col w-full">
+      <header
+        :class="[
+          'flex items-center justify-between bg-[#FAFAF9] border-b px-4 sm:px-12 py-4 sm:py-7 transition-shadow duration-200',
+          isScrolled ? 'shadow' : '',
+        ]"
+      >
+        <button class="md:hidden text-gray-700" @click="isMobileOpen = true">
+          <i class="bx bx-menu text-2xl"></i>
+        </button>
+
+        <h2 class="text-lg small text-gray-800 hidden sm:flex">
+          <Breadcrumb />
+        </h2>
+
+        <div class="flex items-center gap-5">
+          <div class="relative hidden sm:flex">
+            <button
+              @click="open = !open"
+              class="flex items-center gap-2 py-1.5 px-3 transition"
+            >
+              <img :src="currentLocale.flag" class="w-5 h-5 rounded-full" />
+              <span class="text-sm text-gray-700 small-medium">{{
+                currentLocale.name
+              }}</span>
+              <i class="bx bx-chevron-down text-sm"></i>
+            </button>
+
+            <transition name="fade">
+              <ul
+                v-if="open"
+                class="absolute top-10 z-50 w-40 bg-white border border-gray-100 rounded-lg shadow-md overflow-hidden"
+              >
+                <li
+                  v-for="loc in locales"
+                  :key="loc.code"
+                  @click="selectLocale(loc.code)"
+                  class="flex items-center gap-2 px-3 py-2 hover:bg-[#10b481]/10 cursor-pointer"
+                >
+                  <img :src="loc.flag" class="w-5 h-5 rounded-full" />
+                  <span class="text-sm text-gray-700 small-medium">{{
+                    loc.name
+                  }}</span>
+                </li>
+              </ul>
+            </transition>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <img
+              v-if="user?.avatar_url"
+              :src="user?.avatar_url"
+              alt="avatar"
+              class="w-8 sm:w-10 h-8 sm:h-10 rounded-full object-cover ring-2 ring-[#10B481]/50"
+            />
+
+            <div
+              v-else
+              class="w-8 sm:w-10 h-8 sm:h-10 bg-[#10b481] text-white rounded-full username flex items-center justify-center font-bold text-lg ring-2 ring-[#10B481]/50"
+            >
+              {{ user?.username.charAt(0).toUpperCase() }}
+            </div>
+          </div>
+        </div>
+      </header>
 
       <main
-        class="flex-1 p-6 sm:ml-20 transition-all duration-300 bg-[#FAFAF9] peer-hover:ml-56"
+        ref="mainContent"
+        class="overflow-auto flex-1 bg-[#FAFAF9]"
+        @scroll="handleScroll"
       >
-        <!-- <div
-          v-if="
-            showGroupCTA &&
-            userStore.serverStore &&
-            !userStore.serverStore.groupInfo &&
-            !router.currentRoute.value.path.startsWith('/group')
-          "
-          class="ml-6 flex items-center gap-4 bg-gradient-to-r from-[#10b481]/20 to-[#0fa37a]/20 backdrop-blur-md border border-[#10b481]/30 px-4 py-2 rounded shadow-md relative"
-        >
-          <div class="flex-1 text-center sm:text-left">
-            <h2 class="text-[#112830] font-semibold text-base">
-              Do you work as a team?
-            </h2>
-            <p class="text-[#112830]/90 text-md mt-1">
-              Create or join a group to access collaborative tracking and
-              evaluation.
-            </p>
-          </div>
-
-          <div class="flex gap-3 mt-3 sm:mt-0">
-            <button
-              @click="router.push('/group/create-group')"
-              class="flex items-center gap-2 px-4 py-2 bg-[#112830] text-white rounded shadow hover:bg-[#10b481] transition transform"
-            >
-              <i class="bxr bx-plus text-md"></i>
-              Create Group
-            </button>
-
-            <button
-              @click="router.push('/group/join-group')"
-              class="flex items-center gap-2 px-4 py-2 bg-[#112830] text-white rounded shadow hover:bg-[#10b481] transition transform"
-            >
-              <i class="bxr bx-link text-md"></i>
-              Join Group
-            </button>
-
-            <button
-              @click="hideGroupCTA"
-              class="text-gray-700 hover:text-gray-900 p-1 rounded-full transition hover:bg-gray-200"
-            >
-              <i class="bxr bx-x text-lg"></i>
-            </button>
-          </div>
-        </div> -->
-
-        <slot />
+        <NuxtPage />
       </main>
     </div>
 
     <div
       v-if="router.currentRoute.value.path !== '/assistant'"
       @click="router.push('/assistant')"
-      class="hidden sm:flex fixed bottom-6 right-6 z-50 items-center gap-2 bg-[#112830] text-white/90 rounded px-4 py-3 shadow-lg hover:bg-[#112830]/90 cursor-pointer transition-all duration-500 ease-in-out"
+      class="hidden sm:flex fixed bottom-6 right-6 z-50 items-center gap-2 btn-primary cursor-pointer transition-all duration-500 ease-in-out"
       :class="[isScrolled ? 'px-3 py-3 w-auto justify-center' : '']"
     >
       <i class="bx bx-robot text-xl"></i>
       <transition name="fade">
-        <span v-if="!isScrolled" class="font-light">{{ t("sesily") }}</span>
+        <span v-if="!isScrolled">{{ t("sesily") }}</span>
       </transition>
     </div>
   </div>
@@ -332,12 +475,38 @@ const t = (key: string) => {
   return translate[lang][key] || key;
 };
 
-const open = ref(false);
-// const isActive = (to: string) => router.currentRoute.value.path === to;
+const isScrolled = ref(false);
+const mainContent = ref(null);
 
-const isActive = (parentPath: string) => {
-  return router.currentRoute.value.path.startsWith(parentPath);
+const handleScroll = () => {
+  if (!mainContent.value) return;
+  isScrolled.value = mainContent.value.scrollTop > 5;
 };
+
+onMounted(() => {
+  if (mainContent.value) {
+    isScrolled.value = mainContent.value.scrollTop > 5;
+  }
+});
+
+const isCollapsed = ref(false);
+const isMobileOpen = ref(false);
+const isMobile = ref(false);
+
+const toggleCollapse = () => {
+  isCollapsed.value = !isCollapsed.value;
+};
+
+onMounted(() => {
+  const checkScreen = () => {
+    isMobile.value = window.innerWidth < 768;
+  };
+
+  checkScreen();
+  window.addEventListener("resize", checkScreen);
+});
+
+const open = ref(false);
 
 const locales = [
   { code: "en", name: "English", flag: "/flags/en.png" },
@@ -356,39 +525,10 @@ const logout = () => {
 
 const showGroupCTA = ref(true);
 
-const hideGroupCTA = () => {
-  showGroupCTA.value = false;
-  localStorage.setItem("hideGroupCTA", "true");
-};
-
 onMounted(() => {
   const hidden = localStorage.getItem("hideGroupCTA");
   if (hidden === "true") showGroupCTA.value = false;
 });
-
-const userMenuItems = [
-  {
-    labelKey: "account",
-    icon: "bx bx-user-circle",
-    action: () => router.push("/profil"),
-  },
-  {
-    labelKey: "terms",
-    icon: "bx bx-file",
-    action: () => router.push("/conditions/terms-of-service"),
-  },
-  {
-    labelKey: "policy",
-    icon: "bx bx-shield",
-    action: () => router.push("/conditions/privacy-policy"),
-  },
-  { labelKey: "signOut", icon: "bx bx-log-out", action: logout, danger: true },
-];
-
-function handleMenuClick(item: any) {
-  item.action();
-  userMenuOpen.value = false;
-}
 
 const currentLocale = computed(
   () => locales.find((l) => l.code === languageStore.lang) || locales[0]
@@ -405,71 +545,7 @@ const state = reactive({
 const userStore = useUserStore();
 
 const isGroup = computed(() => {
-  if (!userStore.serverStore.value?.groupInfo) return [];
-  return userStore.serverStore.value.groupInfo || [];
-});
-
-const groupInfo = computed(
-  () => userStore.serverStore.value?.groupInfo || null
-);
-
-const baseMenu = computed(() => [
-  {
-    to: "/dashboard/s",
-    icon: "bxr bx-home-alt-2",
-    label: t("home"),
-  },
-  { to: "/dashboard", icon: "bxr bx-dashboard", label: t("dashboard") },
-  { to: "/parcels", icon: "bx bx-location-alt-2", label: t("parcels") },
-  { to: "/tasks", icon: "bx bx-task", label: t("tasks") },
-  { to: "/yield-records", icon: "bx bx-bar-chart", label: t("yields") },
-  { to: "/parcel-crops", icon: "bx bx-box", label: t("crops") },
-]);
-
-const fullMenu = [
-  {
-    to: `/dashboard/s`,
-    icon: "bxr bx-home-alt-2",
-    label: t("home"),
-  },
-  {
-    to: "/dashboard/dashboardbi",
-    icon: "bxr  bx-dashboard",
-    label: t("dashboard"),
-  },
-  { to: "/group", icon: "bxr  bx-community", label: t("groups") },
-  {
-    to: "/organisations",
-    icon: "bxr  bx-enterprise",
-    label: t("organisations"),
-  },
-  { to: "/reporting", icon: "bxr  bx-folder", label: t("reporting") },
-  {
-    to: "/management",
-    icon: "bx bx-chart-stacked-rows",
-    label: t("datamanagement"),
-  },
-  { to: "/profil", icon: "bx bx-user-circle", label: "Profil" },
-  {
-    to: "/certifications/evaluation",
-    icon: "bx bx-badge-check",
-    label: "Certification",
-  },
-  { to: "/certifications/audit", icon: "bx bx-badge-check", label: "Audit" },
-  {
-    to: "/certifications/type",
-    icon: "bx bx-badge-check",
-    label: "Certification type",
-  },
-  { to: "/rapports", icon: "bx bx-folder-open", label: "Rapports" },
-  { to: "/parcels", icon: "bx bx-location-alt-2", label: t("parcels") },
-  { to: "/tasks", icon: "bx bx-task", label: t("tasks") },
-  { to: "/yield-records", icon: "bx bx-bar-chart", label: t("yields") },
-  { to: "/parcel-crops", icon: "bx bx-box", label: t("crops") },
-];
-
-const sidebarMenu = computed(() => {
-  return groupInfo.value ? fullMenu : baseMenu.value;
+  return !!userStore.serverStore.value?.groupInfo;
 });
 
 onMounted(() => {
@@ -547,25 +623,6 @@ onMounted(async () => {
     console.error(err);
     router.push("/login");
   }
-});
-
-const isMobileMenuOpen = ref(false);
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value;
-};
-
-const isScrolled = ref(false);
-
-const handleScroll = () => {
-  isScrolled.value = window.scrollY > 20;
-};
-
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 

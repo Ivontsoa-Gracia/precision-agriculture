@@ -1,17 +1,16 @@
 <template>
-  <div class="p-4 sm:p-6">
-    <Breadcrumb />
+  <div class="p-4 sm:p-8">
     <section class="mb-10">
       <div class="flex items-center justify-between mb-8">
         <h2
-          class="text-xl sm:test-2xl font-semibold text-gray-900 tracking-tight"
+          class="tracking-tight"
         >
           {{ t("titleparcellist") }}
         </h2>
 
         <NuxtLink
           to="/parcels/create"
-          class="inline-flex flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+          class="inline-flex flex items-center gap-2 btn-primary"
         >
           <i class="bx bx-plus"></i>
           {{ t("add") }}
@@ -19,7 +18,7 @@
       </div>
 
       <div
-        class="flex items-center gap-3 border border-gray-200 rounded px-3 py-2 bg-white"
+        class="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2 bg-white content"
       >
         <div class="relative flex-1">
           <i
@@ -49,7 +48,7 @@
 
         <button
           @click="resetFilters"
-          class="text-sm text-gray-500 px-3 hover:text-gray-900 transition"
+          class="text-sm text-gray-500 px-3 hover transition"
         >
           {{ t("reset") }}
         </button>
@@ -58,7 +57,7 @@
 
         <div class="relative group px-3">
           <button
-            class="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition"
+            class="flex items-center gap-1 text-sm text-gray-700 hover transition"
           >
             Export
             <i class="bx bx-chevron-down text-xs"></i>
@@ -84,10 +83,10 @@
       </div>
     </section>
 
-    <div class="pb-2">
+    <div class="pb-2 rounded-2xl">
       <div class="overflow-x-auto bg-white">
         <table class="min-w-[700px] w-full text-left border-collapse">
-          <thead class="bg-[#FAFAF9]">
+          <thead class="bg-[#FAFAF9] small">
             <tr>
               <th
                 @click="sortBy('parcel_name')"
@@ -121,13 +120,13 @@
             <tr
               v-for="field in paginatedFields"
               :key="field.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-gray-50 content"
             >
-              <td class="px-6 py-2 border-b text-sm text-gray-900 hidden">
+              <td class="px-6 py-2 border-b text-sm hidden">
                 {{ field.owner }}
               </td>
 
-              <td class="px-6 py-2 border-b text-sm text-gray-900">
+              <td class="px-6 py-2 border-b text-sm">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
                   class="hover:text-[#10b481] transition-colors"
@@ -137,12 +136,12 @@
               </td>
 
               <td
-                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                class="px-6 py-2 border-b text-sm hidden sm:table-cell"
               >
                 {{ field.weatherMeta.location }}
               </td>
               <td
-                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                class="px-6 py-2 border-b text-sm hidden sm:table-cell"
               >
                 {{ formatM2(field.area_m2) }}
               </td>
@@ -170,7 +169,7 @@
               </td>
             </tr>
             <tr v-if="paginatedFields.length === 0">
-              <td colspan="6" class="p-6 text-center text-gray-500">
+              <td colspan="6" class="p-6 text-center text-gray-400 text-sm small">
                 {{ t("noparcelsfound") }}
               </td>
             </tr>
@@ -178,7 +177,7 @@
         </table>
       </div>
 
-      <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+      <div class="bg-white rounded-b-2xl px-4 py-3 flex items-center justify-between sm:px-6 content">
         <div class="flex-1 flex justify-between sm:hidden">
           <button
             @click="prevPage"

@@ -1,24 +1,8 @@
 <template>
-  <div class="py-10">
+  <div class="">
     <section class="mb-10">
-      <div class="flex items-center justify-between mb-8 hidden">
-        <h2
-          class="text-xl sm:test-2xl font-semibold text-gray-900 tracking-tight"
-        >
-          {{ t("titleparcellist") }}
-        </h2>
-
-        <NuxtLink
-          to="/parcels/create"
-          class="inline-flex flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
-        >
-          <i class="bx bx-plus"></i>
-          {{ t("add") }}
-        </NuxtLink>
-      </div>
-
       <div
-        class="flex items-center gap-3 border border-gray-200 rounded px-3 py-2 bg-white"
+        class="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2 bg-white content"
       >
         <div class="relative flex-1">
           <i
@@ -36,7 +20,7 @@
 
         <select
           v-model.number="rowsPerPage"
-          class="text-sm text-gray-700 bg-transparent focus:outline-none"
+          class="text-sm text-gray-700 px-3 bg-transparent focus:outline-none"
         >
           <option :value="4">4</option>
           <option :value="8">8</option>
@@ -48,16 +32,16 @@
 
         <button
           @click="resetFilters"
-          class="text-sm text-gray-500 hover:text-gray-900 transition"
+          class="text-sm text-gray-500 px-3 hover transition"
         >
-          Reset
+          {{ t("reset") }}
         </button>
 
         <div class="w-px h-6 bg-gray-200"></div>
 
-        <div class="relative group">
+        <div class="relative group px-3">
           <button
-            class="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition"
+            class="flex items-center gap-1 text-sm text-gray-700 hover transition"
           >
             Export
             <i class="bx bx-chevron-down text-xs"></i>
@@ -83,25 +67,31 @@
       </div>
     </section>
 
-    <div class="pb-2">
+    <div class="pb-2 rounded-2xl">
       <div class="overflow-x-auto bg-white">
         <table class="min-w-[700px] w-full text-left border-collapse">
-          <thead class="bg-[#FAFAF9]">
+          <thead class="bg-[#FAFAF9] small">
             <tr>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                @click="sortBy('parcel_name')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
               >
                 {{ t("thparcelname") }}
+                <i class="bxr bx-carets-up-down"></i>
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+                @click="sortBy('weatherMeta.location')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
               >
                 {{ t("locations") }}
+                <i class="bxr bx-carets-up-down"></i>
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
+                @click="sortBy('area_m2')"
+                class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b hidden sm:table-cell"
               >
                 {{ t("area") }}
+                <i class="bxr bx-carets-up-down"></i>
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
@@ -114,13 +104,13 @@
             <tr
               v-for="field in paginatedFields"
               :key="field.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-gray-50 content"
             >
-              <td class="px-6 py-2 border-b text-sm text-gray-900 hidden">
+              <td class="px-6 py-2 border-b text-sm hidden">
                 {{ field.owner }}
               </td>
 
-              <td class="px-6 py-2 border-b text-sm text-gray-900">
+              <td class="px-6 py-2 border-b text-sm">
                 <NuxtLink
                   :to="`/parcels/show/${field.fieldId}`"
                   class="hover:text-[#10b481] transition-colors"
@@ -130,12 +120,12 @@
               </td>
 
               <td
-                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                class="px-6 py-2 border-b text-sm hidden sm:table-cell"
               >
                 {{ field.weatherMeta.location }}
               </td>
               <td
-                class="px-6 py-2 border-b text-sm text-gray-900 hidden sm:table-cell"
+                class="px-6 py-2 border-b text-sm hidden sm:table-cell"
               >
                 {{ formatM2(field.area_m2) }}
               </td>
@@ -163,7 +153,7 @@
               </td>
             </tr>
             <tr v-if="paginatedFields.length === 0">
-              <td colspan="6" class="p-6 text-center text-gray-500">
+              <td colspan="6" class="p-6 text-center text-gray-400 text-sm small">
                 {{ t("noparcelsfound") }}
               </td>
             </tr>
@@ -171,7 +161,7 @@
         </table>
       </div>
 
-      <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+      <div class="bg-white rounded-b-2xl px-4 py-3 flex items-center justify-between sm:px-6 content">
         <div class="flex-1 flex justify-between sm:hidden">
           <button
             @click="prevPage"
@@ -207,7 +197,7 @@
               <button
                 @click="prevPage"
                 :disabled="currentPage === 1"
-                class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
                 <span class="sr-only">{{ t("prev") }}</span>
                 <i class="bx bx-chevron-left"></i>
@@ -232,7 +222,7 @@
               <button
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
-                class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
               >
                 <span class="sr-only">{{ t("next") }}</span>
                 <i class="bx bx-chevron-right"></i>
@@ -325,6 +315,7 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: "dashboard" });
 import { ref, reactive, computed, onMounted } from "vue";
 import { API_URL } from "~/config";
 import { useLanguageStore } from "~/stores/language";
@@ -332,6 +323,8 @@ import { translate } from "~/utils/translate";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import * as turf from "@turf/turf";
+import Breadcrumb from "~/components/Breadcrumb.vue";
+
 const router = useRouter();
 
 const languageStore = useLanguageStore();
@@ -340,10 +333,6 @@ const showFilters = ref(false);
 const t = (key: string) => translate[languageStore.lang][key] || key;
 
 const currentLocale = computed(() => languageStore.lang);
-
-definePageMeta({
-  layout: "dashboard",
-});
 
 const isLoading = ref(false);
 
@@ -366,9 +355,13 @@ const showNotification = (
 
 async function exportData(type: "pdf" | "csv") {
   const data = filteredFields.value.map((f) => {
-    // Transformer les points en chaîne "lat,lng;lat,lng;..."
     const pointsStr = f.parcel_points
-      ? f.parcel_points.map((p) => `${p.latitude},${p.longitude}`).join("; ")
+      ? f.parcel_points
+          .map(
+            (p: { latitude: any; longitude: any }) =>
+              `${p.latitude},${p.longitude}`
+          )
+          .join("; ")
       : "-";
 
     return {
@@ -422,6 +415,18 @@ const rowsPerPage = ref(4);
 const currentPage = ref(1);
 const activeMenu = ref<string | null>(null);
 const menuPosition = reactive({ top: 0, right: 0 });
+const sortKey = ref<string | null>(null);
+const sortAsc = ref(true);
+
+function sortBy(key: string) {
+  if (sortKey.value === key) {
+    sortAsc.value = !sortAsc.value;
+  } else {
+    sortKey.value = key;
+    sortAsc.value = true;
+  }
+  currentPage.value = 1;
+}
 
 const fieldsState = useState("fieldsData", () => ({
   data: [] as any[],
@@ -522,11 +527,14 @@ async function fetchParcelFullData(parcel: any) {
   }
 }
 
-function calculateParcelArea(points) {
+function calculateParcelArea(points: any[]) {
   if (!points || points.length < 3) return 0;
 
   // Turf attend des coordonnées [lng, lat]
-  const coords = points.map((p) => [p.longitude, p.latitude]);
+  const coords = points.map((p: { longitude: any; latitude: any }) => [
+    p.longitude,
+    p.latitude,
+  ]);
 
   // Fermer le polygone
   coords.push([points[0].longitude, points[0].latitude]);
@@ -544,18 +552,47 @@ function calculateParcelArea(points) {
   return areaHa.toFixed(2);
 }
 
-const formatM2 = (areaInHa) => {
+const formatM2 = (areaInHa: number) => {
   if (!areaInHa) return "- m²";
   return `${(areaInHa * 10000).toLocaleString()} m²`;
 };
 
-const filteredFields = computed(() =>
-  fields.value.filter(
+const filteredFields = computed(() => {
+  let data = fields.value.filter(
     (f) =>
       f.owner.toLowerCase().includes(filters.owner.toLowerCase()) &&
       f.parcel_name.toLowerCase().includes(filters.parcel_name.toLowerCase())
-  )
-);
+  );
+
+  if (sortKey.value) {
+    data.sort((a, b) => {
+      let valA: any;
+      let valB: any;
+
+      if (sortKey.value.includes(".")) {
+        // Pour nested keys comme "weatherMeta.location"
+        const keys = sortKey.value.split(".");
+        valA = keys.reduce((acc, k) => acc?.[k], a);
+        valB = keys.reduce((acc, k) => acc?.[k], b);
+      } else {
+        valA = a[sortKey.value];
+        valB = b[sortKey.value];
+      }
+
+      if (valA == null) valA = "";
+      if (valB == null) valB = "";
+
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+
+      if (valA < valB) return sortAsc.value ? -1 : 1;
+      if (valA > valB) return sortAsc.value ? 1 : -1;
+      return 0;
+    });
+  }
+
+  return data;
+});
 
 const totalPages = computed(() =>
   Math.ceil(filteredFields.value.length / rowsPerPage.value)

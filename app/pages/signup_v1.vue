@@ -1,82 +1,98 @@
 <template>
-  <div class="h-screen flex bg-[#fff]">
-    <div class="flex-1 overflow-y-auto max-h-screen p-4 sm:p-12">
-      <div class="max-w-2xl mx-auto">
-        <div class="">
-          <div class="text-left mb-10">
-            <img src="/logo.png" class="h-16 mb-6" />
-            <h2 class="">Créer votre compte</h2>
-            <p class="mt-4 content">
-              Rejoignez SmartSaha et commencez à vendre ou acheter en toute
-              sécurité.
-            </p>
-          </div>
-
-          <div class="w-full">
-            <AuthForm
-              title=""
-              buttonText="Sign up"
-              :fields="['first_name', 'last_name', 'username', 'email', 'password']"
-              passwordLabel="Password"
-              @submit="handleSignup"
-            >
-              <template #footer-links> </template>
-            </AuthForm>
-          </div>
+  <div
+    class="max-h-screen flex flex-col md:flex-row bg-gradient-to-tr from-[#0f0f0f] to-[#121212]"
+  >
+    <div
+      class="md:w-1/3 flex flex-col justify-center items-center p-8 bg-[#f9f9f9] relative"
+    >
+      <div class="absolute top-8 left-8 flex items-center gap-3">
+        <img
+          src="/logo.png"
+          alt="Smartsaha Logo"
+          class="w-10 h-10 object-contain"
+        />
+        <div class="flex flex-col">
+          <h1 class="text-md font-bold text-[#112830]">Smartsaha</h1>
+          <p class="text-gray-500 text-xs">Nurture Data, Harvest Impact.</p>
         </div>
+      </div>
+
+      <div class="w-full max-w-sm mt-16 p-6">
+        <AuthForm
+          title="Sign up"
+          buttonText="Sign up"
+          :fields="['first_name', 'last_name', 'email', 'password']"
+          passwordLabel="Password"
+          @submit="handleSignup"
+        >
+          <template #footer-links>
+            <!-- <NuxtLink to="/login" class="text-white-600 hover:underline"
+              >Already have an account? Log in</NuxtLink
+            > -->
+          </template>
+        </AuthForm>
       </div>
     </div>
 
     <div
-      class="hidden lg:flex w-3/5 h-screen sticky top-0 bg-[#fff] rounded-l-[2rem] text-white flex-col justify-center p-12 overflow-hidden relative"
+      class="hidden md:flex md:w-2/3 flex-col justify-between p-10 relative shadow-xl overflow-hidden bg-gray-900"
     >
-      <div
-        class="absolute -top-24 -left-32 w-[500px] h-[500px] sm:bg-blue-500 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-      ></div>
+      <canvas ref="aiCanvas" class="absolute inset-0 w-full h-full"></canvas>
 
       <div
-        class="absolute top-40 -right-48 w-[400px] h-[600px] sm:bg-blue-400 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-      ></div>
-
-      <div
-        class="absolute -top-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-      ></div>
-
-      <div
-        class="absolute -bottom-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-40 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
+        class="absolute inset-0 bg-[#10b481]/10 backdrop-blur-xs pointer-events-none"
       ></div>
 
       <div class="relative flex justify-end items-center mb-10 z-10 gap-4">
-        <p class="text-sm small text-gray-700 text-center sm:text-left">
-          Déjà un compte ?
+        <p class="text-sm text-gray-300 font-medium">
+          Already have an account?
         </p>
         <NuxtLink
           to="/login"
-          class="btn-secondary"
+          class="px-6 py-2 bg-transparent border border-white text-gray-50 text-sm rounded hover:scale-105 transition-transform transform hover:-translate-y-0.5 duration-300"
         >
-        Se connecter
+          Log In
         </NuxtLink>
       </div>
 
       <div
-        class="relative z-50 flex flex-col justify-center h-full gap-y-8 px-4 sm:px-0"
+        class="slider relative flex-1 flex flex-col justify-center items-center"
       >
-        <div class="flex flex-col justify-center gap-2">
-          <h2 class="leading-snug text-2xl font-bold">
-            Meet Sesily AI
+        <div
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="slide absolute left-8 flex flex-col justify-end items-start transition-opacity duration-700 opacity-0 text-gray-50 max-w-xl"
+        >
+          <h2 class="text-3xl md:text-4xl font-extrabold mb-3 leading-tight">
+            {{ slide.title }}
           </h2>
-          <p class="text-gray-700 small text-sm max-w-lg">
-            Your smart agronomist assistant, ready to guide you through your data and provide actionable insights.
+          <p class="text-lg md:text-xl mb-6 text-gray-200">
+            {{ slide.text }}
           </p>
-        </div>
-        <div class="flex flex-col sm:flex-row items-center gap-1 self-start">
-          <NuxtLink
-            to="/assistant/u"
-            class="text-[#10b481] small text-sm font-medium underline cursor-pointer transition hover:bg-gray-100/10"
+          <!-- <NuxtLink
+            :to="slide.link"
+            class="inline-flex items-center gap-2 text-white"
           >
-            Decouvrir
-          </NuxtLink>
+            <span class="underline decoration-1 decoration-white">
+              Learn More
+            </span>
+            <i class="bx bx-right-arrow-alt text-lg"></i>
+          </NuxtLink> -->
+
+          <div class="mb-6"></div>
         </div>
+      </div>
+
+      <div class="absolute bottom-6 left-16 flex gap-2">
+        <span
+          v-for="(_, i) in slides"
+          :key="i"
+          :class="{
+            'bg-[#10b481] w-6 h-1 transition-all duration-300': true,
+            'opacity-100 scale-125': i === currentIndex,
+            'opacity-50 scale-100': i !== currentIndex,
+          }"
+        ></span>
       </div>
     </div>
   </div>

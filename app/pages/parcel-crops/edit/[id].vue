@@ -1,11 +1,9 @@
 <template>
   <section>
-    <Breadcrumb />
-
-    <div class="flex items-center justify-center p-6">
+    <div class="max-w-3xl mx-auto mt-1 sm:mt-10 mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
       <div class="w-full max-w-3xl mt-6">
         <div class="mb-8 text-left">
-          <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+          <h2 class="">
             {{ t("editparcelcrop") }}
           </h2>
         </div>
@@ -13,13 +11,13 @@
         <form @submit.prevent="submitParcelCrop" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1"
+              <label class="label mb-1"
                 >{{ t("parcel") }} *</label
               >
               <select
                 v-model="form.parcel"
                 required
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               >
                 <option v-for="p in parcels" :key="p.uuid" :value="p.uuid">
                   {{ p.parcel_name }}
@@ -28,13 +26,13 @@
             </div>
 
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1"
+              <label class="label mb-1"
                 >{{ t("crop") }} *</label
               >
               <select
                 v-model="form.crop_id"
                 required
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               >
                 <option v-for="c in crops" :key="c.id" :value="c.id">
                   {{ c.name }} ({{ c.variety?.name }})
@@ -43,30 +41,30 @@
             </div>
 
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1"
+              <label class="label mb-1"
                 >{{ t("plantingdate") }} *</label
               >
               <input
                 v-model="form.planting_date"
                 type="date"
                 required
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               />
             </div>
 
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1">{{
+              <label class="label mb-1">{{
                 t("harvestdate")
               }}</label>
               <input
                 v-model="form.harvest_date"
                 type="date"
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               />
             </div>
 
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1"
+              <label class="label mb-1"
                 >{{ t("area") }} (m²) *</label
               >
               <input
@@ -74,18 +72,18 @@
                 type="number"
                 step="1"
                 required
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               />
             </div>
 
             <div class="flex flex-col">
-              <label class="text-gray-700 text-sm font-medium mb-1"
+              <label class="label mb-1"
                 >{{ t("status") }} *</label
               >
               <select
                 v-model="form.status_id"
                 required
-                class="px-3 py-2 border border-gray-300 bg-transparent rounded focus:outline-none focus:border-[#10b481] focus:ring-1 focus:ring-[#10b481] text-gray-800"
+                class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               >
                 <option v-for="s in statuses" :key="s.id" :value="s.id">
                   {{ t(cropStatusKeyMap[s.name]) }}
@@ -96,7 +94,7 @@
 
           <button
             type="submit"
-            class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-sm flex justify-center items-center gap-2"
+            class="w-full btn-primary flex justify-center items-center gap-2"
           >
             {{ t("btnsaveparcelcrop") }}
           </button>
@@ -104,6 +102,36 @@
       </div>
     </div>
   </section>
+  <transition name="slide-right">
+    <div
+      v-if="notification.visible"
+      class="fixed bottom-4 right-4 z-[9999] bg-[#112830] rounded shadow-xl px-6 py-4 flex items-center gap-4 w-80 text-left border-l-4 transition-all duration-300"
+      :class="
+        notification.type === 'success' ? 'border-[#10b481]' : 'border-red-500'
+      "
+    >
+      <div
+        :class="notification.type === 'success' ? 'bg-[#10b481]' : 'bg-red-500'"
+        class="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl"
+      >
+        <i
+          :class="notification.type === 'success' ? 'bx bx-check' : 'bx bx-x'"
+        ></i>
+      </div>
+      <div>
+        <p class="font-medium text-sm text-gray-100">
+          {{ notification.message }}
+        </p>
+        <p class="text-gray-300 text-xs">
+          {{
+            notification.type === "success"
+              ? "Success!"
+              : "Something went wrong."
+          }}
+        </p>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -135,6 +163,24 @@ const cropStatusKeyMap: Record<string, string> = {
 };
 
 const isLoading = ref(false);
+
+const notification = ref({
+  visible: false,
+  message: "",
+  type: "success",
+});
+
+const showNotification = (
+  message: string,
+  type: "success" | "error" = "success",
+  duration = 3000
+) => {
+  notification.value.message = message;
+  notification.value.type = type;
+  notification.value.visible = true;
+  setTimeout(() => (notification.value.visible = false), duration);
+};
+
 const route = useRoute();
 const router = useRouter();
 
@@ -213,11 +259,13 @@ const submitParcelCrop = async () => {
     });
 
     if (!res.ok) throw new Error(`API error: ${res.status}`);
-    alert("Parcel Crop updated successfully!");
-    router.push("/parcel-crops");
+    showNotification("Parcel Crop updated successfully!", "success");
+    setTimeout(() => {
+      router.push({ path: "/parcel-crops", query: { refresh: "1" } });
+    }, 3000);
   } catch (err) {
     console.error(err);
-    alert("Failed to update parcel crop");
+    showNotification("Failed to update parcel crop", "error");
   }
 };
 </script>

@@ -1,9 +1,11 @@
 <template>
-  <div class="h-screen flex bg-[#fff]">
-    <div class="flex-1 overflow-y-auto max-h-screen p-4 sm:p-12">
+
+<div class="h-screen flex bg-[#fafaf9]">
+    <!-- LEFT: SCROLLABLE FORM -->
+    <div class="flex-1 p-4 sm:p-12">
       <div class="max-w-2xl mx-auto">
         <div class="">
-          <div class="text-left mb-10">
+          <div class="text-left mb-6">
             <img src="/logo.png" class="h-16 mb-6" />
             <h2 class="">Créer votre compte</h2>
             <p class="mt-4 content">
@@ -12,24 +14,28 @@
             </p>
           </div>
 
-          <div class="w-full">
-            <AuthForm
-              title=""
-              buttonText="Sign up"
-              :fields="['first_name', 'last_name', 'username', 'email', 'password']"
-              passwordLabel="Password"
-              @submit="handleSignup"
-            >
-              <template #footer-links> </template>
-            </AuthForm>
-          </div>
+          <div class="w-full max-w-sm">
+        <AuthForm
+          title=""
+          buttonText="Sign up"
+          :fields="['first_name', 'last_name', 'email', 'password']"
+          passwordLabel="Password"
+          @submit="handleSignup"
+        >
+          <template #footer-links>
+          </template>
+        </AuthForm>
+      </div>
         </div>
       </div>
     </div>
 
+    <!-- RIGHT: FIXED PANEL -->
+
     <div
-      class="hidden lg:flex w-3/5 h-screen sticky top-0 bg-[#fff] rounded-l-[2rem] text-white flex-col justify-center p-12 overflow-hidden relative"
+      class="hidden lg:flex w-2/5 h-screen sticky top-0 bg-[#fff] rounded-l-[2rem] text-white flex-col justify-center p-12 overflow-hidden relative"
     >
+      <!-- Flare organiques -->
       <div
         class="absolute -top-24 -left-32 w-[500px] h-[500px] sm:bg-blue-500 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
       ></div>
@@ -46,35 +52,30 @@
         class="absolute -bottom-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-40 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
       ></div>
 
-      <div class="relative flex justify-end items-center mb-10 z-10 gap-4">
-        <p class="text-sm small text-gray-700 text-center sm:text-left">
-          Déjà un compte ?
-        </p>
-        <NuxtLink
-          to="/login"
-          class="btn-secondary"
-        >
-        Se connecter
-        </NuxtLink>
-      </div>
-
       <div
         class="relative z-50 flex flex-col justify-center h-full gap-y-8 px-4 sm:px-0"
       >
+
         <div class="flex flex-col justify-center gap-2">
           <h2 class="leading-snug text-2xl font-bold">
-            Meet Sesily AI
+            Bienvenue sur SmartSaha
           </h2>
-          <p class="text-gray-700 small text-sm max-w-lg">
-            Your smart agronomist assistant, ready to guide you through your data and provide actionable insights.
+          <p class="text-gray-700 small text-sm max-w-xs">
+            Marketplace agricole, sécurisez vos ventes et connectez-vous aux
+            meilleurs clients.
           </p>
         </div>
-        <div class="flex flex-col sm:flex-row items-center gap-1 self-start">
+        <div
+          class="flex flex-col sm:flex-row items-center gap-1 self-start"
+        >
+          <p class="text-sm small text-[#112830] text-center sm:text-left">
+            Déjà un compte ?
+          </p>
           <NuxtLink
-            to="/assistant/u"
+            to="/login"
             class="text-[#10b481] small text-sm font-medium underline cursor-pointer transition hover:bg-gray-100/10"
           >
-            Decouvrir
+            Se connecter
           </NuxtLink>
         </div>
       </div>

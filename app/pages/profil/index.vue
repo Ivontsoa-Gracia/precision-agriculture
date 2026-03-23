@@ -1,21 +1,21 @@
 <template>
   <div class="py-12 px-4 sm:px-6 lg:px-20 flex justify-center">
-    <div class="w-full max-w-5xl bg-white rounded overflow-hidden">
+    <div class="w-full max-w-5xl bg-white rounded-3xl overflow-hidden">
       <div
         class="relative h-24 bg-gradient-to-r from-[#10b481] to-[#0da06a] flex justify-center items-center"
       >
         <div
-          class="absolute -bottom-16 w-32 h-32 rounded-full border-4 border-white shadow-lg flex justify-center items-center bg-white"
+          class="absolute -bottom-16 w-32 h-32 rounded-full border-4 border-white flex justify-center items-center bg-white"
         >
           <i class="bx bx-user text-6xl text-[#10b481]"></i>
         </div>
       </div>
 
       <div class="mt-20 px-8 py-6 text-center">
-        <h1 class="text-3xl font-extrabold text-gray-900">
+        <h1 class="text-2xl font-extrabold username text-gray-700">
           {{ user?.username }}
         </h1>
-        <p class="text-gray-500 mt-1">{{ user?.email }}</p>
+        <p class="text-gray-500 mt-1 small text-sm">{{ user?.email }}</p>
       </div>
 
       <div class="px-8 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -23,10 +23,10 @@
           class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
           <div>
-            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
+            <h2 class="uppercase tracking-wide text-gray-400 small text-xs">
               {{ t("firstName") }}
             </h2>
-            <p class="font-medium text-gray-800">
+            <p class="small-medium text-gray-700">
               {{ user?.first_name }}
             </p>
           </div>
@@ -36,10 +36,10 @@
           class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
           <div>
-            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
+            <h2 class="uppercase tracking-wide text-gray-400 small text-xs">
               {{ t("lastName") }}
             </h2>
-            <p class="font-medium text-gray-800">
+            <p class="small-medium text-gray-700">
               {{ user?.last_name }}
             </p>
           </div>
@@ -49,10 +49,10 @@
           class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
           <div>
-            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
+            <h2 class="uppercase tracking-wide text-gray-400 small text-xs">
               {{ t("username") }}
             </h2>
-            <p class="font-medium text-gray-800">
+            <p class="small-medium text-gray-700">
               {{ user?.username }}
             </p>
           </div>
@@ -62,16 +62,16 @@
           class="bg-white p-6 rounded border border-gray-200 transition flex items-center gap-4"
         >
           <div>
-            <h2 class="uppercase tracking-wide text-gray-500 text-sm">
+            <h2 class="uppercase tracking-wide text-gray-400 small text-xs">
               {{ t("email") }}
             </h2>
-            <p class="font-medium text-gray-800">{{ user?.email }}</p>
+            <p class="small-medium text-gray-700">{{ user?.email }}</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4">
           <p
-            class="tracking-wide text-[#10b481] cursor-pointer"
+            class="menu-item underline"
             @click="router.push('/profil/edit/reset-password')"
           >
             {{ t("changePassword") }}
@@ -84,15 +84,14 @@
       >
         <a
           href="/profil/edit"
-          class="w-full sm:w-auto text-center px-6 py-3 bg-[#10b481] text-white font-medium rounded shadow hover:bg-[#0da06a] transition flex items-center justify-center gap-2"
+          class="btn-primary"
         >
-          <i class="bx bx-edit-alt text-lg"></i>
           {{ t("editProfile") }}
         </a>
       </div>
 
       <div
-        class="px-8 py-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 gap-4"
+        class="px-8 py-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-sm menu-item gap-4"
       >
         <div class="flex gap-6">
           <a href="/conditions/terms-of-service" class="hover:underline">{{
@@ -106,7 +105,7 @@
           @click.prevent="logout"
           class="text-red-600 hover:underline font-medium cursor-pointer flex items-center gap-1"
         >
-          <i class="bx bx-log-out"></i> {{ t("logout") }}
+         {{ t("logout") }}
         </button>
       </div>
     </div>

@@ -1,13 +1,13 @@
 <template>
   <div class=" flex items-center justify-center mt-16">
-    <div class="w-full max-w-md bg-white rounded  border border-gray-100 p-8">
+    <div class="w-full max-w-md bg-white rounded-2xl  border border-gray-200 p-8">
       <header class="mb-6 text-center">
-        <h1 class="text-2xl font-semibold text-gray-900">{{ t('resetMdpTittle') }}</h1>
-        <p class="mt-2 text-sm text-gray-500">{{ t('resetText') }}</p>
+        <h2 class="">{{ t('resetMdpTittle') }}</h2>
+        <p class="mt-2 text-sm small text-gray-400">{{ t('resetText') }}</p>
       </header>
 
       <form @submit.prevent="onSubmit" novalidate>
-        <label for="email" class="text-gray-700 text-sm font-medium mb-1">{{ t('email') }}</label>
+        <label for="email" class="label mb-1">{{ t('email') }}</label>
         <div class="mt-1 relative">
           <input
             id="email"
@@ -15,7 +15,7 @@
             :aria-invalid="!!errorMessage || !isEmailValid"
             type="email"
             placeholder="nom@exemple.com"
-            class="appearance-none block w-full px-4 py-3 border rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#10b481] transition disabled:opacity-60"
+            class="appearance-none block w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             :disabled="loading || success"
             required
           />
@@ -27,7 +27,7 @@
         <button
           type="submit"
           :disabled="!isEmailValid || loading || success"
-          class="mt-6 w-full inline-flex items-center justify-center gap-2 rounded px-4 py-3 bg-[#10b481] text-white font-medium hover:bg-[#10b481] focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500 disabled:opacity-60"
+          class="mt-6 w-full inline-flex items-center justify-center gap-2 btn-primary disabled:opacity-60"
         >
           <svg v-if="loading" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="4"></circle>
@@ -39,7 +39,7 @@
         </button>
       </form>
 
-      <div class="mt-6 text-center text-sm text-gray-500">
+      <div class="mt-6 text-center menu-item">
         <NuxtLink to="/login" class="underline">{{ t('return') }}</NuxtLink>
       </div>
 

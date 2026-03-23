@@ -1,19 +1,19 @@
 <template>
-  <div class="w-full md:w-3/4 mx-auto">
+  <div class="w-full md:w-3/4 mx-auto p-8 bg-white rounded-2xl border border-gray-200">
     <button
       @click="goBack"
-      class="text-[#222831] hover:underline text-sm font-medium mb-4 inline-flex items-center gap-1"
+      class="menu-item hover:underline mb-4 inline-flex items-center gap-1"
     >
       <i class="bx bx-arrow-left"></i> {{ t("back") }}
     </button>
 
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+      <h2 class="flex items-center gap-3">
         {{ t("detailtask") }}
       </h2>
       <button
         @click="editTask"
-        class="text-[#222831] hover:text-[#10b481] text-2xl flex items-center"
+        class="btn-neutre"
         title="Edit"
       >
         <i class="bx bx-edit-alt"></i>
@@ -21,92 +21,92 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("taskname") }}
           </p>
-          <p class="font-semibold text-gray-800">{{ task.name }}</p>
+          <p class="content">{{ task.name }}</p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("due") }}
           </p>
-          <p class="font-semibold text-gray-800">
+          <p class="content">
             {{ formatDate(task.due_date) }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("parcelcrop") }}
           </p>
-          <p class="font-semibold text-gray-800">
+          <p class="content">
             {{ task.parcelCropFull || "-" }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("createdat") }}
           </p>
-          <p class="font-semibold text-gray-800">
+          <p class="content">
             {{ formatDate(task.created_at) }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("updatedat") }}
           </p>
-          <p class="font-semibold text-gray-800">
+          <p class="content">
             {{ formatDate(task.updated_at) }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("completedat") }}
           </p>
-          <p class="font-semibold text-gray-800">
+          <p class="content">
             {{ formatDate(task.completed_at) || "-" }}
           </p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex items-center gap-3">
+      <div class="border border-gray-200 p-4 rounded-xl flex items-center gap-3">
         <div>
-          <p class="uppercase tracking-wide text-gray-500 text-sm">
+          <p class="uppercase tracking-wide text-gray-400 small text-sm">
             {{ t("desc") }}
           </p>
-          <p class="font-semibold text-gray-800">{{ task.description }}</p>
+          <p class="content">{{ task.description }}</p>
         </div>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex flex-col gap-3">
-        <span class="uppercase tracking-wide text-gray-500 text-sm">{{
+      <div class="border border-gray-200 p-4 rounded-xl flex flex-col gap-3">
+        <span class="uppercase tracking-wide text-gray-400 small text-sm">{{
           t("priority")
         }}</span>
         <span
           :class="[
-            'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+            'px-4 py-1 rounded-full text-md small text-xs w-max text-center border',
             priorityName === 'Low'
-              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]'
               : priorityName === 'Medium'
-              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]'
               : priorityName === 'High'
-              ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]/50'
+              ? 'bg-[#e63946]/10 text-[#e63946] border-[#e63946]'
               : 'bg-gray-100',
           ]"
         >
@@ -114,19 +114,19 @@
         </span>
       </div>
 
-      <div class="border border-gray-100 p-4 rounded flex flex-col gap-3">
-        <span class="uppercase tracking-wide text-gray-500 text-sm">{{
+      <div class="border border-gray-200 p-4 rounded-xl flex flex-col gap-3">
+        <span class="uppercase tracking-wide text-gray-400 small text-sm">{{
           t("status")
         }}</span>
         <span
           :class="[
-            'px-4 py-1 rounded-full text-md font-medium w-max text-center border',
+            'px-4 py-1 rounded-full text-md small text-xs w-max text-center border',
             statusName === 'Pending'
-              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]/50'
+              ? 'bg-[#f4a261]/10 text-[#f4a261] border-[#f4a261]'
               : statusName === 'In Progress'
-              ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]/50'
+              ? 'bg-[#219ebc]/10 text-[#219ebc] border-[#219ebc]'
               : statusName === 'Done'
-              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]/50'
+              ? 'bg-[#10b481]/10 text-[#10b481] border-[#10b481]'
               : statusName === 'Cancelled'
               ? 'bg-gray-200 text-gray-600 border-gray-300'
               : 'bg-gray-100',

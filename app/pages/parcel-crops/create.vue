@@ -1,19 +1,18 @@
 <template>
   <section>
-    <Breadcrumb />
-    <div class="max-w-3xl mx-auto mt-1 sm:mt-10 mb-10 sm:mb-1">
+    <div class="max-w-3xl mx-auto mt-1 sm:mt-10 mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
       <div
         class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-4"
       >
         <h2
-          class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2"
+          class=""
         >
           {{ t("newparcelcrop") }}
         </h2>
 
         <NuxtLink
           to="/crops/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition w-full md:w-auto justify-center"
+          class="flex items-center gap-2 btn-primary justify-center"
         >
           <i class="bx bx-plus"></i> {{ t("btnaddcrop") }}
         </NuxtLink>
@@ -22,13 +21,13 @@
       <form @submit.prevent="submitParcelCrop" class="space-y-5">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("parcel") }} *</label
             >
             <select
               v-model="form.parcel"
               required
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             >
               <option v-for="p in parcels" :key="p.uuid" :value="p.uuid">
                 {{ p.parcel_name }}
@@ -37,13 +36,13 @@
           </div>
 
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("crop") }} *</label
             >
             <select
               v-model="form.crop_id"
               required
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             >
               <option v-for="c in crops" :key="c.id" :value="c.id">
                 {{ c.name }} ({{ c.variety?.name }})
@@ -54,32 +53,32 @@
 
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("plantingdate") }} *</label
             >
             <input
               v-model="form.planting_date"
               type="date"
               required
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
 
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("harvestdate")
             }}</label>
             <input
               v-model="form.harvest_date"
               type="date"
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("area") }} (m²) *</label
             >
             <input
@@ -89,7 +88,7 @@
               :max="areaInM2(calculatedArea)"
               required
               placeholder="Enter area in m²"
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
               @input="onAreaInput"
             />
             <!-- <small class="text-gray-500 text-sm">
@@ -98,13 +97,13 @@
           </div>
 
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("status") }} *</label
             >
             <select
               v-model="form.status_id"
               required
-              class="w-full bg-transparent border p-2 rounded focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             >
               <option v-for="s in statuses" :key="s.id" :value="s.id">
                 {{ t(cropStatusKeyMap[s.name]) }}
@@ -115,7 +114,7 @@
 
         <button
           type="submit"
-          class="w-full bg-[#10b481] hover:bg-[#0da06a] transition-colors py-3 rounded text-white text-sm flex justify-center items-center gap-2"
+          class="w-full btn-primary flex justify-center items-center gap-2"
         >
           {{ t("btnsaveparcelcrop") }}
         </button>

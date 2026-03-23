@@ -1,9 +1,8 @@
 <template>
   <section>
-    <Breadcrumb />
-    <div class="max-w-3xl mx-auto p-4 sm:p-6 mb-10 sm:mb-1">
+    <div class="max-w-3xl mx-auto p-4 sm:p-6 mb-10 sm:mb-1 p-8 bg-white rounded-2xl border border-gray-200">
       <h2
-        class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2 mb-6"
+        class="mb-6"
       >
         {{ t("titlenewtask") }}
       </h2>
@@ -11,49 +10,49 @@
       <form @submit.prevent="submitTask" class="space-y-4">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("taskname") }} *</label
             >
             <input
               v-model="form.name"
               type="text"
               required
-              class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
 
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1"
+            <label class="label mb-1"
               >{{ t("due") }} *</label
             >
             <input
               v-model="form.due_date"
               type="date"
               required
-              class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             />
           </div>
         </div>
 
         <div class="flex flex-col">
-          <label class="text-gray-700 text-sm font-medium mb-1"
+          <label class="label mb-1"
             >{{ t("desc") }} *</label
           >
           <textarea
             v-model="form.description"
             required
-            class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
           ></textarea>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("parcelcrop")
             }}</label>
             <select
               v-model="form.parcelCrop"
-              class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             >
               <option
                 v-for="crop in parcelCrops"
@@ -66,12 +65,12 @@
           </div>
 
           <div class="flex-1 flex flex-col">
-            <label class="text-gray-700 text-sm font-medium mb-1">{{
+            <label class="label mb-1">{{
               t("priority")
             }}</label>
             <select
               v-model="form.priority"
-              class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+              class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
             >
               <option v-for="p in priorities" :key="p.id" :value="p.id">
                 {{ t(priorityKeyMap[p.name]) }}
@@ -81,12 +80,12 @@
         </div>
 
         <div class="flex flex-col">
-          <label class="text-gray-700 text-sm font-medium mb-1">{{
+          <label class="label mb-1">{{
             t("status")
           }}</label>
           <select
             v-model="form.status"
-            class="w-full border p-2 rounded bg-transparent focus:ring-[#212121]"
+            class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all"
           >
             <option v-for="s in statuses" :key="s.id" :value="s.id">
               {{ t(statusKeyMap[s.name]) }}
@@ -96,21 +95,21 @@
 
         <button
           type="submit"
-          class="w-full bg-[#10b481] text-white py-2 rounded hover:opacity-90 transition"
+          class="w-full btn-primary"
         >
           {{ t("btnaddtask") }}
         </button>
       </form>
     </div>
 
-    <div
+    <!-- <div
       v-if="isLoading"
       class="absolute inset-0 bg-black/50 flex items-center justify-center"
     >
       <div
         class="w-12 h-12 border-4 border-t-[#10b481] border-white rounded-full animate-spin"
       ></div>
-    </div>
+    </div> -->
 
     <transition name="slide-right">
       <div
@@ -230,6 +229,7 @@ onMounted(async () => {
     ]);
 
     priorities.value = await priRes.json();
+    // console.log("Priorities loaded:", priorities.value);
     statuses.value = await staRes.json();
     const cropsData = await cropRes.json();
 

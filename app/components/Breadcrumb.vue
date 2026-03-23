@@ -1,24 +1,18 @@
 <template>
-  <nav
-    aria-label="Breadcrumb"
-    class="flex items-center gap-2 text-sm text-gray-500 mb-10"
-  >
-    <NuxtLink to="/dashboard/s" class="flex items-center hover:text-[#10b481]">
-      {{ t("home") }}
-    </NuxtLink>
+  <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm">
 
     <template v-for="(item, index) in breadcrumbs" :key="item.to">
-      <i class="bx bx-chevron-right text-gray-400"></i>
+      <i class="bx bx-chevron-right text-gray-300 text-xs"></i>
 
       <NuxtLink
         v-if="index < breadcrumbs.length - 1"
         :to="item.to"
-        class="hover:text-[#10b481] capitalize"
+        class="px-2 text-gray-700 small text-sm hover:text-[#10b981] transition "
       >
         {{ item.label }}
       </NuxtLink>
 
-      <span v-else class="text-gray-800 font-semibold capitalize">
+      <span v-else class="px-2 text-[#10b981] small text-sm ">
         {{ item.label }}
       </span>
     </template>
@@ -41,29 +35,44 @@ const t = (key: string) => {
 
 const labelMap: Record<string, string> = {
   dashboard: t("dashboard"),
-  post: t("posts"),
-  posts: t("posts"),
-  categories: t("category"),
-  products: t("product"),
-  users: t("user"),
-  admin: "Admin",
-  bid: t("bid"),
-  bids: t("bid"),
-  chatbox: t("chatbox"),
-  notification: t("notif"),
+  tasks: t("tasks"),
+  "yield-records": t("yields"),
+  insights: t("home"),
+  parcels: t("parcel"),
+  "parcel-crops": t("crops"),
+  "crops": t("crops"),
+  help: t("help"),
+  profil: t("account"),
+  create: t("create"),
+  edit: t("edit"),
+  show: t("show"), 
+  assistant: "Sesily",
+};
+
+const isDynamicSegment = (segment: string) => {
+  if (!isNaN(Number(segment))) return true;
+
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  if (uuidRegex.test(segment)) return true;
+
+  return false;
 };
 
 const breadcrumbs = computed(() => {
   const segments = route.path.split("/").filter(Boolean);
   let fullPath = "";
 
-  return segments.map((segment) => {
-    fullPath += `/${segment}`;
+  return segments
+    .filter((segment) => !isDynamicSegment(segment))
+    .map((segment) => {
+      fullPath += `/${segment}`;
 
-    return {
-      label: labelMap[segment] || segment.replace(/-/g, " "),
-      to: fullPath,
-    };
-  });
+      return {
+        label: labelMap[segment] || segment.replace(/-/g, " "),
+        to: fullPath,
+      };
+    });
 });
 </script>

@@ -1,27 +1,30 @@
 <template>
-  <div class="p-6 max-w-5xl mx-auto bg-[#f9f9f9] rounded-2xl shadow-lg">
-    <h2 class="text-3xl font-bold mb-6 text-[#212121] flex items-center gap-2">
-      <i class="bx bx-leaf text-3xl text-[#10b481]"></i>
-      Crops List
-    </h2>
+  <div class="p-1 sm:p-8">
 
-    <div class="flex justify-end mb-4">
-      <NuxtLink
-        to="/crops/create"
-        class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white rounded-lg hover:bg-[#0da06a] transition"
-      >
-        <i class="bx bx-plus text-lg"></i> Add Crop
-      </NuxtLink>
-    </div>
+    <div class="flex items-center justify-between mb-8">
+        <h2
+          class=""
+        >
+          Crop list
+        </h2>
+
+        <NuxtLink
+          to="/parcel-crops/create"
+          class="flex items-center gap-2 btn-primary"
+        >
+          <i class="bx bx-plus"></i>
+          {{ t("add") }}
+        </NuxtLink>
+      </div>
 
     <div class="overflow-x-auto bg-white rounded-xl shadow p-4">
-      <table class="min-w-full text-left border-collapse">
-        <thead class="bg-gray-100">
+      <table class="min-w-full text-left border-collapse overflow-y-auto">
+        <thead class="bg-[#fafa9]">
           <tr>
-            <th class="px-6 py-2 border-b">Crop Name</th>
-            <th class="px-6 py-2 border-b">Variety</th>
-            <th class="px-6 py-2 border-b">Created At</th>
-            <th class="px-6 py-2 border-b text-center">Actions</th>
+            <th class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b">Crop Name</th>
+            <th class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b">Variety</th>
+            <th class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b">Created At</th>
+            <th class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -30,23 +33,23 @@
             :key="crop.id"
             class="hover:bg-gray-50"
           >
-            <td class="px-6 py-2 border-b">{{ crop.name }}</td>
-            <td class="px-6 py-2 border-b">{{ crop.variety?.name || "-" }}</td>
-            <td class="px-6 py-2 border-b">
+            <td class="px-6 py-3 text-left content border-b">{{ crop.name }}</td>
+            <td class="px-6 py-3 text-left content border-b">{{ crop.variety?.name || "-" }}</td>
+            <td class="px-6 py-3 text-left content border-b">
               {{ new Date(crop.created_at).toLocaleDateString() }}
             </td>
-            <td class="p-3 border-b text-center flex justify-center gap-2">
+            <td class="p-3 border-b content text-center flex justify-center gap-2">
               <button
                 @click="editCrop(crop.id)"
                 class="p-2 rounded-full hover:bg-[#10b481]/20"
               >
-                <i class="bx bx-edit text-[#10b481] text-xl"></i>
+                <i class="bx bx-edit text-[#10b481] text-lg"></i>
               </button>
               <button
                 @click="deleteCrop(crop.id)"
                 class="p-2 rounded-full hover:bg-red-100"
               >
-                <i class="bx bx-trash text-red-500 text-xl"></i>
+                <i class="bx bx-trash text-red-500 text-lg"></i>
               </button>
             </td>
           </tr>
@@ -103,6 +106,12 @@ definePageMeta({ layout: "dashboard" });
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { API_URL } from "~/config";
+import { useLanguageStore } from "~/stores/language";
+import { translate } from "~/utils/translate";
+
+const languageStore = useLanguageStore();
+const t = (key: string) => translate[languageStore.lang][key] || key;
+const currentLocale = computed(() => languageStore.lang);
 
 const router = useRouter();
 const crops = ref<any[]>([]);

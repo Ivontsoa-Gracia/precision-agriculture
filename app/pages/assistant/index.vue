@@ -1,9 +1,9 @@
 <template>
-  <div class="relative flex flex-col">
+  <div class="relative flex flex-col small">
     <div
       v-if="isMounted"
       ref="chatContainer"
-      class="flex-1 overflow-y-auto px-3 sm:px-24 pt-4 pb-28 space-y-3"
+      class="flex-1 overflow-y-auto px-3 sm:px-60 pt-4 pb-28 space-y-3 small"
     >
       <div
         v-for="(msg, index) in messages"
@@ -13,10 +13,10 @@
       >
         <div
           :class="[
-            'px-4 py-2 rounded-lg max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg shadow-sm',
+            'px-4 py-2 rounded-xl max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg shadow-sm small',
             msg.sender === 'user'
-              ? 'bg-[#10b481] text-white rounded-br-none'
-              : 'bg-white text-gray-800 rounded-bl-none',
+              ? 'bg-[#10b481] text-white rounded-br-md'
+              : 'bg-white text-gray-700 rounded-bl-md border border-gray-200',
           ]"
         >
           <span v-html="formatMessage(msg.text)"></span>
@@ -25,7 +25,7 @@
 
       <div v-if="isLoading" class="flex justify-start">
         <div
-          class="bg-white text-gray-800 px-4 py-2 rounded-lg shadow-sm flex items-center"
+          class="bg-white text-gray-700 rounded-bl-none border border-gray-200 px-4 py-2 rounded-lg shadow-sm flex items-center"
         >
           <span class="typing-dots flex space-x-1">
             <span
@@ -46,116 +46,129 @@
       v-if="showWelcome && messages.length === 0"
       class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-6 pointer-events-none px-4 top-48"
     >
-      <h1
-        class="text-2xl sm:text-4xl md:text-5xl font-extrabold text-[#222831] animate-fade-in"
+      <h2
+        class="text-2xl sm:text-4xl font-extrabold text-[#222831] animate-fade-in"
         v-html="t('heroTitle')"
-      ></h1>
+      ></h2>
 
       <div
-        class="flex flex-wrap gap-2 sm:gap-3 justify-center pointer-events-auto"
+        class="flex flex-wrap gap-2 sm:gap-3 justify-center pointer-events-auto max-w-5xl"
       >
         <button
           v-for="(q, i) in suggestedQuestions"
           :key="i"
           @click="askSuggestedQuestion(q)"
-          class="px-3 sm:px-4 py-2 text-sm sm:text-base bg-white border rounded-full shadow hover:bg-gray-100 transition"
+          class="px-3 sm:px-4 py-2 text-sm content sm:text-base bg-white border rounded-full border border-gray-200 hover:bg-[#fafaf9] transition"
         >
           {{ q }}
         </button>
       </div>
     </div>
 
-    <div
-      ref="footer"
-      class="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-[900px] w-full bg-[#112830] rounded-lg border border-gray-300 shadow-md p-2 flex flex-col gap-2"
-    >
-      <div class="flex w-full items-center gap-2 relative">
-        <button
-          @click="showOptions = !showOptions"
-          class="bg-white/10 text-white p-2 px-3 rounded hover:bg-gray-300 transition"
-        >
-          <i class="bxr bx-plus"></i>
-        </button>
-        <input
-          v-model="inputMessage"
-          @keyup.enter="sendMessage"
-          type="text"
-          :placeholder="t('ask')"
-          class="bg-transparent text-white flex-1 p-2 text-sm outline-none"
-        />
+    <div class="fixed bottom-6 left-0 w-full z-40 relative">
 
-        <button
-          @click="sendMessage"
-          class="bg-[#10b481] text-white rounded p-2 px-3 hover:bg-[#0d946b] transition flex items-center justify-center"
-        >
-          <i class="bx bx-up-arrow-alt text-lg"></i>
-        </button>
+      <div class="absolute bottom-0 left-0 w-full h-32 bg-[#fafaf9]"></div>
 
-        <transition name="fade">
+      <div
+        class="absolute bottom-32 left-0 w-full h-16 bg-gradient-to-t from-[#fafaf9] to-transparent"
+      ></div>
+
+      <div class="relative flex justify-center pb-6">
+        <div class="w-full max-w-3xl px-4">
           <div
-            v-if="showOptions"
-            class="absolute bottom-full left-0 mb-2 w-[400px] sm:w-[500px] bg-gray-50 border border-gray-200 rounded shadow-lg p-3 z-50"
+            class="relative flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-xl px-3 py-2"
           >
-            <div class="flex justify-end mb-2">
-              <button
-                @click="showOptions = false"
-                class="text-gray-500 hover:text-gray-700 font-bold"
-              >
-                &times;
-              </button>
-            </div>
-
-            <div class="flex flex-col sm:flex-row sm:gap-2 w-full text-sm mb-2">
-              <div class="flex-1 flex flex-col">
-                <label class="mb-1">{{ t("parcels") }}</label>
-                <select
-                  v-model="selectedParcel"
-                  class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]"
-                >
-                  <option
-                    v-for="parcel in parcels"
-                    :key="parcel.uuid"
-                    :value="parcel.uuid"
-                  >
-                    {{ parcel.parcel_name }}
-                  </option>
-                </select>
-              </div>
-              <div class="flex-1 flex flex-col">
-                <label class="mb-1">{{ t("crops") }}</label>
-                <select
-                  v-model="selectedCrop"
-                  class="w-full p-1 border rounded focus:ring-1 focus:ring-[#10b481]"
-                >
-                  <option
-                    v-for="crop in crops"
-                    :key="crop.id"
-                    :value="crop.name"
-                  >
-                    {{ crop.name }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <div
-              class="flex flex-wrap items-center gap-3 text-sm pt-1 border-t border-gray-200"
+            <button
+              @click="showOptions = !showOptions"
+              class="text-gray-500 hover:text-[#10b481] transition p-2"
             >
-              <label
-                v-for="module in moduleKeys"
-                :key="module"
-                class="flex items-center gap-1"
+              <i class="bx bx-plus text-lg"></i>
+            </button>
+
+            <input
+              v-model="inputMessage"
+              @keyup.enter="sendMessage"
+              type="text"
+              :placeholder="t('ask')"
+              class="flex-1 bg-transparent outline-none content placeholder-gray-400"
+            />
+
+            <button
+              @click="sendMessage"
+              class="bg-[#10b481] text-white rounded-xl px-3 py-2 hover:bg-[#0d946b] transition shadow"
+            >
+              <i class="bx bx-up-arrow-alt text-lg"></i>
+            </button>
+
+            <transition name="fade">
+              <div
+                v-if="showOptions"
+                class="absolute bottom-full left-0 mb-3 w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-4 max-w-xl"
               >
-                <input
-                  type="checkbox"
-                  v-model="userModules[module]"
-                  class="w-3 h-3 accent-[#10b481]"
-                />
-                <span class="capitalize">{{ module.replace("_", " ") }}</span>
-              </label>
-            </div>
+                <div class="flex justify-between items-center mb-3">
+                  <span class="subtitle">
+                    Options
+                  </span>
+                  <button
+                    @click="showOptions = false"
+                    class="text-gray-400 hover:text-gray-600"
+                  >
+                    <i class="bx bx-x"></i>
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                  <div>
+                    <label class="label mb-1 block">
+                      {{ t("parcels") }}
+                    </label>
+                    <select v-model="selectedParcel" class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all">
+                      <option
+                        v-for="parcel in parcels"
+                        :key="parcel.uuid"
+                        :value="parcel.uuid"
+                      >
+                        {{ parcel.parcel_name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="label mb-1 block">
+                      {{ t("crops") }}
+                    </label>
+                    <select v-model="selectedCrop" class="w-full px-4 py-3 small text-sm text-gray-700 text-sm rounded-xl border border-gray-200 focus:border-[#10b481] focus:ring-4 focus:ring-[#10b481]/10 outline-none transition-all">
+                      <option
+                        v-for="crop in crops"
+                        :key="crop.id"
+                        :value="crop.name"
+                      >
+                        {{ crop.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="flex flex-wrap gap-8 border-t pt-3">
+                  <label
+                    v-for="module in moduleKeys"
+                    :key="module"
+                    class="flex items-center gap-1"
+                  >
+                    <input
+                      type="checkbox"
+                      v-model="userModules[module]"
+                      class="accent-[#10b481]"
+                    />
+                    <span class="capitalize label">
+                      {{ module.replace("_", " ") }}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </transition>
           </div>
-        </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -289,11 +302,35 @@ onMounted(() => {
 });
 
 function formatMessage(text: string) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/^- (.*)$/gm, "• $1")
-    .replace(/\n/g, "<br>");
+  text = text.replace(/((?:\|.*\|\n)+)/g, (table) => {
+    const rows = table.trim().split("\n");
+
+    const cleanRows = rows.filter((row, index) => index !== 1);
+
+    const htmlRows = cleanRows.map((row, index) => {
+      const cells = row
+        .split("|")
+        .filter((cell) => cell.trim() !== "")
+        .map((cell) =>
+          index === 0 ? `<th>${cell.trim()}</th>` : `<td>${cell.trim()}</td>`
+        )
+        .join("");
+
+      return `<tr>${cells}</tr>`;
+    });
+
+    return `<table>${htmlRows.join("")}</table>`;
+  });
+
+  text = text.replace(/^###\s+(.*)$/gm, "<strong>$1</strong>");
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  text = text.replace(/^- (.*)$/gm, "• $1");
+  text = text.replace(/^---$/gm, "<hr>");
+  text = text.replace(/^\d+\.\s+(.*)$/gm, "• $1");
+  text = text.replace(/\n/g, "<br>");
+
+  return text;
 }
 
 async function sendMessage(isSuggestion = false) {

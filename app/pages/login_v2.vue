@@ -2,95 +2,95 @@
   <div
     class="relative h-screen flex flex-col lg:flex-row bg-white sm:bg-[#fafaf9] p-4 sm:p-12 overflow-hidden"
   >
+  <canvas ref="aiCanvas" class="absolute inset-0 w-full h-full"></canvas>
 
-    <div
-      class="absolute -top-24 -left-32 w-[500px] h-[500px] sm:bg-blue-500 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
+      <div
+        class="absolute -top-24 -left-32 w-[500px] h-[500px] sm:bg-blue-500 opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
+      ></div>
 
-    <div
-      class="absolute -top-48 -left-48 w-[1000px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
+      <div
+        class="absolute -top-48 -left-48 w-[1000px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
+      ></div>
 
-    <div
-      class="absolute -top-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
-    ></div>
+      <div
+        class="absolute -top-48 right-[-100px] w-[800px] h-[400px] sm:bg-[#10b481] opacity-30 rounded-[60%_40%_55%_45%/50%_60%_40%_50%] blur-3xl"
+      ></div>
 
-    <div class="hidden lg:flex w-1/2 flex-col p-12 relative overflow-hidden">
-      <div class="flex-1 flex items-center">
-        <div class="relative max-w-md">
-          <h2 class="mb-6 leading-tight">Optimize Your Farm</h2>
+      <div class="hidden lg:flex w-1/2 flex-col p-12 relative overflow-hidden">
+        <div class="flex-1 flex items-center">
+          <div class="relative max-w-md">
+            <h2 class="mb-6 leading-tight">Optimize Your Farm</h2>
 
-          <p class="content leading-relaxed">
-            Sesily AI helps you analyze soil, crops, and weather to maximize
-            your harvest efficiently.
-          </p>
+            <p class="content leading-relaxed">
+              Sesily AI helps you analyze soil, crops, and weather to maximize your harvest efficiently.
+            </p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="flex items-center justify-between">
+            <div class="relative hidden sm:flex">
+              <button
+                @click="open = !open"
+                class="flex items-center gap-2 px-3 py-2 transition"
+              >
+                <img :src="currentLocale.flag" class="w-5 h-5 rounded-full" />
+                <span class="text-sm text-gray-700 small">
+                  {{ currentLocale.name }}
+                </span>
+                <i class="bx bx-chevron-down text-sm text-gray-500"></i>
+              </button>
+
+              <transition name="fade">
+                <ul
+                  v-if="open"
+                  class="absolute bottom-12 w-44 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden"
+                >
+                  <li
+                    v-for="loc in locales"
+                    :key="loc.code"
+                    @click="selectLocale(loc.code)"
+                    class="flex items-center gap-2 px-4 py-3 hover:bg-[#10b481]/10 cursor-pointer transition"
+                  >
+                    <img :src="loc.flag" class="w-5 h-5 rounded-full" />
+                    <span class="text-sm text-gray-700">
+                      {{ loc.name }}
+                    </span>
+                  </li>
+                </ul>
+              </transition>
+            </div>
+
+            <ul class="flex gap-6 text-sm">
+              <li class="menu-item transition cursor-pointer">
+                {{ t("terms") }}
+              </li>
+              <li class="menu-item transition cursor-pointer">
+                <NuxtLink to="/market" class="block w-full h-full">
+                  {{ t("home") }}
+                </NuxtLink>
+              </li>
+              <li class="menu-item transition cursor-pointer">
+                {{ t("contactus") }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div class="relative">
-        <div class="flex items-center justify-between">
-          <div class="relative hidden sm:flex">
-            <button
-              @click="open = !open"
-              class="flex items-center gap-2 px-3 py-2 transition"
-            >
-              <img :src="currentLocale.flag" class="w-5 h-5 rounded-full" />
-              <span class="text-sm text-gray-700 small">
-                {{ currentLocale.name }}
-              </span>
-              <i class="bx bx-chevron-down text-sm text-gray-500"></i>
-            </button>
-
-            <transition name="fade">
-              <ul
-                v-if="open"
-                class="absolute bottom-12 w-44 bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden"
-              >
-                <li
-                  v-for="loc in locales"
-                  :key="loc.code"
-                  @click="selectLocale(loc.code)"
-                  class="flex items-center gap-2 px-4 py-3 hover:bg-[#10b481]/10 cursor-pointer transition"
-                >
-                  <img :src="loc.flag" class="w-5 h-5 rounded-full" />
-                  <span class="text-sm text-gray-700">
-                    {{ loc.name }}
-                  </span>
-                </li>
-              </ul>
-            </transition>
+      <div
+        class="flex-1 flex items-center justify-center p-0 sm:px-6 p-2 sm:py-16"
+      >
+        <div
+          class="w-full max-w-md bg-transparent sm:bg-white sm:rounded-3xl sm:shadow-xl p-0 sm:p-12 relative overflow-hidden"
+        >
+          <div class="text-left mb-10">
+            <img src="/logo.png" alt="SmartSaha" class="h-16 rounded-xl mb-4" />
+            <h2 class="mb-2">{{ t("login") }}</h2>
+            <p class="content">{{ t("logintext") }}</p>
           </div>
 
-          <ul class="flex gap-6 text-sm">
-            <li class="menu-item transition cursor-pointer">
-              {{ t("terms") }}
-            </li>
-            <li class="menu-item transition cursor-pointer">
-              <NuxtLink to="https://www.smart-saha.com/" class="block w-full h-full">
-                {{ t("home") }}
-              </NuxtLink>
-            </li>
-            <li class="menu-item transition cursor-pointer">
-              {{ t("contactus") }}
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="flex-1 flex items-center justify-center p-0 sm:px-6 p-2 sm:py-16"
-    >
-      <div
-        class="w-full max-w-md bg-transparent sm:bg-white sm:rounded-3xl sm:shadow-xl p-0 sm:p-12 relative overflow-hidden"
-      >
-        <div class="text-left mb-6">
-          <img src="/logo.png" alt="SmartSaha" class="h-16 rounded-xl mb-4" />
-          <h2 class="mb-2">{{ t("login") }}</h2>
-          <p class="content">{{ t("logintext") }}</p>
-        </div>
-
-        <AuthForm
+          <AuthForm
           class="mt-6"
           title=""
           buttonText="Log in"
@@ -99,10 +99,11 @@
           passwordLabel="Password"
           @submit="handleLogin"
         >
-          <template #footer-links> </template>
+          <template #footer-links>
+          </template>
         </AuthForm>
 
-        <div class="flex items-center w-full my-4 -mt8">
+        <div class="flex items-center w-full my-4 -mt-16">
           <hr class="flex-grow border-gray-400" />
           <span class="mx-2 text-gray-400">ou</span>
           <hr class="flex-grow border-gray-400" />
@@ -120,17 +121,17 @@
           <span class="content">Sign in with Google</span>
         </div>
 
-        <p class="text-center small text-sm text-gray-500 mt-8">
-          {{ t("dontaccount") }}
-          <NuxtLink
-            to="/signup"
-            class="text-[#10b481] font-medium hover:underline"
-          >
-            {{ t("createone") }}
-          </NuxtLink>
-        </p>
+          <p class="text-center small text-sm text-gray-500 mt-8">
+            {{ t("dontaccount") }}
+            <NuxtLink
+              to="/signup"
+              class="text-[#10b481] font-medium hover:underline"
+            >
+              {{ t("createone") }}
+            </NuxtLink>
+          </p>
+        </div>
       </div>
-    </div>
   </div>
 
   <div
@@ -367,7 +368,7 @@ const handleLogin = async (formData: {
     } else {
       showNotification("You're signed in successfully.", "success");
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/dashboard/s");
       }, 3000);
     }
   } catch (error) {
@@ -431,7 +432,7 @@ const renderGoogleButton = () => {
         } else {
           showNotification("You're signed in successfully.", "success");
           setTimeout(() => {
-            router.push("/dashboard");
+            router.push("/dashboard/s");
           }, 3000);
         }
       } catch (err) {

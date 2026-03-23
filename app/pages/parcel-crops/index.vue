@@ -1,18 +1,16 @@
 <template>
-  <div class="p-1 sm:p-6">
-    <Breadcrumb />
-
+  <div class="p-1 sm:p-8">
     <section class="mb-10">
       <div class="flex items-center justify-between mb-8">
         <h2
-          class="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2"
+          class=""
         >
           {{ t("parcelcroplist") }}
         </h2>
 
         <NuxtLink
           to="/parcel-crops/create"
-          class="flex items-center gap-2 px-4 py-2 bg-[#10b481] text-white text-sm rounded hover:bg-[#0da06a] transition"
+          class="flex items-center gap-2 btn-primary"
         >
           <i class="bx bx-plus"></i>
           {{ t("add") }}
@@ -20,11 +18,11 @@
       </div>
 
       <div
-        class="flex items-center gap-3 border border-gray-200 rounded px-3 py-2 bg-white"
+        class="flex items-center gap-3 border border-gray-200 content rounded-xl px-3 py-2 bg-white"
       >
         <div class="relative flex-1">
           <i
-            class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            class="bx bx-search text-lg absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           ></i>
           <input
             v-model="searchQuery"
@@ -38,59 +36,59 @@
 
         <button
           @click="resetFilters"
-          class="text-sm text-gray-500 hover:text-gray-900 transition px-6"
+          class="text-sm text-gray-400 hover:text-gray-700 transition px-6"
         >
           {{ t('reset') }}
         </button>
       </div>
     </section>
 
-    <div class="hidden md:block overflow-x-auto bg-white">
-      <table class="min-w-[700px] w-full text-left border-collapse">
+    <div class="block overflow-x-auto bg-white">
+      <table class="min-w-[700px] w-full text-left border-collapse overflow-y-auto">
         <thead class="bg-[#FAFAF9]">
           <tr>
             <th
               @click="sortBy('parcel_name')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("thparcelname") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('crop.name')"
-              class="cursor-pointer items-center px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer items-center px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("crop") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('planting_date')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("plantingdate") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('harvest_date')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("harvestdate") }}
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
               @click="sortBy('area')"
-              class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="cursor-pointer px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("area") }} (m²)
               <i class="bxr bx-carets-up-down"></i>
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+              class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b"
             >
               {{ t("status") }}
             </th>
             <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b text-center"
+              class="px-6 py-3 text-left text-xs small text-gray-400 uppercase tracking-wider border-b text-center"
             >
               {{ t("thactions") }}
             </th>
@@ -102,26 +100,26 @@
             :key="pc.id"
             class="hover:bg-[#FAFAF9]"
           >
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ pc.parcel_name || pc.parcel }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ pc.crop?.name || "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ formatDate(pc.planting_date) }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ formatDate(pc.harvest_date) || "-" }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b content">
               {{ pc.area }}
             </td>
-            <td class="px-6 py-2 border-b text-sm text-gray-900">
+            <td class="px-6 py-2 border-b">
               <span
                 v-if="pc.status?.name"
                 :class="[
-                  'px-3 py-1 rounded-full text-xs',
+                  'px-3 py-1 rounded-full text-xs small',
                   statusClasses(pc.status.name),
                 ]"
               >
@@ -134,19 +132,19 @@
             >
               <button
                 @click="showParcelCrop(pc.id)"
-                class="p-1 px-2 rounded hover:bg-[#10b481]/20"
+                class="p-2 px-2 rounded-full hover:bg-[#10b481]/20"
               >
                 <i class="bx bx-show text-[#10b481] text-lg"></i>
               </button>
               <button
                 @click="editParcelCrop(pc.id)"
-                class="p-1 px-2 rounded hover:bg-[#f4a261]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#f4a261]/10"
               >
                 <i class="bx bx-edit text-[#f4a261] text-lg"></i>
               </button>
               <button
                 @click="deleteParcelCrop(pc.id)"
-                class="p-1 px-2 rounded hover:bg-[#e63946]/10"
+                class="p-2 px-2 rounded-full hover:bg-[#e63946]/10"
               >
                 <i class="bx bx-trash text-[#e63946] text-lg"></i>
               </button>
@@ -156,65 +154,7 @@
       </table>
     </div>
 
-    <div class="md:hidden space-y-4 text-md">
-      <div
-        v-for="pc in paginatedParcelCrops"
-        :key="pc.id"
-        class="bg-white p-4 rounded-xl shadow flex flex-col gap-2"
-      >
-        <div class="flex justify-between items-center">
-          <span class="font-bold text-[#212121]">{{
-            pc.parcel_name || pc.parcel
-          }}</span>
-          <div class="flex gap-2">
-            <button
-              @click="showParcelCrop(pc.id)"
-              class="p-2 px-4 rounded hover:bg-[#10b481]/20"
-            >
-              <i class="bx bx-show text-[#10b481] text-md"></i>
-            </button>
-            <button
-              @click="editParcelCrop(pc.id)"
-              class="p-2 px-4 rounded hover:bg-[#f4a261]/10"
-            >
-              <i class="bx bx-edit text-[#f4a261] text-md"></i>
-            </button>
-            <button
-              @click="deleteParcelCrop(pc.id)"
-              class="p-2 px-4 rounded hover:bg-[#e63946]/10"
-            >
-              <i class="bx bx-trash text-[#e63946] text-md"></i>
-            </button>
-          </div>
-        </div>
-        <p>
-          <span class="font-semibold">{{ t("crop") }}:</span>
-          {{ pc.crop?.name || "-" }}
-        </p>
-        <p v-if="pc.status?.name">
-          <span class="font-semibold"></span>
-          <span
-            :class="[
-              'px-2 py-1 rounded-full text-xs font-semibold',
-              statusClasses(pc.status.name),
-            ]"
-          >
-            {{ t(cropStatusKeyMap[pc.status.name]) }}
-          </span>
-        </p>
-        <p v-else>
-          <span class="font-semibold">{{ t("status") }}:</span> -
-        </p>
-      </div>
-      <p
-        v-if="paginatedParcelCrops.length === 0"
-        class="text-center text-gray-500"
-      >
-        {{ t("noparcelcropfound") }}
-      </p>
-    </div>
-
-    <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6">
+    <div class="bg-white px-4 py-3 flex items-center justify-between sm:px-6 content">
       <div class="flex-1 flex justify-between sm:hidden">
         <button
           @click="prevPage"
@@ -248,7 +188,7 @@
             <button
               @click="prevPage"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("prev") }}</span>
               <i class="bx bx-chevron-left"></i>
@@ -273,7 +213,7 @@
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
-              class="relative inline-flex items-center px-2 py-2 rounded-r border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span class="sr-only">{{ t("next") }}</span>
               <i class="bx bx-chevron-right"></i>
